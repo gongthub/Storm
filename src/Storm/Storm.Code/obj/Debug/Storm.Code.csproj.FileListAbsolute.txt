@@ -1,12 +1,9 @@
+E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\log4net.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\Storm.Code.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\Storm.Code.pdb
-E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\log4net.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\Newtonsoft.Json.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\NPOI.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\ICSharpCode.SharpZipLib.dll
-E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\log4net.xml
-E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\Newtonsoft.Json.xml
-E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\NPOI.xml
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\obj\Debug\Storm.Code.dll
 E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\obj\Debug\Storm.Code.pdb
-E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\obj\Debug\Storm.Code.csprojResolveAssemblyReference.cache
+E:\WorkFiles\Project\GIT\Storm\src\Storm\Storm.Code\bin\Debug\Newtonsoft.Json.xml
