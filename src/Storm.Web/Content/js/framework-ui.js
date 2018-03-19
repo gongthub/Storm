@@ -139,6 +139,36 @@ $.modalAlert = function (content, type) {
         btnclass: ['btn btn-primary'],
     });
 }
+$.modalAlertSuccess = function (content) {
+    var icon = "";
+    icon = "fa-check-circle";
+    top.layer.alert(content, {
+        icon: icon,
+        title: "系统提示",
+        btn: ['确认'],
+        btnclass: ['btn btn-primary'],
+    });
+}
+$.modalAlertError = function (content) {
+    var icon = "";
+    icon = "fa-times-circle";
+    top.layer.alert(content, {
+        icon: icon,
+        title: "系统提示",
+        btn: ['确认'],
+        btnclass: ['btn btn-primary'],
+    });
+}
+$.modalAlertWarring = function (content) {
+    var icon = "";
+    icon = "fa-exclamation-circle";
+    top.layer.alert(content, {
+        icon: icon,
+        title: "系统提示",
+        btn: ['确认'],
+        btnclass: ['btn btn-primary'],
+    });
+}
 $.modalMsg = function (content, type) {
     if (type != undefined) {
         var icon = "";
@@ -219,6 +249,52 @@ $.deleteForm = function (options) {
         url: "",
         param: [],
         loading: "正在删除数据...",
+        success: null,
+        close: true
+    };
+    var options = $.extend(defaults, options);
+    if ($('[name=__RequestVerificationToken]').length > 0) {
+        options.param["__RequestVerificationToken"] = $('[name=__RequestVerificationToken]').val();
+    }
+    $.modalConfirm(options.prompt, function (r) {
+        if (r) {
+            $.loading(true, options.loading);
+            window.setTimeout(function () {
+                $.ajax({
+                    url: options.url,
+                    data: options.param,
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.state == "success") {
+                            options.success(data);
+                            $.modalMsg(data.message, data.state);
+                        } else {
+                            $.modalAlert(data.message, data.state);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $.loading(false);
+                        $.modalMsg(errorThrown, "error");
+                    },
+                    beforeSend: function () {
+                        $.loading(true, options.loading);
+                    },
+                    complete: function () {
+                        $.loading(false);
+                    }
+                });
+            }, 500);
+        }
+    });
+
+}
+$.postForm = function (options) {
+    var defaults = {
+        prompt: options.prompt,
+        url: "",
+        param: [],
+        loading: "正在提交数据...",
         success: null,
         close: true
     };

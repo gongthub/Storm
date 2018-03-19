@@ -65,6 +65,7 @@
     <Compile Include="SystemSecurity\DbBackupMap.cs" />
     <Compile Include="SystemSecurity\FilterIPMap.cs" />
     <Compile Include="SystemSecurity\LogMap.cs" />
+    <Compile Include="WFManage\FlowMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Domain\Storm.Domain.csproj">

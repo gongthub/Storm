@@ -150,6 +150,8 @@
     <Compile Include="Areas\SystemSecurity\Controllers\LogController.cs" />
     <Compile Include="Areas\SystemSecurity\Controllers\ServerMonitoringController.cs" />
     <Compile Include="Areas\SystemSecurity\SystemSecurityAreaRegistration.cs" />
+    <Compile Include="Areas\WFManage\Controllers\FlowController.cs" />
+    <Compile Include="Areas\WFManage\WFManageAreaRegistration.cs" />
     <Compile Include="Controllers\ClientsDataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -515,6 +517,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\Form.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

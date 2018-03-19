@@ -53,6 +53,7 @@
     <Compile Include="SystemSecurity\DbBackupRepository.cs" />
     <Compile Include="SystemSecurity\FilterIPRepository.cs" />
     <Compile Include="SystemSecurity\LogRepository.cs" />
+    <Compile Include="WFManage\FlowRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Code\Storm.Code.csproj">
