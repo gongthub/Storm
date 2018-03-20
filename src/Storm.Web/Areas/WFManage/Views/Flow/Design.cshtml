@@ -2,6 +2,49 @@
     ViewBag.Title = "流程设计";
     Layout = "~/Views/Shared/_GooFlow.cshtml";
 }
+<style type="text/css">
+    .myForm {
+        overflow-y: auto;
+    }
+
+    .dvNodes {
+        width: 100%;
+    }
+
+    .dvLines {
+        width: 100%;
+    }
+
+    .btnflow {
+        width: 100%;
+        height: 30px;
+        background-color: #eee !important;
+        color: black !important;
+        font-size: 14px !important;
+        border: none !important;
+        border-bottom: 1px solid #808080 !important;
+    }
+
+    .dvflowcontent {
+        width: 100%;
+    }
+
+        .dvflowcontent table {
+            width: 100%;
+        }
+
+            .dvflowcontent table tr td {
+                border: 1px solid #ccc;
+            }
+
+                .dvflowcontent table tr td input {
+                    width: 100%;
+                }
+
+    .th {
+        text-align: right;
+    }
+</style>
 <script type="text/javascript">
 
     var keyValue = $.request("keyValue");
@@ -27,9 +70,9 @@
     var myflowdesign;
     $(document).ready(function () {
         var heights = $(window).height();
-        var widths = $(window).width() - 330;
+        var widths = $(window).width();
         $("#propertyForm").height(heights);
-        property.width = widths;
+        property.width = widths - 310;
         property.height = heights;
         myflowdesign = $.createGooFlow($("#myFlow"), property);
         myflowdesign.setTitle("流程绘制");
@@ -38,6 +81,7 @@
             var obj;
             $("#ele_model").val(model);
             $("#ele_id").val(id);
+            initpro(model);
             if (model == "line") {
                 obj = this.$lineData[id];
                 $("#ele_type").val(obj.M);
@@ -82,8 +126,10 @@
                 dataType: "json",
                 async: false,
                 success: function (data) {
-                    var codes = JSON.parse(data.Codes);
-                    myflowdesign.loadData(codes);
+                    if (data.Codes != null && data.Codes != undefined && data.Codes != "") {
+                        var codes = JSON.parse(data.Codes);
+                        myflowdesign.loadData(codes);
+                    }
                 }
             });
         }
@@ -111,27 +157,98 @@
             }
         });
     }
+    function initpro(type) {
+        if (type == "line") {
+            $(".dvLines").css("display", "");//隐藏div
+            $(".dvNodes").attr("style", "display:none;");//隐藏div
+        } else if (type == "node") {
+            $(".dvLines").css("display", "none");//隐藏div
+            $(".dvNodes").attr("style", "display:;");//隐藏div
+        }
+    }
 
 </script>
 <form class="myForm" id="propertyForm">
-    <div class="form_title">属性设置</div>
-    <div class="form_content">
-        <table>
-            <tr><td class="th">Id：</td><td><input type="text" style="width:120px" id="ele_id" /></td></tr>
-            <tr><td class="th">Name：</td><td><input type="text" style="width:120px" id="ele_name" /></td></tr>
-            <tr><td class="th">Type：</td><td><input type="text" style="width:120px" id="ele_type" /></td></tr>
-            <tr><td class="th">Model：</td><td><input type="text" style="width:120px" id="ele_model" /></td></tr>
-            <tr><td class="th">Left-r：</td><td><input type="text" style="width:120px" id="ele_left" /></td></tr>
-            <tr><td class="th">Top-r：</td><td><input type="text" style="width:120px" id="ele_top" /></td></tr>
-            <tr><td class="th">Width：</td><td><input type="text" style="width:120px" id="ele_width" /></td></tr>
-            <tr><td class="th">Height：</td><td><input type="text" style="width:120px" id="ele_height" /></td></tr>
-            <tr><td class="th">From：</td><td><input type="text" style="width:120px" id="ele_from" /></td></tr>
-            <tr><td class="th">To：</td><td><input type="text" style="width:120px" id="ele_to" /></td></tr>
-        </table>
+    <div class="dvNodes" style="display:none;">
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvattr">
+            节点属性
+        </button>
+        <div id="dvattr" class="collapse in dvflowcontent">
+            <table>
+
+                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">Name：</td><td><input type="text" id="ele_name" /></td></tr>
+                <tr><td class="th">Type：</td><td><input type="text" id="ele_type" /></td></tr>
+                <tr><td class="th">Model：</td><td><input type="text" id="ele_model" /></td></tr>
+                <tr><td class="th">Left-r：</td><td><input type="text" id="ele_left" /></td></tr>
+                <tr><td class="th">Top-r：</td><td><input type="text" id="ele_top" /></td></tr>
+                <tr><td class="th">Width：</td><td><input type="text" id="ele_width" /></td></tr>
+                <tr><td class="th">Height：</td><td><input type="text" id="ele_height" /></td></tr>
+                <tr><td class="th">From：</td><td><input type="text" id="ele_from" /></td></tr>
+                <tr><td class="th">To：</td><td><input type="text" id="ele_to" /></td></tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvstep">
+            步骤设置
+        </button>
+        <div id="dvstep" class="collapse in dvflowcontent">
+            <table>
+                <tr><td class="th">步骤类型：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">退回方式：</td><td><input type="text" id="ele_id" /></td></tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvpeople">
+            审核人设置
+        </button>
+        <div id="dvpeople" class="collapse in dvflowcontent">
+            <table>
+                <tr><td class="th">参与者类型：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">参与者：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">响应方式：</td><td><input type="text" id="ele_name" /></td></tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvturndown">
+            驳回设置
+        </button>
+        <div id="dvturndown" class="collapse in dvflowcontent">
+            <table>
+                <tr><td class="th">驳回方式：</td><td><input type="text" id="ele_id" /></td></tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvmsg">
+            消息提醒
+        </button>
+        <div id="dvmsg" class="collapse in dvflowcontent">
+            <table>
+                <tr><td class="th">提醒方式：</td><td><input type="text" id="ele_id" /></td></tr>
+            </table>
+        </div>
     </div>
-    <div class="form_btn_div">
-        <input type="reset" value="重置" />
-        <input type="button" value="确定" onclick="alert(myflowdesign.$focus)" />
+    <div class="dvLines" style="display:none;">
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#demo1">
+            连接属性
+        </button>
+        <div id="demo1" class="collapse in dvflowcontent">
+            <table>
+                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr><td class="th">Name：</td><td><input type="text" id="ele_name" /></td></tr>
+                <tr><td class="th">Type：</td><td><input type="text" id="ele_type" /></td></tr>
+                <tr><td class="th">Model：</td><td><input type="text" id="ele_model" /></td></tr>
+                <tr><td class="th">Left-r：</td><td><input type="text" id="ele_left" /></td></tr>
+                <tr><td class="th">Top-r：</td><td><input type="text" id="ele_top" /></td></tr>
+                <tr><td class="th">Width：</td><td><input type="text" id="ele_width" /></td></tr>
+                <tr><td class="th">Height：</td><td><input type="text" id="ele_height" /></td></tr>
+                <tr><td class="th">From：</td><td><input type="text" id="ele_from" /></td></tr>
+                <tr><td class="th">To：</td><td><input type="text" id="ele_to" /></td></tr>
+            </table>
+        </div>
     </div>
 </form>
 <div id="myFlow"></div>

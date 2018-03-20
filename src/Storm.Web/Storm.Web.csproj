@@ -224,6 +224,7 @@
     <Content Include="Content\js\bootstrap\bootstrap.min.css" />
     <Content Include="Content\js\charts\Chart.js" />
     <Content Include="Content\js\charts\Chart.min.js" />
+    <Content Include="Content\js\Common.js" />
     <Content Include="Content\js\cookie\jquery.cookie.js" />
     <Content Include="Content\js\datepicker\calendar.js" />
     <Content Include="Content\js\datepicker\DatePicker.js" />
