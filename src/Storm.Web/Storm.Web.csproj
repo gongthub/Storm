@@ -169,6 +169,25 @@
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\weathericons-regular-webfont.svg" />
+    <Content Include="Content\GooFlow\data.js" />
+    <Content Include="Content\GooFlow\default.css" />
+    <Content Include="Content\GooFlow\GooFlow.css" />
+    <Content Include="Content\GooFlow\GooFlow.js" />
+    <Content Include="Content\GooFlow\GooFlow2.css" />
+    <Content Include="Content\GooFlow\GooFlow_color.js" />
+    <Content Include="Content\GooFlow\GooFunc.js" />
+    <Content Include="Content\GooFlow\img\gooflow_bg.png" />
+    <Content Include="Content\GooFlow\img\gooflow_blank.gif" />
+    <Content Include="Content\GooFlow\img\gooflow_blank2.gif" />
+    <Content Include="Content\GooFlow\img\gooflow_blank2.htm" />
+    <Content Include="Content\GooFlow\img\gooflow_btn_bg.png" />
+    <Content Include="Content\GooFlow\img\gooflow_bullet.png" />
+    <Content Include="Content\GooFlow\img\gooflow_icon.png" />
+    <Content Include="Content\GooFlow\img\gooflow_icon2.png" />
+    <Content Include="Content\GooFlow\img\GooFlow_line_oper.png" />
+    <Content Include="Content\GooFlow\img\gooflow_tip.png" />
+    <Content Include="Content\GooFlow\jquery.min.js" />
+    <Content Include="Content\GooFlow\json2.js" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\img\alipay.jpg" />
     <Content Include="Content\img\alipayimg.png" />
@@ -529,6 +548,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\Design.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\GooFlow\img\Thumbs.db" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_GooFlow.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

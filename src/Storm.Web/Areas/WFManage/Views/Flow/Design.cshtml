@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "流程设计";
+    Layout = "~/Views/Shared/_GooFlow.cshtml";
+}
+<script type="text/javascript">
+
+    var keyValue = $.request("keyValue");
+    var property = {
+        width: 1200,
+        height: 600,
+        toolBtns: ["start round", "end round", "task"],
+        haveHead: true,
+        headBtns: ["undo", "redo", "reload"],//如果haveHead=true，则定义HEAD区的按钮
+        haveTool: true,
+        haveGroup: true,
+        useOperStack: true,
+        headLabel: "流程绘制"
+    };
+    var remark = {
+        cursor: "选择指针",
+        direct: "结点连线",
+        start: "入口结点",
+        end: "结束结点",
+        task: "任务结点",
+        group: "组织划分框"
+    };
+    var myflowdesign;
+    $(document).ready(function () {
+        var heights = $(window).height();
+        var widths = $(window).width() - 330;
+        $("#propertyForm").height(heights);
+        property.width = widths;
+        property.height = heights;
+        myflowdesign = $.createGooFlow($("#myFlow"), property);
+        myflowdesign.setTitle("流程绘制");
+        myflowdesign.setNodeRemarks(remark);
+        myflowdesign.onItemFocus = function (id, model) {
+            var obj;
+            $("#ele_model").val(model);
+            $("#ele_id").val(id);
+            if (model == "line") {
+                obj = this.$lineData[id];
+                $("#ele_type").val(obj.M);
+                $("#ele_left").val("");
+                $("#ele_top").val("");
+                $("#ele_width").val("");
+                $("#ele_height").val("");
+                $("#ele_from").val(obj.from);
+                $("#ele_to").val(obj.to);
+            } else if (model == "node") {
+                obj = this.$nodeData[id];
+                $("#ele_type").val(obj.type);
+                $("#ele_left").val(obj.left);
+                $("#ele_top").val(obj.top);
+                $("#ele_width").val(obj.width);
+                $("#ele_height").val(obj.height);
+                $("#ele_from").val("");
+                $("#ele_to").val("");
+            }
+            $("#ele_name").val(obj.name);
+            return true;
+        };
+
+        myflowdesign.onItemAdd = function (id, type, json) {
+            if (json.type == "start round") {
+                json.name = "开始";
+            }
+            if (json.type == "end round") {
+                json.name = "结束";
+            }
+            if (!IsHasType(json.type)) {
+                return true;
+            } else {
+                alert("只能有一个此类型节点！");
+                return false;
+            }
+        }
+        if (!!keyValue) {
+            $.ajax({
+                url: "/WFManage/Flow/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    var codes = JSON.parse(data.Codes);
+                    myflowdesign.loadData(codes);
+                }
+            });
+        }
+    });
+    function IsHasType(type) {
+        var isHas = false;
+        var types = ["start round", "end round"];
+        if ($.inArray(type, types) >= 0) {
+            var datas = myflowdesign.exportData();
+            for (var item in datas.nodes) {
+                if (datas.nodes[item].type == type) {
+                    isHas = true;
+                }
+            }
+        }
+        return isHas;
+    }
+    function submitForm() {
+        var codes = JSON.stringify(myflowdesign.exportData());
+        $.submitForm({
+            url: "/WFManage/Flow/SaveDesign",
+            param: { keyValue: keyValue, codes: codes },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+
+</script>
+<form class="myForm" id="propertyForm">
+    <div class="form_title">属性设置</div>
+    <div class="form_content">
+        <table>
+            <tr><td class="th">Id：</td><td><input type="text" style="width:120px" id="ele_id" /></td></tr>
+            <tr><td class="th">Name：</td><td><input type="text" style="width:120px" id="ele_name" /></td></tr>
+            <tr><td class="th">Type：</td><td><input type="text" style="width:120px" id="ele_type" /></td></tr>
+            <tr><td class="th">Model：</td><td><input type="text" style="width:120px" id="ele_model" /></td></tr>
+            <tr><td class="th">Left-r：</td><td><input type="text" style="width:120px" id="ele_left" /></td></tr>
+            <tr><td class="th">Top-r：</td><td><input type="text" style="width:120px" id="ele_top" /></td></tr>
+            <tr><td class="th">Width：</td><td><input type="text" style="width:120px" id="ele_width" /></td></tr>
+            <tr><td class="th">Height：</td><td><input type="text" style="width:120px" id="ele_height" /></td></tr>
+            <tr><td class="th">From：</td><td><input type="text" style="width:120px" id="ele_from" /></td></tr>
+            <tr><td class="th">To：</td><td><input type="text" style="width:120px" id="ele_to" /></td></tr>
+        </table>
+    </div>
+    <div class="form_btn_div">
+        <input type="reset" value="重置" />
+        <input type="button" value="确定" onclick="alert(myflowdesign.$focus)" />
+    </div>
+</form>
+<div id="myFlow"></div>

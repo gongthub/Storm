@@ -58,5 +58,20 @@ namespace Storm.Web.Areas.WFManage.Controllers
             flowApp.DisabledForm(keyValue);
             return Success("禁用成功。");
         }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult Design()
+        {
+            return View();
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [HandlerAuthorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveDesign(string keyValue, string codes)
+        {
+            flowApp.SaveDesign(keyValue, codes);
+            return Success("保存成功。");
+        }
     }
 }

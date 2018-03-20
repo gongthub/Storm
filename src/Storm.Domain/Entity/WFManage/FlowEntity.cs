@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Storm.Domain.Entity.WFManage
 {
@@ -18,5 +19,8 @@ namespace Storm.Domain.Entity.WFManage
         public string LastModifyUserId { get; set; }
         public DateTime? DeleteTime { get; set; }
         public string DeleteUserId { get; set; }
+        public List<FlowNodeEntity> Nodes { set; get; }
+        public List<FlowLineEntity> Lines { set; get; }
+        public List<FlowAreaEntity> Areas { set; get; }
     }
 }

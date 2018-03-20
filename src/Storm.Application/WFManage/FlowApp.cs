@@ -72,5 +72,21 @@ namespace Storm.Application.WFManage
                 service.Insert(flowEntity);
             }
         }
+
+
+        public void SaveDesign(string keyValue, string codes)
+        {
+            FlowEntity flowEntity = GetForm(keyValue);
+            if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id))
+            {
+                flowEntity.Modify(keyValue);
+                flowEntity.Codes = codes;
+                service.Update(flowEntity);
+            }
+            else
+            {
+                throw new Exception("获取数据异常！");
+            }
+        }
     }
 }

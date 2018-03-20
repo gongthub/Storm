@@ -124,14 +124,14 @@
     }
     function btn_design() {
         var keyValue = $("#gridList").jqGridRowValue().Id;
-        if (keyValue != null && keyValue != "" && keyValue != undefined) {
-            $.modalOpen({
+        if (keyValue != null && keyValue != "" && keyValue != undefined) { 
+            $.modalShowFull({
                 id: "Details",
-                title: "查看流程",
-                url: "/WFManage/Flow/Details?keyValue=" + keyValue,
-                width: "450px",
-                height: "500px",
-                btn: null,
+                title: "流程设计",
+                url: "/WFManage/Flow/Design?keyValue=" + keyValue,
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
             });
         } else {
             $.modalAlertWarring("请先选择一条数据！");
