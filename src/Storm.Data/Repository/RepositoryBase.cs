@@ -1,6 +1,7 @@
 ﻿using Storm.Code;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -60,6 +61,7 @@ namespace Storm.Data
         }
         public int Insert<TEntity>(TEntity entity) where TEntity : class
         {
+            RemoveHoldingEntityInContext(entity);
             dbcontext.Entry<TEntity>(entity).State = EntityState.Added;
             return dbTransaction == null ? this.Commit() : 0;
         }
@@ -67,27 +69,34 @@ namespace Storm.Data
         {
             foreach (var entity in entitys)
             {
+                RemoveHoldingEntityInContext(entity);
                 dbcontext.Entry<TEntity>(entity).State = EntityState.Added;
             }
             return dbTransaction == null ? this.Commit() : 0;
         }
         public int Update<TEntity>(TEntity entity) where TEntity : class
         {
+            RemoveHoldingEntityInContext(entity);
             dbcontext.Set<TEntity>().Attach(entity);
             PropertyInfo[] props = entity.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
             {
-                if (prop.GetValue(entity, null) != null)
+                object[] objAttrs = prop.GetCustomAttributes(typeof(NotMappedAttribute), true);
+                if (objAttrs.Length <= 0)
                 {
-                    if (prop.GetValue(entity, null).ToString() == "&nbsp;")
-                        dbcontext.Entry(entity).Property(prop.Name).CurrentValue = null;
-                    dbcontext.Entry(entity).Property(prop.Name).IsModified = true;
+                    if (prop.GetValue(entity, null) != null)
+                    {
+                        if (prop.GetValue(entity, null).ToString() == "&nbsp;")
+                            dbcontext.Entry(entity).Property(prop.Name).CurrentValue = null;
+                        dbcontext.Entry(entity).Property(prop.Name).IsModified = true;
+                    }
                 }
             }
             return dbTransaction == null ? this.Commit() : 0;
         }
         public int Delete<TEntity>(TEntity entity) where TEntity : class
         {
+            RemoveHoldingEntityInContext(entity);
             dbcontext.Set<TEntity>().Attach(entity);
             dbcontext.Entry<TEntity>(entity).State = EntityState.Deleted;
             return dbTransaction == null ? this.Commit() : 0;
@@ -177,6 +186,24 @@ namespace Storm.Data
             pagination.records = tempData.Count();
             tempData = tempData.Skip<TEntity>(pagination.rows * (pagination.page - 1)).Take<TEntity>(pagination.rows).AsQueryable();
             return tempData.ToList();
+        }
+
+        //用于监测Context中的Entity是否存在，如果存在，将其Detach，防止出现问题。
+        private Boolean RemoveHoldingEntityInContext<TEntity>(TEntity entity) where TEntity : class
+        {
+            var objContext = ((IObjectContextAdapter)dbcontext).ObjectContext;
+            var objSet = objContext.CreateObjectSet<TEntity>();
+            var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+
+            Object foundEntity;
+            var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
+
+            if (exists)
+            {
+                objContext.Detach(foundEntity);
+            }
+
+            return (exists);
         }
     }
 }

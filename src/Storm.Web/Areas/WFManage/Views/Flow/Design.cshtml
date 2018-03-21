@@ -41,8 +41,14 @@
                     width: 100%;
                 }
 
+                .dvflowcontent table tr td select {
+                    width: 100%;
+                }
+
     .th {
+        white-space: nowrap;
         text-align: right;
+        width: 40%;
     }
 </style>
 <script type="text/javascript">
@@ -78,75 +84,34 @@
         myflowdesign.setTitle("流程绘制");
         myflowdesign.setNodeRemarks(remark);
         myflowdesign.onItemFocus = function (id, model) {
-            var obj;
-            $("#ele_model").val(model);
-            $("#ele_id").val(id);
-            initpro(model);
-            if (model == "line") {
-                obj = this.$lineData[id];
-                $("#ele_type").val(obj.M);
-                $("#ele_left").val("");
-                $("#ele_top").val("");
-                $("#ele_width").val("");
-                $("#ele_height").val("");
-                $("#ele_from").val(obj.from);
-                $("#ele_to").val(obj.to);
-            } else if (model == "node") {
-                obj = this.$nodeData[id];
-                $("#ele_type").val(obj.type);
-                $("#ele_left").val(obj.left);
-                $("#ele_top").val(obj.top);
-                $("#ele_width").val(obj.width);
-                $("#ele_height").val(obj.height);
-                $("#ele_from").val("");
-                $("#ele_to").val("");
-            }
-            $("#ele_name").val(obj.name);
-            return true;
+            return itemFocus(this, id, model);
         };
-
         myflowdesign.onItemAdd = function (id, type, json) {
-            if (json.type == "start round") {
-                json.name = "开始";
-            }
-            if (json.type == "end round") {
-                json.name = "结束";
-            }
-            if (!IsHasType(json.type)) {
-                return true;
-            } else {
-                alert("只能有一个此类型节点！");
-                return false;
-            }
+            return itemAdd(id, type, json);
         }
-        if (!!keyValue) {
-            $.ajax({
-                url: "/WFManage/Flow/GetFormJson",
-                data: { keyValue: keyValue },
-                dataType: "json",
-                async: false,
-                success: function (data) {
-                    if (data.Codes != null && data.Codes != undefined && data.Codes != "") {
-                        var codes = JSON.parse(data.Codes);
-                        myflowdesign.loadData(codes);
-                    }
-                }
-            });
-        }
+        $(".comflowtxt").change(function () {
+            var focNode = myflowdesign.$focus;
+            var focmodel = myflowdesign.$nodeData[focNode];
+            switch (this.name) {
+                case "selStepType":
+                    focmodel.steptype = this.value;
+                    break;
+                case "selRejectType":
+                    focmodel.rejecttype = this.value;
+                    break;
+                case "selReviewerType":
+                    focmodel.reviewertype = this.value;
+                    break;
+                case "selMessageType":
+                    focmodel.messagetype = this.value;
+                    break;
+                case "selStrategiesType":
+                    focmodel.strategiestype = this.value;
+                    break;
+            }
+        });
+        initControl();
     });
-    function IsHasType(type) {
-        var isHas = false;
-        var types = ["start round", "end round"];
-        if ($.inArray(type, types) >= 0) {
-            var datas = myflowdesign.exportData();
-            for (var item in datas.nodes) {
-                if (datas.nodes[item].type == type) {
-                    isHas = true;
-                }
-            }
-        }
-        return isHas;
-    }
     function submitForm() {
         var codes = JSON.stringify(myflowdesign.exportData());
         $.submitForm({
@@ -166,7 +131,113 @@
             $(".dvNodes").attr("style", "display:;");//隐藏div
         }
     }
+    function itemFocus(e, id, model) {
+        initTxtControl();
+        var obj;
+        initpro(model);
+        if (model == "line") {
+            obj = e.$lineData[id];
+            $("#txtLineName").val(obj.name);
+            var objfrom = e.$nodeData[obj.from];
+            if (objfrom != null && objfrom != undefined) {
+                $("#txtLineFrom").val(objfrom.name);
+            }
+            var objto = e.$nodeData[obj.to];
+            if (objto != null && objto != undefined) {
+                $("#txtLineTo").val(objto.name);
+            }
+        } else if (model == "node") {
+            obj = e.$nodeData[id];
+            $("#txtNodeName").val(obj.name);
+            $("#txtNodeLeft").val(obj.left);
+            $("#txtNodeTop").val(obj.top);
+            $("#txtNodeWidth").val(obj.width);
+            $("#txtNodeHeight").val(obj.height); 
+            if (obj.steptype != null && obj.steptype != undefined)
+                $("#selStepType").val(obj.steptype).trigger("change").change();
 
+        }
+        return true;
+    }
+    function itemAdd(id, type, json) {
+        if (json.type == "start round") {
+            json.name = "开始";
+        }
+        if (json.type == "end round") {
+            json.name = "结束";
+        }
+        if (!IsHasType(json.type)) {
+            return true;
+        } else {
+            alert("只能有一个此类型节点！");
+            return false;
+        }
+    }
+    function initControl() {
+        if (!!keyValue) {
+            $.ajax({
+                url: "/WFManage/Flow/GetDesignJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.Codes != null && data.Codes != undefined && data.Codes != "") {
+                        var codes = JSON.parse(data.Codes);
+                        myflowdesign.loadData(codes);
+                    }
+                }
+            });
+        }
+        $("#selStepType").bindSelect({
+            url: "/WFManage/Flow/GetStepTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+        $("#selRejectType").bindSelect({
+            url: "/WFManage/Flow/GetRejectTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+        $("#selReviewerType").bindSelect({
+            url: "/WFManage/Flow/GetReviewerTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+        $("#selMessageType").bindSelect({
+            url: "/WFManage/Flow/GetMessageTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+        $("#selStrategiesType").bindSelect({
+            url: "/WFManage/Flow/GetStrategiesTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+    }
+    function IsHasType(type) {
+        var isHas = false;
+        var types = ["start round", "end round"];
+        if ($.inArray(type, types) >= 0) {
+            var datas = myflowdesign.exportData();
+            for (var item in datas.nodes) {
+                if (datas.nodes[item].type == type) {
+                    isHas = true;
+                }
+            }
+        }
+        return isHas;
+    }
+    function initTxtControl() {
+        $("#txtLineName").val('');
+        $("#txtLineFrom").val('');
+        $("#txtLineTo").val('');
+        $("#txtNodeName").val('');
+        $("#txtNodeLeft").val('');
+        $("#txtNodeTop").val('');
+        $("#txtNodeWidth").val('');
+        $("#txtNodeHeight").val('');
+        $("#selStepType").val(0).trigger("change").change();
+    }
 </script>
 <form class="myForm" id="propertyForm">
     <div class="dvNodes" style="display:none;">
@@ -176,18 +247,11 @@
         </button>
         <div id="dvattr" class="collapse in dvflowcontent">
             <table>
-
-                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">Name：</td><td><input type="text" id="ele_name" /></td></tr>
-                <tr><td class="th">Type：</td><td><input type="text" id="ele_type" /></td></tr>
-                <tr><td class="th">Model：</td><td><input type="text" id="ele_model" /></td></tr>
-                <tr><td class="th">Left-r：</td><td><input type="text" id="ele_left" /></td></tr>
-                <tr><td class="th">Top-r：</td><td><input type="text" id="ele_top" /></td></tr>
-                <tr><td class="th">Width：</td><td><input type="text" id="ele_width" /></td></tr>
-                <tr><td class="th">Height：</td><td><input type="text" id="ele_height" /></td></tr>
-                <tr><td class="th">From：</td><td><input type="text" id="ele_from" /></td></tr>
-                <tr><td class="th">To：</td><td><input type="text" id="ele_to" /></td></tr>
+                <tr><td class="th">名称：</td><td><input type="text" id="txtNodeName" readonly="readonly" /></td></tr>
+                <tr><td class="th">左坐标：</td><td><input type="text" id="txtNodeLeft" readonly="readonly" /></td></tr>
+                <tr><td class="th">上坐标：</td><td><input type="text" id="txtNodeTop" readonly="readonly" /></td></tr>
+                <tr><td class="th">宽：</td><td><input type="text" id="txtNodeWidth" readonly="readonly" /></td></tr>
+                <tr><td class="th">高：</td><td><input type="text" id="txtNodeHeight" readonly="readonly" /></td></tr>
             </table>
         </div>
         <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
@@ -196,8 +260,22 @@
         </button>
         <div id="dvstep" class="collapse in dvflowcontent">
             <table>
-                <tr><td class="th">步骤类型：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">退回方式：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr>
+                    <td class="th">步骤类型：</td>
+                    <td>
+                        <select id="selStepType" name="selStepType" class="form-control comflowtxt">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="th">驳回方式：</td>
+                    <td>
+                        <select id="selRejectType" name="selRejectType" class="form-control comflowtxt">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
             </table>
         </div>
         <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
@@ -206,18 +284,23 @@
         </button>
         <div id="dvpeople" class="collapse in dvflowcontent">
             <table>
-                <tr><td class="th">参与者类型：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">参与者：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">响应方式：</td><td><input type="text" id="ele_name" /></td></tr>
-            </table>
-        </div>
-        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
-                data-target="#dvturndown">
-            驳回设置
-        </button>
-        <div id="dvturndown" class="collapse in dvflowcontent">
-            <table>
-                <tr><td class="th">驳回方式：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr>
+                    <td class="th">审核人类型：</td>
+                    <td>
+                        <select id="selReviewerType" name="selReviewerType" class="form-control comflowtxt">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="th">审核人：</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" placeholder="请选择配置..." aria-describedby="spnodereviewer" readonly="readonly" />
+                            <span class="input-group-addon" id="spnodereviewer" style="cursor:pointer;">配置</span>
+                        </div>
+                    </td>
+                </tr>
             </table>
         </div>
         <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
@@ -226,27 +309,52 @@
         </button>
         <div id="dvmsg" class="collapse in dvflowcontent">
             <table>
-                <tr><td class="th">提醒方式：</td><td><input type="text" id="ele_id" /></td></tr>
+                <tr>
+                    <td class="th">提醒方式：</td>
+                    <td>
+                        <select id="selMessageType" name="selMessageType" class="form-control">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
     <div class="dvLines" style="display:none;">
         <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
-                data-target="#demo1">
+                data-target="#lineattr">
             连接属性
         </button>
-        <div id="demo1" class="collapse in dvflowcontent">
+        <div id="lineattr" class="collapse in dvflowcontent">
             <table>
-                <tr><td class="th">Id：</td><td><input type="text" id="ele_id" /></td></tr>
-                <tr><td class="th">Name：</td><td><input type="text" id="ele_name" /></td></tr>
-                <tr><td class="th">Type：</td><td><input type="text" id="ele_type" /></td></tr>
-                <tr><td class="th">Model：</td><td><input type="text" id="ele_model" /></td></tr>
-                <tr><td class="th">Left-r：</td><td><input type="text" id="ele_left" /></td></tr>
-                <tr><td class="th">Top-r：</td><td><input type="text" id="ele_top" /></td></tr>
-                <tr><td class="th">Width：</td><td><input type="text" id="ele_width" /></td></tr>
-                <tr><td class="th">Height：</td><td><input type="text" id="ele_height" /></td></tr>
-                <tr><td class="th">From：</td><td><input type="text" id="ele_from" /></td></tr>
-                <tr><td class="th">To：</td><td><input type="text" id="ele_to" /></td></tr>
+                <tr><td class="th">名称：</td><td><input type="text" id="txtLineName" readonly="readonly" /></td></tr>
+                <tr><td class="th">来源：</td><td><input type="text" id="txtLineFrom" readonly="readonly" /></td></tr>
+                <tr><td class="th">指向：</td><td><input type="text" id="txtLineTo" readonly="readonly" /></td></tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#lineplot">
+            策略
+        </button>
+        <div id="lineplot" class="collapse in dvflowcontent">
+            <table>
+                <tr>
+                    <td class="th">类型：</td>
+                    <td>
+                        <select id="selStrategiesType" name="selStrategiesType" class="form-control">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="th">配置：</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" placeholder="请选择配置..." aria-describedby="splineconfig" readonly="readonly" />
+                            <span class="input-group-addon" id="splineconfig" style="cursor:pointer;">配置</span>
+                        </div>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

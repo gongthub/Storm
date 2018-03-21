@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Storm.Domain.Entity.WFManage
 {
@@ -8,7 +9,6 @@ namespace Storm.Domain.Entity.WFManage
         public string Id { get; set; }
         public string EnCode { get; set; }
         public string FullName { get; set; }
-        public string Codes { get; set; }
         public int? SortCode { get; set; }
         public bool? DeleteMark { get; set; }
         public bool? EnabledMark { get; set; }
@@ -19,8 +19,11 @@ namespace Storm.Domain.Entity.WFManage
         public string LastModifyUserId { get; set; }
         public DateTime? DeleteTime { get; set; }
         public string DeleteUserId { get; set; }
-        public List<FlowNodeEntity> Nodes { set; get; }
-        public List<FlowLineEntity> Lines { set; get; }
-        public List<FlowAreaEntity> Areas { set; get; }
+        [NotMapped]
+        public string Codes { set; get; }
+        [NotMapped]
+        public int InitNum { set; get; }
+        [NotMapped]
+        public List<FlowVersionEntity> flowVersions { set; get; }
     }
 }
