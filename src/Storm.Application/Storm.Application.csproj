@@ -60,6 +60,7 @@
     <Compile Include="SystemSecurity\FilterIPApp.cs" />
     <Compile Include="SystemSecurity\LogApp.cs" />
     <Compile Include="WFManage\FlowApp.cs" />
+    <Compile Include="WFManage\FormApp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Code\Storm.Code.csproj">

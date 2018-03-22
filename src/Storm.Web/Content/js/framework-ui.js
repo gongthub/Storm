@@ -568,3 +568,66 @@ $.fn.dataGrid = function (options) {
     };
     $element.jqGrid(options);
 };
+$.fn.dataGridMultiSelect = function (options) {
+    var defaults = {
+        datatype: "json",
+        autowidth: true,
+        rownumbers: true,
+        shrinkToFit: false,
+        gridview: true,
+        multiselect: true,
+        multiboxonly: true
+    };
+    var options = $.extend(defaults, options);
+    var $element = $(this);
+    options["onSelectRow"] = function (rowid) {
+        var length = $(this).jqGrid("getGridParam", "selrow").length;
+        var $operate = $(".operate");
+        if (length > 0) {
+            $operate.animate({ "left": 0 }, 200);
+        } else {
+            $operate.animate({ "left": '-100.1%' }, 200);
+        }
+        $operate.find('.close').click(function () {
+            $operate.animate({ "left": '-100.1%' }, 200);
+        })
+    };
+    $element.jqGrid(options);
+};
+$.fn.dataGridSimpleSelect = function (options) {
+    var defaults = {
+        datatype: "json",
+        autowidth: true,
+        rownumbers: true,
+        shrinkToFit: false,
+        gridview: true,
+        multiselect: true,
+        multiboxonly: true,
+        gridComplete: hideSelectAll,
+        beforeSelectRow: beforeSelectRow
+    };
+    var options = $.extend(defaults, options);
+    var $element = $(this);
+    options["onSelectRow"] = function (rowid) {
+        var length = $(this).jqGrid("getGridParam", "selrow").length;
+        var $operate = $(".operate");
+        if (length > 0) {
+            $operate.animate({ "left": 0 }, 200);
+        } else {
+            $operate.animate({ "left": '-100.1%' }, 200);
+        }
+        $operate.find('.close').click(function () {
+            $operate.animate({ "left": '-100.1%' }, 200);
+        })
+    };
+    $element.jqGrid(options);
+};
+function hideSelectAll() {
+    $("#jqgh_" + this.id + "_cb").hide();
+    return (true);
+}
+
+function beforeSelectRow() {
+    $("#table_mycars").jqGrid('resetSelection');
+    return (true);
+}

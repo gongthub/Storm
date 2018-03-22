@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<div style="padding-top: 20px; margin-right: 20px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">名称</th>
+            <td class="formValue">
+                <input id="txtName" name="Name" type="text" class="form-control required" placeholder="请输入名称" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">默认值</th>
+            <td class="formValue">
+                <div class="input-group">
+                    <input type="text" id="txtDefaultValue" name="DefaultValue" class="form-control required" placeholder="请输入默认值" aria-describedby="spselect" />
+                    <span class="input-group-addon" id="spselect" style="cursor:pointer;" onclick="selDefault()">选择</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">宽度</th>
+            <td class="formValue">
+                <input id="txtWidth" name="Width" type="number" class="form-control required" placeholder="请输入宽度" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">
+                最大字符数
+            </th>
+            <td class="formValue">
+                <input id="txtMaxLength" name="MaxLength" type="number" class="form-control required" placeholder="请输入最大字符数" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var oNode = null, thePlugins = 'formtext';
+    var attJSON = parent.formattributeJSON;
+    $(function () {
+        if (UE.plugins[thePlugins].editdom) {
+            oNode = UE.plugins[thePlugins].editdom;
+        }
+        if (oNode) {
+            $text = $(oNode);
+            $("#txtDefaultValue").val(RoadUI.Core.decodeUri($text.attr('defaultvalue') || ""));
+            if ($text.attr('width')) {
+                var widthStr = $text.attr('width');
+                widthStr = widthStr.replace("px", "");
+                $("#txtWidth").val(widthStr);
+            }
+            $("#txtMaxLength").val($text.attr('maxlength'));
+            $("#txtName").val($text.attr('value'));
+        }
+    });
+
+    dialog.oncancel = function () {
+        if (UE.plugins[thePlugins].editdom) {
+            delete UE.plugins[thePlugins].editdom;
+        }
+    };
+    dialog.onok = function () {
+        var timestamp = Date.parse(new Date());
+        var id = "txt_flow_" + timestamp;
+        var name = $("#txtName").val();
+        var width = $("#txtWidth").val();
+        var defaultvalue = $("#txtDefaultValue").val();
+        var maxlength = $("#txtMaxLength").val();
+
+        var html = '<input type="text" id="' + id + '" type1="flow_text" class="flowformcontrol" value="' + name + '" ';
+        if (width) {
+            html += ' width="' + width + 'px" ';
+        } else {
+            html += ' width="120px;" ';
+        }
+
+        html += ' defaultvalue="' + encodeURI(defaultvalue) + '" ';
+        if (parseInt(maxlength) > 0) {
+            html += 'maxlength="' + maxlength + '" ';
+        }
+        html += '/>';
+        if (oNode) {
+            $(oNode).after(html);
+            domUtils.remove(oNode, false);
+        }
+        else {
+            editor.execCommand('insertHtml', html);
+        }
+        delete UE.plugins[thePlugins].editdom;
+    }
+    function selDefault() {
+        top.layer.open({
+            id: "ControlDefaultValue",
+            type: 2,
+            shade: 0.3,
+            title: "选择默认选项",
+            fix: false,
+            area: ["700px", "500px"],
+            content: "/WFManage/CustomForm/DefaultProgram",
+            btn: ['确认', '关闭'],
+            btnclass: ['btn btn-primary', 'btn btn-danger'],
+            yes: function () {
+
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+</script>

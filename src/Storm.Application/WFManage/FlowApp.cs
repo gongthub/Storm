@@ -165,6 +165,22 @@ namespace Storm.Application.WFManage
                             {
                                 flowNode.TypeName = itemnodeitem.Value.ToString();
                             }
+                            if (itemnodeitem.Key == "steptype")
+                            {
+                                flowNode.StepType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "rejecttype")
+                            {
+                                flowNode.RejectType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "reviewertype")
+                            {
+                                flowNode.ReviewerType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "messagetype")
+                            {
+                                flowNode.MessageType = (int)itemnodeitem.Value;
+                            }
                         }
                     }
                     flowVersionEntity.Nodes.Add(flowNode);
@@ -206,6 +222,10 @@ namespace Storm.Application.WFManage
                             if (itemnodeitem.Key == "type")
                             {
                                 flowLine.TypeName = itemnodeitem.Value.ToString();
+                            }
+                            if (itemnodeitem.Key == "strategiestype")
+                            {
+                                flowLine.PlotType = (int)itemnodeitem.Value;
                             }
                         }
                     }

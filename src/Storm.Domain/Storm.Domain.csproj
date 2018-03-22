@@ -46,6 +46,8 @@
     <Compile Include="Entity\WFManage\FlowLineEntity.cs" />
     <Compile Include="Entity\WFManage\FlowNodeEntity.cs" />
     <Compile Include="Entity\WFManage\FlowVersionEntity.cs" />
+    <Compile Include="Entity\WFManage\FormControlEntity.cs" />
+    <Compile Include="Entity\WFManage\FormEntity.cs" />
     <Compile Include="Entity\WFManage\GooFlowEntity.cs" />
     <Compile Include="Infrastructure\ICreationAudited.cs" />
     <Compile Include="Infrastructure\IDeleteAudited.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Infrastructure\IModificationAudited.cs" />
     <Compile Include="IRepository\WFManage\IFlowRepository.cs" />
     <Compile Include="IRepository\WFManage\IFlowVersionRepository.cs" />
+    <Compile Include="IRepository\WFManage\IFormRepository.cs" />
     <Compile Include="ViewModel\AuthorizeActionModel.cs" />
     <Compile Include="Entity\SystemManage\AreaEntity.cs" />
     <Compile Include="Entity\SystemManage\ItemsDetailEntity.cs" />

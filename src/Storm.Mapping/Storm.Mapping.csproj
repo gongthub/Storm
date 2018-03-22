@@ -70,6 +70,8 @@
     <Compile Include="WFManage\FlowMap.cs" />
     <Compile Include="WFManage\FlowNodeMap.cs" />
     <Compile Include="WFManage\FlowVersionMap.cs" />
+    <Compile Include="WFManage\FormControlMap.cs" />
+    <Compile Include="WFManage\FormMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Domain\Storm.Domain.csproj">

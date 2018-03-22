@@ -92,22 +92,31 @@
         $(".comflowtxt").change(function () {
             var focNode = myflowdesign.$focus;
             var focmodel = myflowdesign.$nodeData[focNode];
-            switch (this.name) {
-                case "selStepType":
-                    focmodel.steptype = this.value;
-                    break;
-                case "selRejectType":
-                    focmodel.rejecttype = this.value;
-                    break;
-                case "selReviewerType":
-                    focmodel.reviewertype = this.value;
-                    break;
-                case "selMessageType":
-                    focmodel.messagetype = this.value;
-                    break;
-                case "selStrategiesType":
-                    focmodel.strategiestype = this.value;
-                    break;
+            if (focmodel != null && focmodel != undefined) {
+                switch (this.name) {
+                    case "selStepType":
+                        focmodel.steptype = this.value;
+                        break;
+                    case "selRejectType":
+                        focmodel.rejecttype = this.value;
+                        break;
+                    case "selReviewerType":
+                        focmodel.reviewertype = this.value;
+                        break;
+                    case "selMessageType":
+                        focmodel.messagetype = this.value;
+                        break;
+                }
+            }
+
+            var focLine = myflowdesign.$focus;
+            var foclinemodel = myflowdesign.$lineData[focLine];
+            if (foclinemodel != null && foclinemodel != undefined) {
+                switch (this.name) {
+                    case "selStrategiesType":
+                        foclinemodel.strategiestype = this.value;
+                        break;
+                }
             }
         });
         initControl();
@@ -146,15 +155,23 @@
             if (objto != null && objto != undefined) {
                 $("#txtLineTo").val(objto.name);
             }
+            if (obj.strategiestype != null && obj.strategiestype != undefined)
+                $("#selStrategiesType").val(obj.strategiestype).trigger("change").change();
         } else if (model == "node") {
             obj = e.$nodeData[id];
             $("#txtNodeName").val(obj.name);
             $("#txtNodeLeft").val(obj.left);
             $("#txtNodeTop").val(obj.top);
             $("#txtNodeWidth").val(obj.width);
-            $("#txtNodeHeight").val(obj.height); 
+            $("#txtNodeHeight").val(obj.height);
             if (obj.steptype != null && obj.steptype != undefined)
                 $("#selStepType").val(obj.steptype).trigger("change").change();
+            if (obj.rejecttype != null && obj.rejecttype != undefined)
+                $("#selRejectType").val(obj.rejecttype).trigger("change").change();
+            if (obj.reviewertype != null && obj.reviewertype != undefined)
+                $("#selReviewerType").val(obj.reviewertype).trigger("change").change();
+            if (obj.messagetype != null && obj.messagetype != undefined)
+                $("#selMessageType").val(obj.messagetype).trigger("change").change();
 
         }
         return true;
@@ -236,7 +253,11 @@
         $("#txtNodeTop").val('');
         $("#txtNodeWidth").val('');
         $("#txtNodeHeight").val('');
-        $("#selStepType").val(0).trigger("change").change();
+        $("#selStepType").val(0).trigger("change");
+        $("#selRejectType").val(0).trigger("change");
+        $("#selReviewerType").val(0).trigger("change");
+        $("#selMessageType").val(0).trigger("change");
+        $("#selStrategiesType").val(0).trigger("change");
     }
 </script>
 <form class="myForm" id="propertyForm">
@@ -312,7 +333,7 @@
                 <tr>
                     <td class="th">提醒方式：</td>
                     <td>
-                        <select id="selMessageType" name="selMessageType" class="form-control">
+                        <select id="selMessageType" name="selMessageType" class="form-control comflowtxt">
                             <option value="0">==请选择==</option>
                         </select>
                     </td>
@@ -341,7 +362,7 @@
                 <tr>
                     <td class="th">类型：</td>
                     <td>
-                        <select id="selStrategiesType" name="selStrategiesType" class="form-control">
+                        <select id="selStrategiesType" name="selStrategiesType" class="form-control comflowtxt">
                             <option value="0">==请选择==</option>
                         </select>
                     </td>

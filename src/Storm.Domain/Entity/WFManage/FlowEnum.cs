@@ -65,4 +65,42 @@ namespace Storm.Domain.Entity.WFManage
         [Description("SQL脚本")]
         Sql = 2
     }
+    /// <summary>
+    /// 消息提醒类型
+    /// </summary>
+    public enum FormDefaultProgram
+    {
+        [Description("当前步骤用户ID")]
+        StepUserID = 1,
+        [Description("当前步骤用户姓名")]
+        StepUserName = 2,
+        [Description("当前步骤用户部门ID")]
+        StepUserDeptID = 3,
+        [Description("当前步骤用户部门名称")]
+        StepUserDeptName = 4,
+        [Description("流程申请人ID")]
+        ApplyUserID = 5,
+        [Description("流程申请人姓名")]
+        ApplyUserName = 6,
+        [Description("流程申请人部门ID")]
+        ApplyUserDeptID = 7,
+        [Description("流程申请人部门名称")]
+        ApplyUserDeptName = 8,
+        [Description("短日期格式(yyyy-MM-dd)")]
+        ShortDate = 9,
+        [Description("长日期格式(yyyy年MM月dd日)")]
+        LongDate = 10,
+        [Description("短时间格式(HH:mm)")]
+        ShortDateTime = 11,
+        [Description("长时间格式(HH时mm分)")]
+        LongDateTime = 12,
+        [Description("短日期时间格式(yyyy-MM-dd HH:mm)")]
+        ShortDateAndDateTime = 13,
+        [Description("长日期时间格式(yyyy年MM月dd日 HH时mm分)")]
+        LongDateAndDateTime = 14,
+        [Description("当前流程名称")]
+        FlowName = 15,
+        [Description("当前步骤名称")]
+        StepName = 16
+    }
 }
