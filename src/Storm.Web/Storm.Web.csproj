@@ -150,6 +150,7 @@
     <Compile Include="Areas\SystemSecurity\Controllers\LogController.cs" />
     <Compile Include="Areas\SystemSecurity\Controllers\ServerMonitoringController.cs" />
     <Compile Include="Areas\SystemSecurity\SystemSecurityAreaRegistration.cs" />
+    <Compile Include="Areas\WFManage\Controllers\CustomControlController.cs" />
     <Compile Include="Areas\WFManage\Controllers\CustomFormController.cs" />
     <Compile Include="Areas\WFManage\Controllers\FlowController.cs" />
     <Compile Include="Areas\WFManage\WFManageAreaRegistration.cs" />
@@ -940,13 +941,13 @@
     <Content Include="Content\js\ueditor\third-party\video-js\font\vjs.woff" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\WFManage\Views\CustomForm\TextControl.cshtml" />
+    <Content Include="Areas\WFManage\Views\CustomControl\TextControl.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_FlowForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\WFManage\Views\CustomForm\DefaultProgram.cshtml" />
+    <Content Include="Areas\WFManage\Views\CustomControl\DefaultProgram.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

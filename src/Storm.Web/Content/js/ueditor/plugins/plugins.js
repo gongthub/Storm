@@ -6,7 +6,7 @@ UE.plugins['formtext'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: '/WFManage/CustomForm/TextControl',
+                iframeUrl: '/WFManage/CustomControl/TextControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '文本框',
