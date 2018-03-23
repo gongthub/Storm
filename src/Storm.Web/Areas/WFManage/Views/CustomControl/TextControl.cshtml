@@ -14,7 +14,7 @@
             <th class="formTitle">默认值</th>
             <td class="formValue">
                 <div class="input-group">
-                    <input type="text" id="txtDefaultValue" name="DefaultValue" class="form-control required" placeholder="请输入默认值" aria-describedby="spselect" />
+                    <input type="text" id="txtDefaultValue" name="DefaultValue" valuetype="0" class="form-control required" placeholder="请输入默认值" aria-describedby="spselect" />
                     <span class="input-group-addon" id="spselect" style="cursor:pointer;" onclick="selDefault()">选择</span>
                 </div>
             </td>
@@ -46,7 +46,6 @@
         </tr>
     </table>
 </div>
-
 <script type="text/javascript">
     var oNode = null, thePlugins = 'formtext';
     var attJSON = parent.formattributeJSON;
@@ -64,14 +63,21 @@
                 $("#txtWidth").val(widthStr);
             }
             $("#txtMaxLength").val($text.attr('maxlength'));
-            $("#txtName").val($text.attr('value'));
+            $("#txtName").val($text.attr('name'));
             if ($text.attr('readonly')) {
                 $("#selIsReadonly").val(1);
             } else {
                 $("#selIsReadonly").val(0);
             }
-
+            if ($text.attr('valuetype')) {
+                $("#txtDefaultValue").attr("valuetype", $text.attr('valuetype'));
+            } else {
+                $("#txtDefaultValue").attr("valuetype", 0);
+            }
         }
+        $("#txtDefaultValue").change(function () {
+            $("#txtDefaultValue").attr("valuetype", 0);
+        });
     });
 
     dialog.oncancel = function () {
@@ -85,30 +91,40 @@
         var name = $("#txtName").val();
         var width = $("#txtWidth").val();
         var defaultvalue = $("#txtDefaultValue").val();
+        var defaultValueType = $("#txtDefaultValue").attr("valuetype");
         var maxlength = $("#txtMaxLength").val();
         var isreadonly = $("#selIsReadonly").val();
 
-        var html = '<input type="text" id="' + id + '" type1="flow_text" class="flowformcontrol" value="' + name + '" ';
+        var otext = document.createElement('input');
+        otext.id = id;
+        $(otext).attr("type", "text");
+        $(otext).attr("type1", "flow_text");
+        $(otext).attr("class", "flowformcontrol");
+        $(otext).attr("name", name);
+        $(otext).attr("value", name);
         if (width) {
-            html += '  style="width:' + width + 'px" ';
+            $(otext).css("width", width + "px");
         } else {
-            html += '   style="width:120px;" ';
+            $(otext).css("width", "120px");
         }
         if (isreadonly == 1) {
-            html += ' readonly ';
+            $(otext).attr("readonly", "readonly");
         }
-
-        html += ' defaultvalue="' + encodeURI(defaultvalue) + '" ';
+        if (defaultValueType) {
+            $(otext).attr("valuetype", defaultValueType);
+        } else {
+            $(otext).attr("valuetype", 0);
+        }
+        $(otext).attr("defaultvalue", encodeURI(defaultvalue));
         if (parseInt(maxlength) > 0) {
-            html += 'maxlength="' + maxlength + '" ';
+            $(otext).attr("maxlength", maxlength);
         }
-        html += '/>';
         if (oNode) {
-            $(oNode).after(html);
+            $(oNode).after(otext.outerHTML);
             domUtils.remove(oNode, false);
         }
         else {
-            editor.execCommand('insertHtml', html);
+            editor.execCommand('insertHtml', otext.outerHTML);
         }
         delete UE.plugins[thePlugins].editdom;
     }
@@ -121,6 +137,11 @@
             height: "500px",
             callBack: function (iframeId) {
                 var selItem = top.frames[iframeId].getSelDefaut();
+                if (selItem != null && selItem.Value != null) {
+                    $("#txtDefaultValue").attr("valuetype", selItem.Value);
+                } else {
+                    $("#txtDefaultValue").attr("valuetype", 0);
+                }
                 $("#txtDefaultValue").val(selItem.Desc);
             }
         });

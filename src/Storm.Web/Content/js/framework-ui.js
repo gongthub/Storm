@@ -522,6 +522,9 @@ $.fn.bindSelect = function (options) {
                     }
                     $("#select2-" + $element.attr('id') + "-container").html($(this).find("option:selected").text().replace(/　　/g, ''));
                 });
+                if (options.callBack != null && options.callBack != undefined) {
+                    options.callBack();
+                }
             }
         });
     } else {

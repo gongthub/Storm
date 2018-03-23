@@ -61,6 +61,7 @@
     <Compile Include="SystemSecurity\LogApp.cs" />
     <Compile Include="WFManage\FlowApp.cs" />
     <Compile Include="WFManage\FormApp.cs" />
+    <Compile Include="WFManage\WFItemApp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Code\Storm.Code.csproj">

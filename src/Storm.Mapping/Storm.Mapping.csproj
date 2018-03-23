@@ -72,6 +72,8 @@
     <Compile Include="WFManage\FlowVersionMap.cs" />
     <Compile Include="WFManage\FormControlMap.cs" />
     <Compile Include="WFManage\FormMap.cs" />
+    <Compile Include="WFManage\WFItemDetailMap.cs" />
+    <Compile Include="WFManage\WFItemMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Domain\Storm.Domain.csproj">

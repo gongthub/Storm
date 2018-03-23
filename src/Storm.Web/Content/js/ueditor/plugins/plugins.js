@@ -81,7 +81,7 @@ UE.plugins['formtextarea'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/textarea.aspx',
+                iframeUrl: '/WFManage/CustomControl/TextAreaControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '文本域',
@@ -148,81 +148,6 @@ UE.plugins['formtextarea'] = function ()
         }
     });
 };
-//html编辑器
-UE.plugins['formhtml'] = function ()
-{
-    var me = this, thePlugins = 'formhtml';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/html.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: 'HTML编辑器',
-                cssRules: "width:500px;height:260px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>HTML编辑器: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
 //单选按钮组
 UE.plugins['formradio'] = function ()
 {
@@ -231,7 +156,7 @@ UE.plugins['formradio'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/radio.aspx',
+                iframeUrl: '/WFManage/CustomControl/RedioControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '单选按钮组',
@@ -306,7 +231,7 @@ UE.plugins['formcheckbox'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/checkbox.aspx',
+                iframeUrl: '/WFManage/CustomControl/CheckBoxControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '复选按钮组',
@@ -373,231 +298,6 @@ UE.plugins['formcheckbox'] = function ()
         }
     });
 };
-//组织机构选择框
-UE.plugins['formorg'] = function ()
-{
-    var me = this, thePlugins = 'formorg';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/org.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '组织机构选择框',
-                cssRules: "width:500px;height:280px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>组织机构选择框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//数据字典选择框
-UE.plugins['formdictionary'] = function ()
-{
-    var me = this, thePlugins = 'formdictionary';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/dictionary.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '左右选择框',
-                cssRules: "width:600px;height:350px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_dict")
-        {
-            var html = popup.formatHtml('<nobr>数据字典选择框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//日期时间选择
-UE.plugins['formdatetime'] = function ()
-{
-    var me = this, thePlugins = 'formdatetime';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/datetime.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '日期时间选择',
-                cssRules: "width:600px;height:300px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>日期时间选择: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
 //隐藏域
 UE.plugins['formhidden'] = function ()
 {
@@ -606,7 +306,7 @@ UE.plugins['formhidden'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/hidden.aspx',
+                iframeUrl: '/WFManage/CustomControl/HiddenControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '隐藏域',
@@ -673,18 +373,210 @@ UE.plugins['formhidden'] = function ()
         }
     });
 };
+//Label标签
+UE.plugins['formlabel'] = function () {
+    var me = this, thePlugins = 'formlabel';
+    me.commands[thePlugins] = {
+        execCommand: function () {
+            var dialog = new UE.ui.Dialog({
+                iframeUrl: '/WFManage/CustomControl/LableControl',
+                name: thePlugins + '_' + (new Date().valueOf()),
+                editor: this,
+                title: 'Label标签',
+                cssRules: "width:600px;height:300px;",
+                buttons: [
+				{
+				    className: 'edui-okbutton',
+				    label: '确定',
+				    onclick: function () {
+				        dialog.close(true);
+				    }
+				},
+				{
+				    className: 'edui-cancelbutton',
+				    label: '取消',
+				    onclick: function () {
+				        dialog.close(false);
+				    }
+				}]
+            });
+            dialog.render();
+            dialog.open();
+        }
+    };
+    var popup = new baidu.editor.ui.Popup({
+        editor: this,
+        content: '',
+        className: 'edui-bubble',
+        _edittext: function () {
+            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
+            me.execCommand(thePlugins);
+            this.hide();
+        },
+        _delete: function () {
+            if (window.confirm('确认删除该控件吗？')) {
+                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
+            }
+            this.hide();
+        }
+    });
+    popup.render();
+    me.addListener('mouseover', function (t, evt) {
+        evt = evt || window.event;
+        var el = evt.target || evt.srcElement;
+        var type1 = el.getAttribute('type1');
+        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', '')) {
+            var html = popup.formatHtml('<nobr>Label标签: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            if (html) {
+                popup.getDom('content').innerHTML = html;
+                popup.anchorEl = el;
+                popup.showAnchor(popup.anchorEl);
+            } else {
+                popup.hide();
+            }
+        }
+    });
+};
 //下拉列表框
-UE.plugins['formselect'] = function ()
-{
+UE.plugins['formselect'] = function () {
     var me = this, thePlugins = 'formselect';
+    me.commands[thePlugins] = {
+        execCommand: function () {
+            var dialog = new UE.ui.Dialog({
+                iframeUrl: '/WFManage/CustomControl/SelectControl',
+                name: thePlugins + '_' + (new Date().valueOf()),
+                editor: this,
+                title: '下拉列表框',
+                cssRules: "width:600px;height:360px;",
+                buttons: [
+				{
+				    className: 'edui-okbutton',
+				    label: '确定',
+				    onclick: function () {
+				        dialog.close(true);
+				    }
+				},
+				{
+				    className: 'edui-cancelbutton',
+				    label: '取消',
+				    onclick: function () {
+				        dialog.close(false);
+				    }
+				}]
+            });
+            dialog.render();
+            dialog.open();
+        }
+    };
+    var popup = new baidu.editor.ui.Popup({
+        editor: this,
+        content: '',
+        className: 'edui-bubble',
+        _edittext: function () {
+            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
+            me.execCommand(thePlugins);
+            this.hide();
+        },
+        _delete: function () {
+            if (window.confirm('确认删除该控件吗？')) {
+                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
+            }
+            this.hide();
+        }
+    });
+    popup.render();
+    me.addListener('mouseover', function (t, evt) {
+        evt = evt || window.event;
+        var el = evt.target || evt.srcElement;
+        var type1 = el.getAttribute('type1');
+        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', '')) {
+            var html = popup.formatHtml('<nobr>下拉列表框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            if (html) {
+                popup.getDom('content').innerHTML = html;
+                popup.anchorEl = el;
+                popup.showAnchor(popup.anchorEl);
+            } else {
+                popup.hide();
+            }
+        }
+    });
+};
+//combpx控件
+UE.plugins['formcombox'] = function () {
+    var me = this, thePlugins = 'formcombox';
+    me.commands[thePlugins] = {
+        execCommand: function () {
+            var dialog = new UE.ui.Dialog({
+                iframeUrl: '/WFManage/CustomControl/ComboxControl',
+                name: thePlugins + '_' + (new Date().valueOf()),
+                editor: this,
+                title: '下拉组合框',
+                cssRules: "width:600px;height:360px;",
+                buttons: [
+				{
+				    className: 'edui-okbutton',
+				    label: '确定',
+				    onclick: function () {
+				        dialog.close(true);
+				    }
+				},
+				{
+				    className: 'edui-cancelbutton',
+				    label: '取消',
+				    onclick: function () {
+				        dialog.close(false);
+				    }
+				}]
+            });
+            dialog.render();
+            dialog.open();
+        }
+    };
+    var popup = new baidu.editor.ui.Popup({
+        editor: this,
+        content: '',
+        className: 'edui-bubble',
+        _edittext: function () {
+            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
+            me.execCommand(thePlugins);
+            this.hide();
+        },
+        _delete: function () {
+            if (window.confirm('确认删除该控件吗？')) {
+                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
+            }
+            this.hide();
+        }
+    });
+    popup.render();
+    me.addListener('mouseover', function (t, evt) {
+        evt = evt || window.event;
+        var el = evt.target || evt.srcElement;
+        var type1 = el.getAttribute('type1');
+        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', '')) {
+            var html = popup.formatHtml('<nobr>下拉组合框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            if (html) {
+                popup.getDom('content').innerHTML = html;
+                popup.anchorEl = el;
+                popup.showAnchor(popup.anchorEl);
+            } else {
+                popup.hide();
+            }
+        }
+    });
+};
+//组织机构选择框
+UE.plugins['formorg'] = function ()
+{
+    var me = this, thePlugins = 'formorg';
     me.commands[thePlugins] = {
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/select.aspx',
+                iframeUrl: '/WFManage/CustomControl/OrgControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
-                title: '下拉列表框',
+                title: '组织机构选择框',
                 cssRules: "width:600px;height:360px;",
                 buttons: [
 				{
@@ -735,7 +627,157 @@ UE.plugins['formselect'] = function ()
         var type1 = el.getAttribute('type1');
         if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
         {
-            var html = popup.formatHtml('<nobr>下拉列表框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            var html = popup.formatHtml('<nobr>组织机构选择框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            if (html)
+            {
+                popup.getDom('content').innerHTML = html;
+                popup.anchorEl = el;
+                popup.showAnchor(popup.anchorEl);
+            } else
+            {
+                popup.hide();
+            }
+        }
+    });
+};
+//日期选择
+UE.plugins['formdate'] = function ()
+{
+    var me = this, thePlugins = 'formdate';
+    me.commands[thePlugins] = {
+        execCommand: function ()
+        {
+            var dialog = new UE.ui.Dialog({
+                iframeUrl: '/WFManage/CustomControl/DateControl',
+                name: thePlugins + '_' + (new Date().valueOf()),
+                editor: this,
+                title: '日期选择',
+                cssRules: "width:600px;height:360px;",
+                buttons: [
+				{
+				    className: 'edui-okbutton',
+				    label: '确定',
+				    onclick: function ()
+				    {
+				        dialog.close(true);
+				    }
+				},
+				{
+				    className: 'edui-cancelbutton',
+				    label: '取消',
+				    onclick: function ()
+				    {
+				        dialog.close(false);
+				    }
+				}]
+            });
+            dialog.render();
+            dialog.open();
+        }
+    };
+    var popup = new baidu.editor.ui.Popup({
+        editor: this,
+        content: '',
+        className: 'edui-bubble',
+        _edittext: function ()
+        {
+            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
+            me.execCommand(thePlugins);
+            this.hide();
+        },
+        _delete: function ()
+        {
+            if (window.confirm('确认删除该控件吗？'))
+            {
+                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
+            }
+            this.hide();
+        }
+    });
+    popup.render();
+    me.addListener('mouseover', function (t, evt)
+    {
+        evt = evt || window.event;
+        var el = evt.target || evt.srcElement;
+        var type1 = el.getAttribute('type1');
+        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
+        {
+            var html = popup.formatHtml('<nobr>日期时间选择: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
+            if (html)
+            {
+                popup.getDom('content').innerHTML = html;
+                popup.anchorEl = el;
+                popup.showAnchor(popup.anchorEl);
+            } else
+            {
+                popup.hide();
+            }
+        }
+    });
+};
+//日期时间选择
+UE.plugins['formdatetime'] = function ()
+{
+    var me = this, thePlugins = 'formdatetime';
+    me.commands[thePlugins] = {
+        execCommand: function ()
+        {
+            var dialog = new UE.ui.Dialog({
+                iframeUrl: '/WFManage/CustomControl/DateTimeControl',
+                name: thePlugins + '_' + (new Date().valueOf()),
+                editor: this,
+                title: '日期时间选择',
+                cssRules: "width:600px;height:360px;",
+                buttons: [
+				{
+				    className: 'edui-okbutton',
+				    label: '确定',
+				    onclick: function ()
+				    {
+				        dialog.close(true);
+				    }
+				},
+				{
+				    className: 'edui-cancelbutton',
+				    label: '取消',
+				    onclick: function ()
+				    {
+				        dialog.close(false);
+				    }
+				}]
+            });
+            dialog.render();
+            dialog.open();
+        }
+    };
+    var popup = new baidu.editor.ui.Popup({
+        editor: this,
+        content: '',
+        className: 'edui-bubble',
+        _edittext: function ()
+        {
+            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
+            me.execCommand(thePlugins);
+            this.hide();
+        },
+        _delete: function ()
+        {
+            if (window.confirm('确认删除该控件吗？'))
+            {
+                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
+            }
+            this.hide();
+        }
+    });
+    popup.render();
+    me.addListener('mouseover', function (t, evt)
+    {
+        evt = evt || window.event;
+        var el = evt.target || evt.srcElement;
+        var type1 = el.getAttribute('type1');
+        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
+        {
+            var html = popup.formatHtml('<nobr>日期时间选择: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
             if (html)
             {
                 popup.getDom('content').innerHTML = html;
@@ -756,11 +798,11 @@ UE.plugins['formfiles'] = function ()
         execCommand: function ()
         {
             var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/files.aspx',
+                iframeUrl: '/WFManage/CustomControl/FilesControl',
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '附件上传',
-                cssRules: "width:500px;height:280px;",
+                cssRules: "width:600px;height:360px;",
                 buttons: [
 				{
 				    className: 'edui-okbutton',
@@ -811,456 +853,6 @@ UE.plugins['formfiles'] = function ()
         if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
         {
             var html = popup.formatHtml('<nobr>附件上传: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//子表
-UE.plugins['formsubtable'] = function ()
-{
-    var me = this, thePlugins = 'formsubtable';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/subtable.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '子表',
-                cssRules: "width:980px;height:480px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>子表: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//Label标签
-UE.plugins['formlabel'] = function ()
-{
-    var me = this, thePlugins = 'formlabel';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/label.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: 'Label标签',
-                cssRules: "width:600px;height:300px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>Label标签: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//按钮
-UE.plugins['formbutton'] = function ()
-{
-    var me = this, thePlugins = 'formbutton';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/button.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '按钮',
-                cssRules: "width:600px;height:300px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>按钮: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//grid数据表格
-UE.plugins['formgrid'] = function ()
-{
-    var me = this, thePlugins = 'formgrid';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/grid.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '数据表格',
-                cssRules: "width:600px;height:300px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>数据表格: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//combpx控件
-UE.plugins['formcombox'] = function ()
-{
-    var me = this, thePlugins = 'formcombox';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/combox.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '下拉组合框',
-                cssRules: "width:600px;height:450px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>下拉组合框: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
-            if (html)
-            {
-                popup.getDom('content').innerHTML = html;
-                popup.anchorEl = el;
-                popup.showAnchor(popup.anchorEl);
-            } else
-            {
-                popup.hide();
-            }
-        }
-    });
-};
-//计算字段
-UE.plugins['formsumtext'] = function ()
-{
-    var me = this, thePlugins = 'formsumtext';
-    me.commands[thePlugins] = {
-        execCommand: function ()
-        {
-            var dialog = new UE.ui.Dialog({
-                iframeUrl: this.options.UEDITOR_HOME_URL + 'plugins/dialogs/sumtext.aspx',
-                name: thePlugins + '_' + (new Date().valueOf()),
-                editor: this,
-                title: '计算字段',
-                cssRules: "width:600px;height:300px;",
-                buttons: [
-				{
-				    className: 'edui-okbutton',
-				    label: '确定',
-				    onclick: function ()
-				    {
-				        dialog.close(true);
-				    }
-				},
-				{
-				    className: 'edui-cancelbutton',
-				    label: '取消',
-				    onclick: function ()
-				    {
-				        dialog.close(false);
-				    }
-				}]
-            });
-            dialog.render();
-            dialog.open();
-        }
-    };
-    var popup = new baidu.editor.ui.Popup({
-        editor: this,
-        content: '',
-        className: 'edui-bubble',
-        _edittext: function ()
-        {
-            baidu.editor.plugins[thePlugins].editdom = popup.anchorEl;
-            me.execCommand(thePlugins);
-            this.hide();
-        },
-        _delete: function ()
-        {
-            if (window.confirm('确认删除该控件吗？'))
-            {
-                baidu.editor.dom.domUtils.remove(this.anchorEl, false);
-            }
-            this.hide();
-        }
-    });
-    popup.render();
-    me.addListener('mouseover', function (t, evt)
-    {
-        evt = evt || window.event;
-        var el = evt.target || evt.srcElement;
-        var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
-        {
-            var html = popup.formatHtml('<nobr>计算字段: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
             if (html)
             {
                 popup.getDom('content').innerHTML = html;

@@ -153,6 +153,8 @@
     <Compile Include="Areas\WFManage\Controllers\CustomControlController.cs" />
     <Compile Include="Areas\WFManage\Controllers\CustomFormController.cs" />
     <Compile Include="Areas\WFManage\Controllers\FlowController.cs" />
+    <Compile Include="Areas\WFManage\Controllers\FlowDictionaryController.cs" />
+    <Compile Include="Areas\WFManage\Controllers\FlowDictionaryDetailController.cs" />
     <Compile Include="Areas\WFManage\WFManageAreaRegistration.cs" />
     <Compile Include="Content\js\ueditor\net\App_Code\Config.cs" />
     <Compile Include="Content\js\ueditor\net\App_Code\ConfigHandler.cs" />
@@ -948,6 +950,57 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\CustomControl\DefaultProgram.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\TextAreaControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\RedioControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionary\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionary\Form.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionary\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionaryDetail\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionaryDetail\Form.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\FlowDictionaryDetail\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\CheckBoxControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\HiddenControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\LableControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\SelectControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\ComboxControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\OrgControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\DateTimeControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\DateControl.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\CustomControl\FilesControl.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

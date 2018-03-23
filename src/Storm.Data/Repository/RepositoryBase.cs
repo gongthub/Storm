@@ -107,6 +107,68 @@ namespace Storm.Data
             entitys.ForEach(m => dbcontext.Entry<TEntity>(m).State = EntityState.Deleted);
             return dbTransaction == null ? this.Commit() : 0;
         }
+        public int DeleteById<TEntity>(TEntity entity) where TEntity : class
+        {
+            RemoveHoldingEntityInContext(entity);
+            dbcontext.Set<TEntity>().Attach(entity);
+            PropertyInfo[] props = entity.GetType().GetProperties();
+            foreach (PropertyInfo prop in props)
+            {
+                if (prop.Name.ToLower() == "DeleteMark".ToLower())
+                {
+                    dbcontext.Entry(entity).Property(prop.Name).CurrentValue = true;
+                    dbcontext.Entry(entity).Property(prop.Name).IsModified = true;
+                }
+                if (prop.Name.ToLower() == "DeleteUserId".ToLower())
+                {
+                    var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                    if (LoginInfo != null)
+                    {
+                        dbcontext.Entry(entity).Property(prop.Name).CurrentValue = LoginInfo.UserId;
+                        dbcontext.Entry(entity).Property(prop.Name).IsModified = true;
+                    }
+                }
+                if (prop.Name.ToLower() == "DeleteTime".ToLower())
+                {
+                    dbcontext.Entry(entity).Property(prop.Name).CurrentValue = DateTime.Now;
+                    dbcontext.Entry(entity).Property(prop.Name).IsModified = true;
+                }
+            }
+            return dbTransaction == null ? this.Commit() : 0;
+        }
+        public int DeleteById<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
+        {
+            var entitys = dbcontext.Set<TEntity>().Where(predicate).ToList();
+            for (int i = 0; i < entitys.Count; i++)
+            {
+                RemoveHoldingEntityInContext(entitys[i]);
+                dbcontext.Set<TEntity>().Attach(entitys[i]);
+                PropertyInfo[] props = entitys[i].GetType().GetProperties();
+                foreach (PropertyInfo prop in props)
+                {
+                    if (prop.Name.ToLower() == "DeleteMark".ToLower())
+                    {
+                        dbcontext.Entry(entitys[i]).Property(prop.Name).CurrentValue = true;
+                        dbcontext.Entry(entitys[i]).Property(prop.Name).IsModified = true;
+                    }
+                    if (prop.Name.ToLower() == "DeleteUserId".ToLower())
+                    {
+                        var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                        if (LoginInfo != null)
+                        {
+                            dbcontext.Entry(entitys[i]).Property(prop.Name).CurrentValue = LoginInfo.UserId;
+                            dbcontext.Entry(entitys[i]).Property(prop.Name).IsModified = true;
+                        }
+                    }
+                    if (prop.Name.ToLower() == "DeleteTime".ToLower())
+                    {
+                        dbcontext.Entry(entitys[i]).Property(prop.Name).CurrentValue = DateTime.Now;
+                        dbcontext.Entry(entitys[i]).Property(prop.Name).IsModified = true;
+                    }
+                }
+            }
+            return dbTransaction == null ? this.Commit() : 0;
+        }
         public TEntity FindEntity<TEntity>(object keyValue) where TEntity : class
         {
             return dbcontext.Set<TEntity>().Find(keyValue);

@@ -56,6 +56,8 @@
     <Compile Include="WFManage\FlowRepository.cs" />
     <Compile Include="WFManage\FlowVersionRepository.cs" />
     <Compile Include="WFManage\FormRepository.cs" />
+    <Compile Include="WFManage\WFItemDetailRepository.cs" />
+    <Compile Include="WFManage\WFItemRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Code\Storm.Code.csproj">
