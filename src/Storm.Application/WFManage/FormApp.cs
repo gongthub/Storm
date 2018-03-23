@@ -74,5 +74,19 @@ namespace Storm.Application.WFManage
                 service.Insert(formEntity);
             }
         }
+
+        public void SaveDesign(string keyValue, string codes, List<FormControlEntity> formControlModels)
+        {
+            FormEntity formEntity = GetForm(keyValue);
+            if (formEntity != null && !string.IsNullOrEmpty(formEntity.Id))
+            {
+                formEntity.Codes = codes;
+                service.SaveDesign(formEntity, formControlModels);
+            }
+            else
+            {
+                throw new Exception("获取数据异常！");
+            }
+        }
     }
 }

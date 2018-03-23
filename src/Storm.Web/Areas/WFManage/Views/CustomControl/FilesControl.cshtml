@@ -11,12 +11,12 @@
             </td>
         </tr>
         <tr>
-            <th class="formTitle">默认值</th>
+            <th class="formTitle">是否多文件</th>
             <td class="formValue">
-                <div class="input-group">
-                    <input type="text" id="txtDefaultValue" name="DefaultValue" valuetype="0" class="form-control required" placeholder="请输入默认值" aria-describedby="spselect" />
-                    <span class="input-group-addon" id="spselect" style="cursor:pointer;" onclick="selDefault()">选择</span>
-                </div>
+                <select id="selIsMu" name="IsMu" class="form-control">
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
             </td>
         </tr>
         <tr>
@@ -36,23 +36,16 @@
         }
         if (oNode) {
             $text = $(oNode);
-            $("#txtDefaultValue").val(RoadUI.Core.decodeUri($text.attr('defaultvalue') || ""));
-
             var widthStr = $text.css('width');
             if (widthStr) {
                 widthStr = widthStr.replace("px", "");
                 $("#txtWidth").val(widthStr);
             }
             $("#txtName").val($text.attr('name'));
-            if ($text.attr('valuetype')) {
-                $("#txtDefaultValue").attr("valuetype", $text.attr('valuetype'));
-            } else {
-                $("#txtDefaultValue").attr("valuetype", 0);
+            if ($text.attr('isMu')) {
+                $("#selIsMu").val($text.attr('isMu')).trigger("change");
             }
         }
-        $("#txtDefaultValue").change(function () {
-            $("#txtDefaultValue").attr("valuetype", 0);
-        });
     });
 
     dialog.oncancel = function () {
@@ -65,8 +58,7 @@
         var id = "file_flow_" + timestamp;
         var name = $("#txtName").val();
         var width = $("#txtWidth").val();
-        var defaultvalue = $("#txtDefaultValue").val();
-        var defaultValueType = $("#txtDefaultValue").attr("valuetype");
+        var isMu = $("#selIsMu").val();
 
         var otext = document.createElement('input');
         otext.id = id;
@@ -80,13 +72,9 @@
         } else {
             $(otext).css("width", "120px");
         }
-        if (defaultValueType) {
-            $(otext).attr("valuetype", defaultValueType);
-        } else {
-            $(otext).attr("valuetype", 0);
+        if (isMu) {
+            $(otext).attr("isMu", isMu);
         }
-        $(otext).attr("defaultvalue", encodeURI(defaultvalue));
-
         if (oNode) {
             $(oNode).after(otext.outerHTML);
             domUtils.remove(oNode, false);
@@ -95,23 +83,5 @@
             editor.execCommand('insertHtml', otext.outerHTML);
         }
         delete UE.plugins[thePlugins].editdom;
-    }
-    function selDefault() {
-        $.modalOpen({
-            id: "ControlDefaultValue",
-            title: "选择默认选项",
-            url: "/WFManage/CustomControl/DefaultProgram",
-            width: "700px",
-            height: "500px",
-            callBack: function (iframeId) {
-                var selItem = top.frames[iframeId].getSelDefaut();
-                if (selItem != null && selItem.Value != null) {
-                    $("#txtDefaultValue").attr("valuetype", selItem.Value);
-                } else {
-                    $("#txtDefaultValue").attr("valuetype", 0);
-                }
-                $("#txtDefaultValue").val(selItem.Desc);
-            }
-        });
     }
 </script>

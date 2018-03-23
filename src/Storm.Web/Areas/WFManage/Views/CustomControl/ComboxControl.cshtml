@@ -109,6 +109,7 @@
     }
 
     function initControl() {
+        $("#selDefaultValue").select2();
         $("#selDatas").bindSelect({
             url: "/WFManage/FlowDictionary/GetTreeSelectJson"
         });

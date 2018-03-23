@@ -61,7 +61,7 @@
         }
         if (oNode) {
             $text = $(oNode);
-            $("#txtDefaultValue").val(RoadUI.Core.decodeUri($text.attr('defaultvalue') || ""));
+            $("#txtDefaultValue").val($text.attr('defaultvalue') || "");
             var widthStr = $text.css('width');
             if (widthStr) {
                 widthStr = widthStr.replace("px", "");
@@ -129,7 +129,7 @@
         } else {
             $(otextarea).attr("valuetype", 0);
         }
-        $(otextarea).attr("defaultvalue", encodeURI(defaultvalue));
+        $(otextarea).attr("defaultvalue", defaultvalue);
         if (parseInt(maxlength) > 0) {
             $(otextarea).attr("maxlength", maxlength);
         }

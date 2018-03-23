@@ -14,5 +14,7 @@ namespace Storm.Domain.Entity.WFManage
         public string FullName { set; get; }
         public int ControlType { set; get; }
         public string TypeName { set; get; }
+        public string DefaultType { set; get; }
+        public string DefaultValue { set; get; }
     }
 }

@@ -103,4 +103,34 @@ namespace Storm.Domain.Entity.WFManage
         [Description("当前步骤名称")]
         StepName = 16
     }
+    /// <summary>
+    /// 策略类型
+    /// </summary>
+    public enum FormCustomControlType
+    {
+        [Description("文本框")]
+        Text = 1,
+        [Description("文本域")]
+        Textarea = 2,
+        [Description("单选按钮组")]
+        Redio = 3,
+        [Description("复选按钮组")]
+        CheckBox = 4,
+        [Description("隐藏域")]
+        Hidden = 5,
+        [Description("Label标签")]
+        Lable= 6,
+        [Description("下拉列表框")]
+        Select = 7,
+        [Description("下拉组合框")]
+        ComBox = 8,
+        [Description("组织机构选择框")]
+        Org = 9,
+        [Description("日期选择")]
+        Date = 10,
+        [Description("日期时间选择")]
+        DateTime = 11,
+        [Description("附件上传")]
+        Files = 12
+    }
 }

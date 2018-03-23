@@ -21,7 +21,7 @@
         <tr>
             <th class="formTitle">默认值</th>
             <td class="formValue">
-                <select id="selDefaultValue" name="selDefaultValue" class="form-control required" multiple="multiple"></select>
+                <select id="selDefaultValue" name="selDefaultValue" class="form-control required" style="height:34px;" multiple="multiple"></select>
             </td>
         </tr>
         <tr>
@@ -109,6 +109,7 @@
     }
 
     function initControl() {
+        $("#selDefaultValue").select2();
         $("#selDatas").bindSelect({
             url: "/WFManage/FlowDictionary/GetTreeSelectJson"
         });

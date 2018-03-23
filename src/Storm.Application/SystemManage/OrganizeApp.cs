@@ -11,9 +11,17 @@ namespace Storm.Application.SystemManage
     {
         private IOrganizeRepository service = new OrganizeRepository();
 
-        public List<OrganizeEntity> GetList()
+        public List<OrganizeEntity> GetAllList()
         {
             return service.IQueryable().OrderBy(t => t.CreatorTime).ToList();
+        }
+        public List<OrganizeEntity> GetList()
+        {
+            return service.IQueryable(m => m.DeleteMark != true).OrderBy(t => t.CreatorTime).ToList();
+        }
+        public List<OrganizeEntity> GetEnableList()
+        {
+            return service.IQueryable(m => m.DeleteMark != true && m.EnabledMark == true).OrderBy(t => t.CreatorTime).ToList();
         }
         public OrganizeEntity GetForm(string keyValue)
         {

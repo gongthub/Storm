@@ -30,7 +30,7 @@
         }
         if (oNode) {
             $text = $(oNode);
-            $("#txtDefaultValue").val(RoadUI.Core.decodeUri($text.attr('defaultvalue') || ""));
+            $("#txtDefaultValue").val($text.attr('defaultvalue') || "");
 
             $("#txtName").val($text.attr('name'));
             if ($text.attr('valuetype')) {
@@ -68,7 +68,7 @@
         } else {
             $(otext).attr("valuetype", 0);
         }
-        $(otext).attr("defaultvalue", encodeURI(defaultvalue));
+        $(otext).attr("defaultvalue", defaultvalue);
        
         if (oNode) {
             $(oNode).after(otext.outerHTML);

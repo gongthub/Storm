@@ -133,7 +133,7 @@ UE.plugins['formtextarea'] = function ()
         evt = evt || window.event;
         var el = evt.target || evt.srcElement;
         var type1 = el.getAttribute('type1');
-        if (/input/ig.test(el.tagName) && type1 == "flow_" + thePlugins.replace('form', ''))
+        if (type1 == "flow_" + thePlugins.replace('form', ''))
         {
             var html = popup.formatHtml('<nobr>文本域: <span onclick=$$._edittext() class="edui-clickable">编辑</span>&nbsp;&nbsp;<span onclick=$$._delete() class="edui-clickable">删除</span></nobr>');
             if (html)

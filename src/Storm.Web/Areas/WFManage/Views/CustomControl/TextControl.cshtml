@@ -55,7 +55,7 @@
         }
         if (oNode) {
             $text = $(oNode);
-            $("#txtDefaultValue").val(RoadUI.Core.decodeUri($text.attr('defaultvalue') || ""));
+            $("#txtDefaultValue").val($text.attr('defaultvalue') || "");
 
             var widthStr = $text.css('width');
             if (widthStr) {
@@ -115,7 +115,7 @@
         } else {
             $(otext).attr("valuetype", 0);
         }
-        $(otext).attr("defaultvalue", encodeURI(defaultvalue));
+        $(otext).attr("defaultvalue", defaultvalue);
         if (parseInt(maxlength) > 0) {
             $(otext).attr("maxlength", maxlength);
         }

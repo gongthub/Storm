@@ -1,6 +1,7 @@
 ﻿using Storm.Application.WFManage;
 using Storm.Code;
 using Storm.Domain.Entity.WFManage;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Storm.Web.Areas.WFManage.Controllers
@@ -21,6 +22,7 @@ namespace Storm.Web.Areas.WFManage.Controllers
         public ActionResult GetFormJson(string keyValue)
         {
             var data = formApp.GetForm(keyValue);
+            data.Codes = Server.HtmlDecode(data.Codes);
             return Content(data.ToJson());
         }
 
@@ -71,7 +73,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SaveDesign(string keyValue, string codes)
         {
-            //formApp.SaveDesign(keyValue, codes);
+            List<FormControlEntity> formControlModels = new List<FormControlEntity>();
+            string formControls = Request["formControls"];
+            if (!string.IsNullOrEmpty(formControls))
+            {
+                formControlModels = formControls.ToObject<List<FormControlEntity>>();
+            }
+            formApp.SaveDesign(keyValue, codes, formControlModels);
             return Success("保存成功。");
         }
     }
