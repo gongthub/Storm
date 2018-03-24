@@ -5,6 +5,7 @@
 <script>
     var keyValue = $.request("keyValue");
     $(function () {
+        initControl();
         if (!!keyValue) {
             $.ajax({
                 url: "/WFManage/Flow/GetFormJson",
@@ -13,9 +14,14 @@
                 async: false,
                 success: function (data) {
                     $("#form1").formSerialize(data);
+                    initFormId();
+                    $("#FormId").val(data.FormId).trigger("change");
                 }
             });
         }
+        $("#FormType").change(function () {
+            initFormId();
+        });
     });
     function submitForm() {
         if (!$('#form1').formValid()) {
@@ -29,11 +35,38 @@
             }
         })
     }
+    function initControl() {
+        $("#FormType").bindSelect({
+            url: "/WFManage/Flow/GetFormTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
+    }
+    function initFormId() {
+        $("#FormId").empty();
+        var formType = $("#FormType").val();
+        if (formType == 1) {
+            $("#FormId").bindSelect({
+                url: "/WFManage/CustomForm/GetEnableGridJson",
+                id: "Id",
+                text: "FullName"
+            });
+        } else
+            if (formType == 2) {
+
+            }
+    }
 </script>
 
 <form id="form1">
     <div style="padding-top: 20px; margin-right: 20px;">
         <table class="form">
+            <tr>
+                <th class="formTitle">显示顺序</th>
+                <td class="formValue">
+                    <input id="SortCode" name="SortCode" type="text" class="form-control required" placeholder="请输入显示顺序" />
+                </td>
+            </tr>
             <tr>
                 <th class="formTitle">流程编号</th>
                 <td class="formValue">
@@ -47,11 +80,25 @@
                 </td>
             </tr>
             <tr>
-                <th class="formTitle">显示顺序</th>
+                <th class="formTitle">表单类型</th>
                 <td class="formValue">
-                    <input id="SortCode" name="SortCode" type="text" class="form-control required" placeholder="请输入显示顺序" />
+                    <select id="FormType" name="FormType" class="form-control required">
+                    </select>
                 </td>
             </tr>
+            <tr>
+                <th class="formTitle">表单名称</th>
+                <td class="formValue">
+                    <select id="FormId" name="FormId" class="form-control required">
+                    </select>
+                </td>
+            </tr>
+            @*<tr>
+                <th class="formTitle">表单地址</th>
+                <td class="formValue">
+                    <input id="FormUrl" name="FormUrl" type="text" class="form-control required" placeholder="请输入流程名称" />
+                </td>
+            </tr>*@
             <tr>
                 <th class="formTitle" valign="top" style="padding-top: 5px;">
                     备注

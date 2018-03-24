@@ -14,6 +14,16 @@ namespace Storm.Application.WFManage
     {
         private IFormRepository service = new FormRepository();
 
+        public List<FormEntity> GetAllList(string keyword = "")
+        {
+            var expression = ExtLinq.True<FormEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
         public List<FormEntity> GetList(string keyword = "")
         {
             var expression = ExtLinq.True<FormEntity>();
@@ -22,6 +32,18 @@ namespace Storm.Application.WFManage
                 expression = expression.And(t => t.FullName.Contains(keyword));
                 expression = expression.Or(t => t.EnCode.Contains(keyword));
             }
+            expression = expression.Or(t => t.DeleteMark != true);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
+        public List<FormEntity> GetEnableList(string keyword = "")
+        {
+            var expression = ExtLinq.True<FormEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            expression = expression.Or(t => t.DeleteMark != true && t.EnabledMark == true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public FormEntity GetForm(string keyValue)

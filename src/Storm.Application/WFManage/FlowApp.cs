@@ -15,6 +15,16 @@ namespace Storm.Application.WFManage
         private IFlowRepository service = new FlowRepository();
         private IFlowVersionRepository flowVersionService = new FlowVersionRepository();
 
+        public List<FlowEntity> GetAllList(string keyword = "")
+        {
+            var expression = ExtLinq.True<FlowEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
         public List<FlowEntity> GetList(string keyword = "")
         {
             var expression = ExtLinq.True<FlowEntity>();
@@ -23,6 +33,18 @@ namespace Storm.Application.WFManage
                 expression = expression.And(t => t.FullName.Contains(keyword));
                 expression = expression.Or(t => t.EnCode.Contains(keyword));
             }
+            expression = expression.Or(t => t.DeleteMark != true);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
+        public List<FlowEntity> GetEnableList(string keyword = "")
+        {
+            var expression = ExtLinq.True<FlowEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            expression = expression.Or(t => t.DeleteMark != true && t.EnabledMark == true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public FlowEntity GetForm(string keyValue)

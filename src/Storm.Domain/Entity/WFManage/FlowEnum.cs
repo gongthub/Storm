@@ -104,7 +104,7 @@ namespace Storm.Domain.Entity.WFManage
         StepName = 16
     }
     /// <summary>
-    /// 策略类型
+    /// 自定义控件类型
     /// </summary>
     public enum FormCustomControlType
     {
@@ -132,5 +132,16 @@ namespace Storm.Domain.Entity.WFManage
         DateTime = 11,
         [Description("附件上传")]
         Files = 12
+    }
+
+    /// <summary>
+    /// 表单类型
+    /// </summary>
+    public enum FormType
+    {
+        [Description("自定义表单")]
+        Custom = 1,
+        //[Description("系统表单")]
+        //System = 2
     }
 }

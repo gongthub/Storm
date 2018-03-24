@@ -7,6 +7,9 @@ namespace Storm.Domain.Entity.WFManage
     public class FlowEntity : IEntity<FlowEntity>, ICreationAudited, IDeleteAudited, IModificationAudited
     {
         public string Id { get; set; }
+        public string FormId { get; set; }
+        public int FormType { get; set; }
+        public string FormUrl { get; set; }
         public string EnCode { get; set; }
         public string FullName { get; set; }
         public int? SortCode { get; set; }

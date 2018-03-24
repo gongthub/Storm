@@ -27,6 +27,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
 
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetFormTypeSelectJson()
+        {
+            List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(FormType));
+            return Content(models.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetStepTypeSelectJson()
         {
             List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(StepType));
