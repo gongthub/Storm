@@ -62,6 +62,7 @@
     <Compile Include="WFManage\FlowApp.cs" />
     <Compile Include="WFManage\FormApp.cs" />
     <Compile Include="WFManage\WFItemApp.cs" />
+    <Compile Include="WFManage\WorkApp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Code\Storm.Code.csproj">

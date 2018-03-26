@@ -65,6 +65,7 @@
     <Compile Include="SystemSecurity\DbBackupMap.cs" />
     <Compile Include="SystemSecurity\FilterIPMap.cs" />
     <Compile Include="SystemSecurity\LogMap.cs" />
+    <Compile Include="WFManage\ApprovalProcessMap.cs" />
     <Compile Include="WFManage\FlowAreaMap.cs" />
     <Compile Include="WFManage\FlowLineMap.cs" />
     <Compile Include="WFManage\FlowMap.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="WFManage\FormMap.cs" />
     <Compile Include="WFManage\WFItemDetailMap.cs" />
     <Compile Include="WFManage\WFItemMap.cs" />
+    <Compile Include="WFManage\WorkMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Storm.Domain\Storm.Domain.csproj">
