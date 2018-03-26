@@ -28,6 +28,19 @@ namespace Storm.Web.Areas.SystemManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetEnableGridJson(Pagination pagination, string keyword)
+        {
+            var data = new
+            {
+                rows = userApp.GetEnableList(pagination, keyword),
+                total = pagination.total,
+                page = pagination.page,
+                records = pagination.records
+            };
+            return Content(data.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
             var data = userApp.GetForm(keyValue);

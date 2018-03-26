@@ -1677,6 +1677,7 @@ GooFlow.prototype = {
         //设置$lineData[id]完毕
 
         this.addLineDom(id, this.$lineData[id]);
+        this.$lineData[id] = json;
 
         ++this.$lineCount;
         if (this.$editable) {

@@ -1005,6 +1005,18 @@
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\CustomControl\OrgForm.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\FormStrategies.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\SqlStrategies.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\ReviewerOrg.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Flow\ReviewerPeople.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

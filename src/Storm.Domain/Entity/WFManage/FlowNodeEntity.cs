@@ -21,6 +21,7 @@ namespace Storm.Domain.Entity.WFManage
         public int StepType { set; get; }
         public int RejectType { set; get; }
         public int ReviewerType { set; get; }
+        public string ReviewerOrg { set; get; }
         public string ReviewerUser { set; get; }
         public int MessageType { set; get; }
     }

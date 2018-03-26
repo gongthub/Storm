@@ -199,6 +199,14 @@ namespace Storm.Application.WFManage
                             {
                                 flowNode.ReviewerType = (int)itemnodeitem.Value;
                             }
+                            if (itemnodeitem.Key == "reviewerusers")
+                            {
+                                flowNode.ReviewerUser = itemnodeitem.Value.ToString();
+                            }
+                            if (itemnodeitem.Key == "reviewerorgs")
+                            {
+                                flowNode.ReviewerOrg = itemnodeitem.Value.ToString();
+                            }
                             if (itemnodeitem.Key == "messagetype")
                             {
                                 flowNode.MessageType = (int)itemnodeitem.Value;
@@ -248,6 +256,14 @@ namespace Storm.Application.WFManage
                             if (itemnodeitem.Key == "strategiestype")
                             {
                                 flowLine.PlotType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "plot")
+                            {
+                                flowLine.Plot = itemnodeitem.Value.ToString();
+                            }
+                            if (itemnodeitem.Key == "sqlplot")
+                            {
+                                flowLine.SqlPlot = itemnodeitem.Value.ToString();
                             }
                         }
                     }
@@ -304,6 +320,59 @@ namespace Storm.Application.WFManage
         public string GenGooFlows(string keyValue)
         {
             return service.GenGooFlows(keyValue);
+        }
+
+        public void SaveStrategies(string flowId, string markName, int flotType, string plots)
+        {
+            FlowLineEntity flowLineEntity = GetLine(flowId, markName);
+            if (flowLineEntity != null && !string.IsNullOrEmpty(flowLineEntity.Id))
+            {
+                flowLineEntity.PlotType = flotType;
+                if (flotType == (int)StrategiesType.Form)
+                {
+                    flowLineEntity.Plot = plots;
+                }
+                else
+                    if (flotType == (int)StrategiesType.Sql)
+                    {
+                        flowLineEntity.SqlPlot = plots;
+                    }
+
+                flowVersionService.UpdateLine(flowLineEntity);
+            }
+            else
+            {
+                throw new Exception("获取数据异常！");
+            }
+        }
+        public List<FlowLineEntity> GetLines(string flowId)
+        {
+            return flowVersionService.GetLines(flowId);
+        }
+
+        public FlowLineEntity GetLine(string flowId, string markName)
+        {
+            return flowVersionService.GetLine(flowId, markName);
+        }
+
+        public List<FlowNodeEntity> GetNodes(string flowId)
+        {
+            return flowVersionService.GetNodes(flowId);
+        }
+
+        public FlowNodeEntity GetNode(string flowId, string markName)
+        {
+            return flowVersionService.GetNode(flowId, markName);
+        }
+
+        public List<FlowAreaEntity> GetAreas(string flowId)
+        {
+            return flowVersionService.GetAreas(flowId);
+        }
+
+        public FlowAreaEntity GetArea(string flowId, string markName)
+        {
+            return flowVersionService.GetArea(flowId, markName);
         }
     }
 }

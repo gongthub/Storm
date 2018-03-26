@@ -11,7 +11,7 @@ namespace Storm.Application.SystemManage
     {
         private IRoleRepository service = new RoleRepository();
 
-        public List<RoleEntity> GetList(string keyword = "")
+        public List<RoleEntity> GetAllList(string keyword = "")
         {
             var expression = ExtLinq.True<RoleEntity>();
             if (!string.IsNullOrEmpty(keyword))
@@ -20,6 +20,28 @@ namespace Storm.Application.SystemManage
                 expression = expression.Or(t => t.EnCode.Contains(keyword));
             }
             expression = expression.And(t => t.Category == 2);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
+        public List<RoleEntity> GetList(string keyword = "")
+        {
+            var expression = ExtLinq.True<RoleEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            expression = expression.And(t => t.Category == 2 && t.DeleteMark != true);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
+        public List<RoleEntity> GetEnableList(string keyword = "")
+        {
+            var expression = ExtLinq.True<RoleEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            expression = expression.And(t => t.Category == 2 && t.DeleteMark != true && t.EnabledMark == true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public RoleEntity GetForm(string keyValue)

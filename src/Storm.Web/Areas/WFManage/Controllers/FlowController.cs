@@ -124,5 +124,54 @@ namespace Storm.Web.Areas.WFManage.Controllers
             flowApp.SaveDesign(keyValue, codes);
             return Success("保存成功。");
         }
+
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult FormStrategies()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult SqlStrategies()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetStrategieFormJson(string flowId, string markName)
+        {
+            var data = flowApp.GetLine(flowId, markName);
+            return Content(data.ToJson());
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [HandlerAuthorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveFormStrategies(string flowId, string markName, int flotType, string plots)
+        {
+            flowApp.SaveStrategies(flowId, markName, flotType, plots);
+            return Success("保存成功。");
+        }
+
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult ReviewerOrg()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult ReviewerPeople()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetReviewerFormJson(string flowId, string markName)
+        {
+            var data = flowApp.GetNode(flowId, markName);
+            return Content(data.ToJson());
+        }
     }
 }

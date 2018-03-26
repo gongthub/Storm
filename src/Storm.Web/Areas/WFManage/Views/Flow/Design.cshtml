@@ -146,6 +146,7 @@
         initpro(model);
         if (model == "line") {
             obj = e.$lineData[id];
+            $("#hdLineMarkName").val(id);
             $("#txtLineName").val(obj.name);
             var objfrom = e.$nodeData[obj.from];
             if (objfrom != null && objfrom != undefined) {
@@ -159,6 +160,7 @@
                 $("#selStrategiesType").val(obj.strategiestype).trigger("change").change();
         } else if (model == "node") {
             obj = e.$nodeData[id];
+            $("#hdNodeMarkName").val(id);
             $("#txtNodeName").val(obj.name);
             $("#txtNodeLeft").val(obj.left);
             $("#txtNodeTop").val(obj.top);
@@ -245,6 +247,8 @@
         return isHas;
     }
     function initTxtControl() {
+        $("#hdLineMarkName").val("");
+        $("#hdNodeMarkName").val("");
         $("#txtLineName").val('');
         $("#txtLineFrom").val('');
         $("#txtLineTo").val('');
@@ -259,6 +263,84 @@
         $("#selMessageType").val(0).trigger("change");
         $("#selStrategiesType").val(0).trigger("change");
     }
+    function lineConfig() {
+        var selStrategiesType = $("#selStrategiesType").val();
+        var markName = $("#hdLineMarkName").val();
+        if (selStrategiesType == "0") {
+            alert("请选择一条策略类型！");
+            return;
+        }
+        if (selStrategiesType == "1") {
+            $.modalOpen({
+                id: "FormStrategies",
+                title: "配置表单策略",
+                url: "/WFManage/Flow/FormStrategies?keyValue=" + keyValue + "&markName=" + markName,
+                width: "550px",
+                height: "300px",
+                callBack: function (iframeId) {
+                    var plots = top.frames[iframeId].submitForm();
+                    var selLine = myflowdesign.$lineData[markName];
+                    if (selLine != null) {
+                        selLine.plot = plots;
+                    }
+                }
+            });
+        } else
+            if (selStrategiesType == "2") {
+                $.modalOpen({
+                    id: "SqlStrategies",
+                    title: "配置SQL策略",
+                    url: "/WFManage/Flow/SqlStrategies?keyValue=" + keyValue + "&markName=" + markName,
+                    width: "550px",
+                    height: "300px",
+                    callBack: function (iframeId) {
+                        var plots = top.frames[iframeId].submitForm();
+                        if (plots != false) {
+                            var selLine = myflowdesign.$lineData[markName];
+                            if (selLine != null) {
+                                selLine.sqlplot = plots;
+                            }
+                        }
+                    }
+                });
+            }
+    }
+    function reviewerConfig() {
+        var reviewerType = $("#selReviewerType").val();
+        var markName = $("#hdNodeMarkName").val();
+        if (reviewerType == 1) {
+            $.modalOpen({
+                id: "ReviewerOrg",
+                title: "配置岗位",
+                url: "/WFManage/Flow/ReviewerOrg?keyValue=" + keyValue + "&markName=" + markName,
+                width: "600px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    var reviewerorgs = top.frames[iframeId].submitForm();
+                    var selnode = myflowdesign.$nodeData[markName];
+                    if (selnode != null) {
+                        selnode.reviewerorgs = reviewerorgs.toString();
+                    }
+                }
+            });
+        } else if (reviewerType == 2) {
+            $.modalOpen({
+                id: "ReviewerPeople",
+                title: "配置指定人",
+                url: "/WFManage/Flow/ReviewerPeople?keyValue=" + keyValue + "&markName=" + markName,
+                width: "600px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    var reviewerusers = top.frames[iframeId].submitForm();
+                    var selnode = myflowdesign.$nodeData[markName];
+                    if (selnode != null) {
+                        selnode.reviewerusers = reviewerusers.toString();
+                    }
+                }
+            });
+        }
+    }
+
 </script>
 <form class="myForm" id="propertyForm">
     <div class="dvNodes" style="display:none;">
@@ -267,6 +349,7 @@
             节点属性
         </button>
         <div id="dvattr" class="collapse in dvflowcontent">
+            <input type="hidden" id="hdNodeMarkName" />
             <table>
                 <tr><td class="th">名称：</td><td><input type="text" id="txtNodeName" readonly="readonly" /></td></tr>
                 <tr><td class="th">左坐标：</td><td><input type="text" id="txtNodeLeft" readonly="readonly" /></td></tr>
@@ -318,7 +401,7 @@
                     <td>
                         <div class="input-group">
                             <input type="text" placeholder="请选择配置..." aria-describedby="spnodereviewer" readonly="readonly" />
-                            <span class="input-group-addon" id="spnodereviewer" style="cursor:pointer;">配置</span>
+                            <span class="input-group-addon" id="spnodereviewer" style="cursor:pointer;" onclick="reviewerConfig()">配置</span>
                         </div>
                     </td>
                 </tr>
@@ -347,6 +430,7 @@
             连接属性
         </button>
         <div id="lineattr" class="collapse in dvflowcontent">
+            <input type="hidden" id="hdLineMarkName" />
             <table>
                 <tr><td class="th">名称：</td><td><input type="text" id="txtLineName" readonly="readonly" /></td></tr>
                 <tr><td class="th">来源：</td><td><input type="text" id="txtLineFrom" readonly="readonly" /></td></tr>
@@ -372,7 +456,7 @@
                     <td>
                         <div class="input-group">
                             <input type="text" placeholder="请选择配置..." aria-describedby="splineconfig" readonly="readonly" />
-                            <span class="input-group-addon" id="splineconfig" style="cursor:pointer;">配置</span>
+                            <span class="input-group-addon" id="splineconfig" style="cursor:pointer;" onclick="lineConfig()">配置</span>
                         </div>
                     </td>
                 </tr>

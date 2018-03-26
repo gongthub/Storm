@@ -12,6 +12,18 @@ namespace Storm.Application.SystemManage
         private IUserRepository service = new UserRepository();
         private UserLogOnApp userLogOnApp = new UserLogOnApp();
 
+        public List<UserEntity> GetAllList(Pagination pagination, string keyword)
+        {
+            var expression = ExtLinq.True<UserEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.Account.Contains(keyword));
+                expression = expression.Or(t => t.RealName.Contains(keyword));
+                expression = expression.Or(t => t.MobilePhone.Contains(keyword));
+            }
+            expression = expression.And(t => t.Account != "admin");
+            return service.FindList(expression, pagination);
+        }
         public List<UserEntity> GetList(Pagination pagination, string keyword)
         {
             var expression = ExtLinq.True<UserEntity>();
@@ -22,6 +34,20 @@ namespace Storm.Application.SystemManage
                 expression = expression.Or(t => t.MobilePhone.Contains(keyword));
             }
             expression = expression.And(t => t.Account != "admin");
+            expression = expression.And(t => t.DeleteMark != true);
+            return service.FindList(expression, pagination);
+        }
+        public List<UserEntity> GetEnableList(Pagination pagination, string keyword)
+        {
+            var expression = ExtLinq.True<UserEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.Account.Contains(keyword));
+                expression = expression.Or(t => t.RealName.Contains(keyword));
+                expression = expression.Or(t => t.MobilePhone.Contains(keyword));
+            }
+            expression = expression.And(t => t.Account != "admin");
+            expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true);
             return service.FindList(expression, pagination);
         }
         public UserEntity GetForm(string keyValue)

@@ -18,5 +18,6 @@ namespace Storm.Domain.Entity.WFManage
         public bool Marked { set; get; }
         public int PlotType { set; get; }
         public string Plot { set; get; }
+        public string SqlPlot { set; get; }
     }
 }

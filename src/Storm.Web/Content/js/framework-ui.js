@@ -270,7 +270,8 @@ $.submitForm = function (options) {
         param: [],
         loading: "正在提交数据...",
         success: null,
-        close: true
+        close: true,
+        closeloading: false
     };
     var options = $.extend(defaults, options);
     $.loading(true, options.loading);
@@ -287,6 +288,9 @@ $.submitForm = function (options) {
                 if (data.state == "success") {
                     options.success(data);
                     $.modalMsg(data.message, data.state);
+                    if (options.closeloading == true) {
+                        $.loading(false);
+                    }
                     if (options.close == true) {
                         $.modalClose();
                     }
@@ -578,8 +582,7 @@ $.fn.dataGridMultiSelect = function (options) {
         rownumbers: true,
         shrinkToFit: false,
         gridview: true,
-        multiselect: true,
-        multiboxonly: true
+        multiselect: true
     };
     var options = $.extend(defaults, options);
     var $element = $(this);
@@ -594,6 +597,9 @@ $.fn.dataGridMultiSelect = function (options) {
         $operate.find('.close').click(function () {
             $operate.animate({ "left": '-100.1%' }, 200);
         })
+    };
+    options["gridComplete"] = function () {
+        options.Complete();
     };
     $element.jqGrid(options);
 };
