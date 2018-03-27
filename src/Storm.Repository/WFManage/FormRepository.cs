@@ -27,5 +27,12 @@ namespace Storm.Repository.WFManage
                 db.Commit();
             }
         }
+        public FormControlEntity GetControl(string formId, string controlId)
+        {
+            using (var db = new RepositoryBase().BeginTrans())
+            {
+                return db.FindEntity<FormControlEntity>(m => m.FormId == formId && m.ControlId == controlId);
+            }
+        }
     }
 }

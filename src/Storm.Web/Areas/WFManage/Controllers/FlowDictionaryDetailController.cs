@@ -21,13 +21,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
-        public ActionResult GetSelectJson(string enCode)
+        public ActionResult GetSelectJsonByItemId(string itemId)
         {
-            var data = itemsApp.GetItemDetailList(enCode);
+            var data = itemsApp.GetItemDetailByItemIdList(itemId);
             List<object> list = new List<object>();
             foreach (WFItemDetailEntity item in data)
             {
-                list.Add(new { id = item.ItemCode, text = item.ItemName });
+                list.Add(new { id = item.Id, text = item.ItemName });
             }
             return Content(list.ToJson());
         }

@@ -68,6 +68,10 @@ namespace Storm.Application.WFManage
         {
             return serviceDetail.GetItemDetailList(enCode);
         }
+        public List<WFItemDetailEntity> GetItemDetailByItemIdList(string itemId)
+        {
+            return serviceDetail.GetItemDetailByItemIdList(itemId);
+        }
         public List<WFItemDetailEntity> GetEnableItemDetailList()
         {
             return serviceDetail.IQueryable(m => m.EnabledMark == true).ToList();

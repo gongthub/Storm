@@ -27,11 +27,28 @@
             </td>
         </tr>
         <tr>
+            <th class="formTitle">宽度</th>
+            <td class="formValue">
+                <input id="txtWidth" name="Width" type="number" class="form-control required" placeholder="请输入宽度" />
+            </td>
+        </tr>
+        <tr>
             <th class="formTitle">
                 是否只读
             </th>
             <td class="formValue">
                 <select id="selIsReadonly" class="form-control required">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">
+                是否可空
+            </th>
+            <td class="formValue">
+                <select id="selIsNull" class="form-control required">
                     <option value="0">否</option>
                     <option value="1">是</option>
                 </select>
@@ -51,6 +68,14 @@
         if (oNode) {
             $text = $(oNode);
             $("#txtName").val($text.attr('name'));
+            var widthStr = $text.css('width');
+            if (widthStr) {
+                widthStr = widthStr.replace("px", "");
+                $("#txtWidth").val(widthStr);
+            }
+            if ($text.attr('isnull')) {
+                $("#selIsNull").val($text.attr('isnull'));
+            }
             if ($text.attr('readonly')) {
                 $("#selIsReadonly").val(1);
             } else {
@@ -83,6 +108,8 @@
         var dataid = $("#selDatas").val();
         var defaultvalue = $("#selDefaultValue").val();
         var isreadonly = $("#selIsReadonly").val();
+        var width = $("#txtWidth").val();
+        var isnull = $("#selIsNull").val();
 
         var otext = document.createElement('input');
         otext.id = id;
@@ -91,6 +118,7 @@
         $(otext).attr("class", "flowformcontrol");
         $(otext).attr("name", name);
         $(otext).attr("value", name);
+        $(otext).attr("isnull", isnull);
         if (isreadonly == 1) {
             $(otext).attr("readonly", "readonly");
         }
@@ -98,6 +126,11 @@
             $(otext).attr("dataid", dataid);
         } else {
             $(otext).attr("dataid", "");
+        }
+        if (width) {
+            $(otext).css("width", width + "px");
+        } else {
+            $(otext).css("width", "120px");
         }
         $(otext).attr("defaultvalue", defaultvalue);
         if (oNode) {

@@ -31,7 +31,9 @@
                 id: "Apply",
                 title: "工作申请",
                 url: "/WFManage/Work/Apply?keyValue=" + keyValue,
-                btn: null,
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
             });
         } else {
             $.modalAlertWarring("请先选择一条数据！");

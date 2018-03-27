@@ -26,6 +26,14 @@ namespace Storm.Web.Areas.WFManage.Controllers
             return Content(data.ToJson());
         }
         [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetFormDesignJosn(string keyValue)
+        {
+            var data = workApp.GetFormDesign(keyValue);
+            var result = new { codes = Server.HtmlDecode(data) };
+            return Content(result.ToJson());
+        }
+        [HttpGet]
         [HandlerAuthorize]
         public virtual ActionResult Apply()
         {

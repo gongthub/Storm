@@ -35,6 +35,17 @@
                 </select>
             </td>
         </tr>
+        <tr>
+            <th class="formTitle">
+                是否可空
+            </th>
+            <td class="formValue">
+                <select id="selIsNull" class="form-control required">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
     </table>
 </div>
 <script type="text/javascript">
@@ -53,6 +64,8 @@
                 $("#selIsReadonly").val(1);
             } else {
                 $("#selIsReadonly").val(0);
+            } if ($text.attr('isnull')) {
+                $("#selIsNull").val($text.attr('isnull'));
             }
             if ($text.attr('defaultvalue')) {
                 var seldefaultvalue = $text.attr('defaultvalue');
@@ -81,6 +94,7 @@
         var dataid = $("#selDatas").val();
         var defaultvalue = $("#selDefaultValue").val();
         var isreadonly = $("#selIsReadonly").val();
+        var isnull = $("#selIsNull").val();
 
         var otext = document.createElement('input');
         otext.id = id;
@@ -89,6 +103,7 @@
         $(otext).attr("class", "flowformcontrol");
         $(otext).attr("name", name);
         $(otext).attr("value", name);
+        $(otext).attr("isnull", isnull);
         if (isreadonly == 1) {
             $(otext).attr("readonly", "readonly");
         }
@@ -124,8 +139,8 @@
             callBack: function () {
                 if (ITEMID != null && ITEMID != undefined && ITEMID != "") {
                     var itemids = [];
-                    itemId = ITEMID.split(',');
-                    $("#selDefaultValue").val(itemId).trigger("change");
+                    itemids = ITEMID.split(',');
+                    $("#selDefaultValue").val(itemids).trigger("change");
                 }
             }
         });

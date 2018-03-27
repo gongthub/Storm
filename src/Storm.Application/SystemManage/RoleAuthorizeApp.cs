@@ -77,12 +77,18 @@ namespace Storm.Application.SystemManage
                     if (item.ItemType == 1)
                     {
                         ModuleEntity moduleEntity = moduledata.Find(t => t.Id == item.ItemId);
-                        authorizeurldata.Add(new AuthorizeActionModel { Id = moduleEntity.Id, UrlAddress = moduleEntity.UrlAddress });
+                        if (moduleEntity != null)
+                        {
+                            authorizeurldata.Add(new AuthorizeActionModel { Id = moduleEntity.Id, UrlAddress = moduleEntity.UrlAddress });
+                        }
                     }
                     else if (item.ItemType == 2)
                     {
                         ModuleButtonEntity moduleButtonEntity = buttondata.Find(t => t.Id == item.ItemId);
-                        authorizeurldata.Add(new AuthorizeActionModel { Id = moduleButtonEntity.ModuleId, UrlAddress = moduleButtonEntity.UrlAddress });
+                        if (moduleButtonEntity != null)
+                        {
+                            authorizeurldata.Add(new AuthorizeActionModel { Id = moduleButtonEntity.ModuleId, UrlAddress = moduleButtonEntity.UrlAddress });
+                        }
                     }
                 }
                 CacheFactory.Cache().WriteCache(authorizeurldata, "authorizeurldata_" + roleId, DateTime.Now.AddMinutes(5));

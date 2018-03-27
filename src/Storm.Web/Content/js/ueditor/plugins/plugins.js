@@ -85,7 +85,7 @@ UE.plugins['formtextarea'] = function ()
                 name: thePlugins + '_' + (new Date().valueOf()),
                 editor: this,
                 title: '文本域',
-                cssRules: "width:600px;height:300px;",
+                cssRules: "width:600px;height:350px;",
                 buttons: [
 				{
 				    className: 'edui-okbutton',

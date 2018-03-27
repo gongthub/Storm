@@ -11,5 +11,6 @@ namespace Storm.Domain.IRepository.WFManage
     public interface IWFItemDetailRepository : IRepositoryBase<WFItemDetailEntity>
     {
         List<WFItemDetailEntity> GetItemDetailList(string enCode);
+        List<WFItemDetailEntity> GetItemDetailByItemIdList(string itemId);
     }
 }

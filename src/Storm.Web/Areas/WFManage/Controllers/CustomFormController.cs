@@ -89,5 +89,27 @@ namespace Storm.Web.Areas.WFManage.Controllers
             formApp.SaveDesign(keyValue, codes, formControlModels);
             return Success("保存成功。");
         }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetCommonDefaultProgramsJson(string flowId)
+        {
+            List<EnumModel> models = formApp.GetCommonDefaultPrograms(flowId);
+            return Content(models.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetCommonCustomDefaultValuesJson(string flowId, string controlId)
+        {
+            string defaultValues = formApp.GetCommonCustomDefaultValuesJson(flowId, controlId);
+            return Content(defaultValues);
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetCommonCustomDefaultTypeJson(string flowId, string controlId)
+        {
+            string defaultTypes = formApp.GetCommonCustomDefaultTypeJson(flowId, controlId);
+            return Content(defaultTypes);
+        }
     }
 }

@@ -65,6 +65,12 @@ namespace Storm.Web.Controllers
                     operatorModel.UserName = userEntity.RealName;
                     operatorModel.CompanyId = userEntity.OrganizeId;
                     operatorModel.DepartmentId = userEntity.DepartmentId;
+                    if (userEntity.DepartmentId != null && !string.IsNullOrEmpty(userEntity.DepartmentId))
+                    {
+                        OrganizeEntity organizeEntity = new OrganizeApp().GetForm(userEntity.DepartmentId);
+                        if (organizeEntity != null && !string.IsNullOrEmpty(organizeEntity.Id))
+                            operatorModel.DepartmentName = organizeEntity.FullName;
+                    }
                     operatorModel.RoleId = userEntity.RoleId;
                     operatorModel.LoginIPAddress = Net.Ip;
                     operatorModel.LoginIPAddressName = Net.GetLocation(operatorModel.LoginIPAddress);

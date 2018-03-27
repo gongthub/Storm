@@ -13,6 +13,7 @@ namespace Storm.Application.WFManage
     public class FormApp
     {
         private IFormRepository service = new FormRepository();
+        private FlowApp flowApp = new FlowApp();
 
         public List<FormEntity> GetAllList(string keyword = "")
         {
@@ -96,7 +97,6 @@ namespace Storm.Application.WFManage
                 service.Insert(formEntity);
             }
         }
-
         public void SaveDesign(string keyValue, string codes, List<FormControlEntity> formControlModels)
         {
             FormEntity formEntity = GetForm(keyValue);
@@ -109,6 +109,101 @@ namespace Storm.Application.WFManage
             {
                 throw new Exception("获取数据异常！");
             }
+        }
+
+        /// <summary>
+        /// 获取当前流程申请时默认值
+        /// </summary>
+        /// <param name="flowId"></param>
+        public List<EnumModel> GetCommonDefaultPrograms(string flowId)
+        {
+            List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(FormDefaultProgram));
+            var LoginInfo = OperatorProvider.Provider.GetCurrent();
+            foreach (var model in models)
+            {
+                switch (model.Value)
+                {
+                    case (int)FormDefaultProgram.ApplyUserID:
+                        model.Desc = LoginInfo.UserId;
+                        break;
+                    case (int)FormDefaultProgram.ApplyUserName:
+                        model.Desc = LoginInfo.UserName;
+                        break;
+                    case (int)FormDefaultProgram.ApplyUserDeptID:
+                        model.Desc = LoginInfo.DepartmentId;
+                        break;
+                    case (int)FormDefaultProgram.ApplyUserDeptName:
+                        model.Desc = LoginInfo.DepartmentName;
+                        break;
+                    case (int)FormDefaultProgram.ShortDate:
+                        model.Desc = DateTime.Now.ToString("yyyy-MM-dd");
+                        break;
+                    case (int)FormDefaultProgram.LongDate:
+                        model.Desc = DateTime.Now.ToString("yyyy年MM月dd日");
+                        break;
+                    case (int)FormDefaultProgram.ShortDateTime:
+                        model.Desc = DateTime.Now.ToString("HH:mm");
+                        break;
+                    case (int)FormDefaultProgram.LongDateTime:
+                        model.Desc = DateTime.Now.ToString("HH时mm分");
+                        break;
+                    case (int)FormDefaultProgram.ShortDateAndDateTime:
+                        model.Desc = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                        break;
+                    case (int)FormDefaultProgram.LongDateAndDateTime:
+                        model.Desc = DateTime.Now.ToString("yyyy年MM月dd日 HH时mm分");
+                        break;
+                    case (int)FormDefaultProgram.FlowName:
+                        FlowEntity flowEntity = flowApp.GetForm(flowId);
+                        if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id))
+                        {
+                            model.Desc = flowEntity.FullName;
+                        }
+                        break;
+                    default:
+                        model.Desc = string.Empty;
+                        break;
+                }
+            }
+            return models;
+        }
+        /// <summary>
+        /// 获取当前流程申请时自定义默认值
+        /// </summary>
+        /// <param name="flowId"></param>
+        public string GetCommonCustomDefaultValuesJson(string flowId, string controlId)
+        {
+            string strValues = string.Empty;
+
+            FlowEntity flowEntity = flowApp.GetForm(flowId);
+            if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id) && !string.IsNullOrEmpty(flowEntity.FormId))
+            {
+                FormControlEntity formControl = service.GetControl(flowEntity.FormId, controlId);
+                if (formControl != null && !string.IsNullOrEmpty(formControl.Id))
+                {
+                    strValues = formControl.DefaultValue;
+                }
+            }
+            return strValues;
+        }
+        /// <summary>
+        /// 获取当前流程申请时自定义默认值
+        /// </summary>
+        /// <param name="flowId"></param>
+        public string GetCommonCustomDefaultTypeJson(string flowId, string controlId)
+        {
+            string strTypes = string.Empty;
+
+            FlowEntity flowEntity = flowApp.GetForm(flowId);
+            if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id) && !string.IsNullOrEmpty(flowEntity.FormId))
+            {
+                FormControlEntity formControl = service.GetControl(flowEntity.FormId, controlId);
+                if (formControl != null && !string.IsNullOrEmpty(formControl.Id))
+                {
+                    strTypes = formControl.DefaultType;
+                }
+            }
+            return strTypes;
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Storm.Application.WFManage
     public class WorkApp
     {
         private IWorkRepository service = new WorkRepository();
+        private FlowApp flowApp = new FlowApp();
+        private FormApp formApp = new FormApp();
         public List<WorkEntity> GetAllList(string keyword = "")
         {
             var expression = ExtLinq.True<WorkEntity>();
@@ -63,6 +65,18 @@ namespace Storm.Application.WFManage
                 workEntity.Create();
                 service.Insert(workEntity);
             }
+        }
+
+        public string GetFormDesign(string flowId)
+        {
+            string strContents = string.Empty;
+            FlowEntity flowEntity = flowApp.GetForm(flowId);
+            if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id)&&!string.IsNullOrEmpty(flowEntity.FormId))
+            {
+              FormEntity formEntity= formApp.GetForm(flowEntity.FormId);
+              strContents = formEntity.Codes;
+            }
+            return strContents;
         }
     }
 }

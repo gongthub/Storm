@@ -22,13 +22,38 @@ namespace Storm.Repository.WFManage
                             WHERE   1 = 1
                                     AND i.EnCode = @enCode
                                     AND d.EnabledMark = 1
-                                    AND d.DeleteMark = 0
                             ORDER BY d.SortCode ASC");
             DbParameter[] parameter = 
             {
                  new SqlParameter("@enCode",enCode)
             };
-            return this.FindList(strSql.ToString(), parameter);
+            List < WFItemDetailEntity > models= this.FindList(strSql.ToString(), parameter);
+            if (models != null)
+            {
+                models = models.Where(m => m.DeleteMark != true).ToList();
+            }
+            return models;
+        }
+        public List<WFItemDetailEntity> GetItemDetailByItemIdList(string itemId)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(@"SELECT  d.*
+                            FROM    WF_ItemDetails d
+                                    INNER  JOIN WF_Items i ON i.Id = d.ItemId
+                            WHERE   1 = 1
+                                    AND i.Id = @Id
+                                    AND d.EnabledMark = 1
+                            ORDER BY d.SortCode ASC");
+            DbParameter[] parameter = 
+            {
+                 new SqlParameter("@Id",itemId)
+            };
+            List<WFItemDetailEntity> models = this.FindList(strSql.ToString(), parameter);
+            if (models != null)
+            {
+                models = models.Where(m => m.DeleteMark != true).ToList();
+            }
+            return models;
         }
     }
 }

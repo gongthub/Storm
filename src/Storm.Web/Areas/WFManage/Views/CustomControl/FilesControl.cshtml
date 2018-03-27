@@ -25,6 +25,17 @@
                 <input id="txtWidth" name="Width" type="number" class="form-control required" placeholder="请输入宽度" />
             </td>
         </tr>
+        <tr>
+            <th class="formTitle">
+                是否可空
+            </th>
+            <td class="formValue">
+                <select id="selIsNull" class="form-control required">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
     </table>
 </div>
 <script type="text/javascript">
@@ -40,6 +51,8 @@
             if (widthStr) {
                 widthStr = widthStr.replace("px", "");
                 $("#txtWidth").val(widthStr);
+            } if ($text.attr('isnull')) {
+                $("#selIsNull").val($text.attr('isnull'));
             }
             $("#txtName").val($text.attr('name'));
             if ($text.attr('isMu')) {
@@ -59,6 +72,7 @@
         var name = $("#txtName").val();
         var width = $("#txtWidth").val();
         var isMu = $("#selIsMu").val();
+        var isnull = $("#selIsNull").val();
 
         var otext = document.createElement('input');
         otext.id = id;
@@ -67,6 +81,7 @@
         $(otext).attr("class", "flowformcontrol");
         $(otext).attr("name", name);
         $(otext).attr("value", name);
+        $(otext).attr("isnull", isnull);
         if (width) {
             $(otext).css("width", width + "px");
         } else {

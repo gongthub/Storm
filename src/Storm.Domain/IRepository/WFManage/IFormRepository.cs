@@ -11,5 +11,6 @@ namespace Storm.Domain.IRepository.WFManage
     public interface IFormRepository : IRepositoryBase<FormEntity>
     {
         void SaveDesign(FormEntity formEntity, List<FormControlEntity> formControlModels);
+        FormControlEntity GetControl(string formId, string controlId);
     }
 }
