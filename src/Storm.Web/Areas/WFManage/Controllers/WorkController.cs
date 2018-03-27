@@ -39,5 +39,14 @@ namespace Storm.Web.Areas.WFManage.Controllers
         {
             return View();
         }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubmitForm()
+        {
+            string str = Request["dvCentents"];
+            var files = Request.Files;
+            return Success("操作成功。");
+        }
     }
 }

@@ -12,6 +12,7 @@
     var defalutselects = [];
     var defalutcomboxs = [];
     var defalutorgs = [];
+    var contentCodes = "";
     $(function () {
         if (!!keyValue) {
             getCommonDefaultValues();
@@ -23,6 +24,7 @@
                 success: function (data) {
                     if (data.codes != null && data.codes != undefined && data.codes != "") {
                         var codeStrs = initContents(data.codes);
+                        contentCodes = codeStrs;
                         $("#dvCentents").html(codeStrs);
                     }
                 }
@@ -52,7 +54,7 @@
                         }
                         $(otext).attr("type", "text");
                         $(otext).attr("type1", "flow_text");
-                        $(otext).attr("class", "flowformcontrol");
+                        $(otext).attr("class", "flowformcontrol form-control");
 
                         if ($(objt).attr("name")) {
                             $(otext).attr("name", $(objt).attr("name"));
@@ -62,6 +64,12 @@
                         }
                         if ($(objt).attr("readonly")) {
                             $(otext).attr("readonly", $(objt).attr("readonly"));
+                        }
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otext).addClass("required");
+                            }
                         }
                         if ($(objt).attr("maxlength")) {
                             $(otext).attr("maxlength", $(objt).attr("maxlength"));
@@ -81,8 +89,14 @@
                             otextarea.id = $(objt).attr("id");
                         }
                         $(otextarea).attr("type1", "flow_textarea");
-                        $(otextarea).attr("class", "flowformcontrol");
+                        $(otextarea).attr("class", "flowformcontrol form-control");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextarea).addClass("required");
+                            }
+                        }
                         if ($(objt).attr("name")) {
                             $(otextarea).attr("name", $(objt).attr("name"));
                         }
@@ -117,6 +131,12 @@
                                     $(otextradio).attr("type", "radio");
                                     $(otextradio).attr("type1", "flow_radio");
                                     $(otextradio).attr("class", "flowformcontrol");
+                                    if ($(objt).attr("isnull")) {
+                                        var isnull = $(objt).attr("isnull");
+                                        if (isnull == "0") {
+                                            $(otextradio).addClass("required");
+                                        }
+                                    }
                                     $(otextradio).attr("name", rediocontrolId);
                                     $(otextradio).attr("value", selectDatas_radio[k].id);
                                     $(objt).after(selectDatas_radio[k].text);
@@ -140,6 +160,12 @@
                                     $(otextcheckbox).attr("type", "checkbox");
                                     $(otextcheckbox).attr("type1", "flow_checkbox");
                                     $(otextcheckbox).attr("class", "flowformcontrol");
+                                    if ($(objt).attr("isnull")) {
+                                        var isnull = $(objt).attr("isnull");
+                                        if (isnull == "0") {
+                                            $(otextcheckbox).addClass("required");
+                                        }
+                                    }
                                     $(otextcheckbox).attr("name", checkboxcontrolId);
                                     $(otextcheckbox).attr("value", selectDatas_checkbox[j].id);
                                     $(objt).after(selectDatas_checkbox[j].text);
@@ -161,6 +187,12 @@
                         $(otexthidden).attr("type", "hidden");
                         $(otexthidden).attr("type1", "flow_hidden");
                         $(otexthidden).attr("class", "flowformcontrol");
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otexthidden).addClass("required");
+                            }
+                        }
 
                         if ($(objt).attr("name")) {
                             $(otexthidden).attr("name", $(objt).attr("name"));
@@ -182,6 +214,12 @@
                         $(otextlable).attr("type1", "flow_label");
                         $(otextlable).attr("class", "flowformcontrol");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextlable).addClass("required");
+                            }
+                        }
                         if ($(objt).attr("name")) {
                             $(otextlable).attr("name", $(objt).attr("name"));
                         }
@@ -203,8 +241,14 @@
                             otextselect.id = $(objt).attr("id");
                         }
                         $(otextselect).attr("type1", "flow_select");
-                        $(otextselect).attr("class", "flowformcontrol");
+                        $(otextselect).attr("class", "flowformcontrol form-control");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextselect).addClass("required");
+                            }
+                        }
                         if ($(objt).css("width")) {
                             $(otextselect).css("width", $(objt).css("width"));
                         }
@@ -226,9 +270,15 @@
                             otextcombox.id = $(objt).attr("id");
                         }
                         $(otextcombox).attr("type1", "flow_combox");
-                        $(otextcombox).attr("class", "flowformcontrol");
+                        $(otextcombox).attr("class", "flowformcontrol form-control");
                         $(otextcombox).attr("multiple", "multiple");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextcombox).addClass("required");
+                            }
+                        }
                         if ($(objt).css("width")) {
                             $(otextcombox).css("width", $(objt).css("width"));
                         }
@@ -250,8 +300,14 @@
                             otextorg.id = $(objt).attr("id");
                         }
                         $(otextorg).attr("type1", "flow_org");
-                        $(otextorg).attr("class", "flowformcontrol");
+                        $(otextorg).attr("class", "flowformcontrol form-control");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextorg).addClass("required");
+                            }
+                        }
                         if ($(objt).css("width")) {
                             $(otextorg).css("width", $(objt).css("width"));
                         }
@@ -274,6 +330,12 @@
                         $(otextdate).attr("class", "flowformcontrol form-control input-wdatepicker");
                         $(otextdate).attr("onfocus", "WdatePicker()");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextdate).addClass("required");
+                            }
+                        }
                         if ($(objt).attr("name")) {
                             $(otextdate).attr("name", $(objt).attr("name"));
                         }
@@ -299,6 +361,12 @@
                         $(otextdatetime).attr("class", "flowformcontrol form-control input-wdatepicker");
                         $(otextdatetime).attr("onfocus", "WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })");
 
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextdatetime).addClass("required");
+                            }
+                        }
                         if ($(objt).attr("name")) {
                             $(otextdatetime).attr("name", $(objt).attr("name"));
                         }
@@ -321,7 +389,13 @@
                         }
                         $(otextfile).attr("type", "file");
                         $(otextfile).attr("type1", "flow_files");
-                        $(otextfile).attr("class", "flowformcontrol");
+                        $(otextfile).attr("class", "flowformcontrol form-control");
+                        if ($(objt).attr("isnull")) {
+                            var isnull = $(objt).attr("isnull");
+                            if (isnull == "0") {
+                                $(otextfile).addClass("required");
+                            }
+                        }
                         var isMun = $(objt).attr('isMu');
                         if (isMun == "true") {
                             $(otextfile).attr("multiple", "multiple");
@@ -475,10 +549,20 @@
     }
     function submitForm() {
         if (!$('#form1').formValid()) {
+            $.modalAlertWarring("请完善表单！");
             return false;
         }
+        var status = 1;
+        $.modalConfirm("是否提交申请？", function (result) {
+            if (result == true) {
+                status = 2;
+            } else
+                if (result == false) {
+                    status = 1;
+                }
+        })
         $.submitForm({
-            url: "/WFManage/Flow/SubmitForm?keyValue=" + keyValue,
+            url: "/WFManage/Work/SubmitForm",
             param: $("#form1").formSerialize(),
             success: function () {
                 $.currentWindow().$("#gridList").trigger("reloadGrid");
@@ -488,6 +572,6 @@
 </script>
 
 <form id="form1">
-    <div id="dvCentents" style="margin:20px;">
+    <div id="dvCentents" name="dvCentents" style="margin:20px;" class="form">
     </div>
 </form>

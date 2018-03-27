@@ -144,4 +144,18 @@ namespace Storm.Domain.Entity.WFManage
         //[Description("系统表单")]
         //System = 2
     }
+    /// <summary>
+    /// 申请状态
+    /// </summary>
+    public enum WorkStatus
+    {
+        [Description("已保存")]
+        Save = 1,
+        [Description("申请中")]
+        Applying = 2,
+        [Description("审核通过")]
+        Success = 3,
+        [Description("审核不通过")]
+        Fail = 4
+    }
 }
