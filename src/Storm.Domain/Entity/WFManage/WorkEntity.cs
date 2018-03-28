@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,5 +26,7 @@ namespace Storm.Domain.Entity.WFManage
         public string LastModifyUserId { get; set; }
         public DateTime? DeleteTime { get; set; }
         public string DeleteUserId { get; set; }
+        [NotMapped]
+        public string FlowStatusName { get; set; }
     }
 }

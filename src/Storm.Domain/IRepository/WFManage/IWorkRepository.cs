@@ -10,5 +10,6 @@ namespace Storm.Domain.IRepository.WFManage
 {
     public interface IWorkRepository : IRepositoryBase<WorkEntity>
     {
+        void AddForm(WorkEntity workEntity, List<WorkControlEntity> controls, List<WorkFileEntity> files);
     }
 }

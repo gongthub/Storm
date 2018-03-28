@@ -845,6 +845,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\js\ueditor\net\Bin\" />
+    <Folder Include="Resource\WFFiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configs\database.config">
@@ -1029,6 +1030,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\Work\Apply.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Work\ApplyForm.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Work\MyFlow.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

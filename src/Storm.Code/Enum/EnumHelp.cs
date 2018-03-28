@@ -67,6 +67,34 @@ namespace Storm.Code
         }
         #endregion
 
+        #region 从枚举中获取Description +string GetDescription(T t, int value)
+        /// <summary>
+        /// 从枚举中获取Description
+        /// 说明：
+        /// 单元测试-->通过
+        /// </summary>
+        /// <param name="enumName">需要获取枚举描述的枚举</param>
+        /// <returns>描述内容</returns>
+        public string GetDescription(Type type,int value)
+        {
+            string _description = string.Empty;
+            if (type.IsEnum)
+            {
+                Array _enumValues = Enum.GetValues(type);
+                foreach (Enum item in _enumValues)
+                {
+                    if (Convert.ToInt32(item) == value)
+                    {
+                        _description = GetDescription(item);
+                        break;
+                    }
+                }
+            }
+            return _description;
+        }
+        #endregion
+
+
         #region 获取字段Description +DescriptionAttribute[] GetDescriptAttr(FieldInfo fieldInfo)
         /// <summary>
         /// 获取字段Description
@@ -166,6 +194,7 @@ namespace Storm.Code
             return null;
         }
         #endregion
+
         #region 获取枚举对象 EnumModel GetEnumModel(Type type)
         /// <summary>
         /// 获取枚举对象

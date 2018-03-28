@@ -10,6 +10,7 @@ namespace Storm.Domain.Entity.WFManage
     {
         public string Id { get; set; }
         public string WorkId { get; set; }
+        public string ControlId { get; set; }
         public string FullName { get; set; }
         public string Paths { get; set; }
     }

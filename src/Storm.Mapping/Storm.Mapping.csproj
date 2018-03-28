@@ -75,6 +75,8 @@
     <Compile Include="WFManage\FormMap.cs" />
     <Compile Include="WFManage\WFItemDetailMap.cs" />
     <Compile Include="WFManage\WFItemMap.cs" />
+    <Compile Include="WFManage\WorkControlMap.cs" />
+    <Compile Include="WFManage\WorkFileMap.cs" />
     <Compile Include="WFManage\WorkMap.cs" />
   </ItemGroup>
   <ItemGroup>

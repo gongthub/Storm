@@ -57,7 +57,7 @@
                         $(otext).attr("class", "flowformcontrol form-control");
 
                         if ($(objt).attr("name")) {
-                            $(otext).attr("name", $(objt).attr("name"));
+                            $(otext).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).css("width")) {
                             $(otext).css("width", $(objt).css("width"));
@@ -77,8 +77,8 @@
                         if ($(objt).attr("valuetype")) {
                             var valuetype = $(objt).attr("valuetype");
                             $(otext).attr("valuetype", $(objt).attr("valuetype"));
-                            var defauleValues = getDefaueValues(valuetype);
-                            $(otext).attr("value", defauleValues);
+                            var defauleValues = getDefaueValues(valuetype, otext.id);
+                            $(otext).val(defauleValues);
                         }
                         $(objt).after(otext.outerHTML);
                         $(objt).remove();
@@ -98,7 +98,7 @@
                             }
                         }
                         if ($(objt).attr("name")) {
-                            $(otextarea).attr("name", $(objt).attr("name"));
+                            $(otextarea).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).css("width")) {
                             $(otextarea).css("width", $(objt).css("width"));
@@ -138,6 +138,9 @@
                                         }
                                     }
                                     $(otextradio).attr("name", rediocontrolId);
+                                    if ($(objt).attr("name")) {
+                                        $(otextradio).attr("controlname", $(objt).attr("name"));
+                                    }
                                     $(otextradio).attr("value", selectDatas_radio[k].id);
                                     $(objt).after(selectDatas_radio[k].text);
                                     $(objt).after(otextradio.outerHTML);
@@ -165,6 +168,9 @@
                                         if (isnull == "0") {
                                             $(otextcheckbox).addClass("required");
                                         }
+                                    }
+                                    if ($(objt).attr("name")) {
+                                        $(otextcheckbox).attr("controlname", $(objt).attr("name"));
                                     }
                                     $(otextcheckbox).attr("name", checkboxcontrolId);
                                     $(otextcheckbox).attr("value", selectDatas_checkbox[j].id);
@@ -195,13 +201,13 @@
                         }
 
                         if ($(objt).attr("name")) {
-                            $(otexthidden).attr("name", $(objt).attr("name"));
+                            $(otexthidden).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).attr("valuetype")) {
                             var valuetype = $(objt).attr("valuetype");
                             $(otexthidden).attr("valuetype", $(objt).attr("valuetype"));
-                            var defauleValues = getDefaueValues(valuetype);
-                            $(otexthidden).attr("value", defauleValues);
+                            var defauleValues = getDefaueValues(valuetype, otexthidden.id);
+                            $(otexthidden).val(defauleValues);
                         }
                         $(objt).after(otexthidden.outerHTML);
                         $(objt).remove();
@@ -221,7 +227,7 @@
                             }
                         }
                         if ($(objt).attr("name")) {
-                            $(otextlable).attr("name", $(objt).attr("name"));
+                            $(otextlable).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).css("width")) {
                             $(otextlable).css("width", $(objt).css("width"));
@@ -229,7 +235,7 @@
                         if ($(objt).attr("valuetype")) {
                             var valuetype = $(objt).attr("valuetype");
                             $(otextlable).attr("valuetype", $(objt).attr("valuetype"));
-                            var defauleValues = getDefaueValues(valuetype);
+                            var defauleValues = getDefaueValues(valuetype, otextlable.id);
                             otextlable.innerText = defauleValues;
                         }
                         $(objt).after(otextlable.outerHTML);
@@ -251,6 +257,9 @@
                         }
                         if ($(objt).css("width")) {
                             $(otextselect).css("width", $(objt).css("width"));
+                        }
+                        if ($(objt).attr("name")) {
+                            $(otextselect).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).attr("dataid")) {
                             var dataid = $(objt).attr("dataid");
@@ -282,6 +291,9 @@
                         if ($(objt).css("width")) {
                             $(otextcombox).css("width", $(objt).css("width"));
                         }
+                        if ($(objt).attr("name")) {
+                            $(otextcombox).attr("controlname", $(objt).attr("name"));
+                        }
                         if ($(objt).attr("dataid")) {
                             var dataid = $(objt).attr("dataid");
                             $(objt).after(otextcombox.outerHTML);
@@ -311,6 +323,9 @@
                         if ($(objt).css("width")) {
                             $(otextorg).css("width", $(objt).css("width"));
                         }
+                        if ($(objt).attr("name")) {
+                            $(otextorg).attr("controlname", $(objt).attr("name"));
+                        }
                         $(objt).after(otextorg.outerHTML);
                         var selc = { controlId: otextorg.id };
                         bindorgcontrols.push(selc);
@@ -337,7 +352,7 @@
                             }
                         }
                         if ($(objt).attr("name")) {
-                            $(otextdate).attr("name", $(objt).attr("name"));
+                            $(otextdate).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).css("width")) {
                             $(otextdate).css("width", $(objt).css("width"));
@@ -368,7 +383,7 @@
                             }
                         }
                         if ($(objt).attr("name")) {
-                            $(otextdatetime).attr("name", $(objt).attr("name"));
+                            $(otextdatetime).attr("controlname", $(objt).attr("name"));
                         }
                         if ($(objt).css("width")) {
                             $(otextdatetime).css("width", $(objt).css("width"));
@@ -389,7 +404,7 @@
                         }
                         $(otextfile).attr("type", "file");
                         $(otextfile).attr("type1", "flow_files");
-                        $(otextfile).attr("class", "flowformcontrol form-control");
+                        $(otextfile).attr("class", "flowformcontrol form-control flowformfiles");
                         if ($(objt).attr("isnull")) {
                             var isnull = $(objt).attr("isnull");
                             if (isnull == "0") {
@@ -402,6 +417,9 @@
                         }
                         if ($(objt).css("width")) {
                             $(otextfile).css("width", $(objt).css("width"));
+                        }
+                        if ($(objt).attr("name")) {
+                            $(otextfile).attr("controlname", $(objt).attr("name"));
                         }
                         $(objt).after(otextfile.outerHTML);
                         $(objt).remove();
@@ -552,22 +570,177 @@
             $.modalAlertWarring("请完善表单！");
             return false;
         }
-        var status = 1;
         $.modalConfirm("是否提交申请？", function (result) {
             if (result == true) {
-                status = 2;
+                save(2);
+                layer.closeAll('dialog');
             } else
                 if (result == false) {
-                    status = 1;
+                    save(1);
                 }
         })
-        $.submitForm({
-            url: "/WFManage/Work/SubmitForm",
-            param: $("#form1").formSerialize(),
-            success: function () {
-                $.currentWindow().$("#gridList").trigger("reloadGrid");
+    }
+    function save(status) {
+        var formData = new FormData();
+        var filecontrols = $(".flowformfiles");
+        if (filecontrols != null && filecontrols != undefined && filecontrols.length > 0) {
+            for (var i = 0; i < filecontrols.length; i++) {
+                var fileId = filecontrols[i].id;
+                var upfiles = $("#" + fileId + "")[0].files;
+                if (upfiles != null) {
+                    for (var j = 0; j < upfiles.length; j++) {
+                        formData.append("" + fileId + "|" + j, upfiles[j]);
+                    }
+                }
             }
-        })
+        }
+        formData.append("flowId", keyValue);
+        var contenthtmls = $("#dvCentents")[0].innerHTML;
+        var dvCententhtmls = htmlEncode(contenthtmls);
+        formData.append("contents", dvCententhtmls);
+        formData.append("status", status);
+        var custrols = getCustomControls(contenthtmls);
+        if (custrols != null) {
+            formData.append("custrols", JSON.stringify(custrols));
+        }
+        if ($('[name=__RequestVerificationToken]').length > 0) {
+            formData.append("__RequestVerificationToken", $('[name=__RequestVerificationToken]').val());
+        }
+        $.ajax({
+            type: "POST",
+            url: "/WFManage/Work/SubmitForm",
+            dataType: "json",
+            data: formData,
+            async: false,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    $.modalAlertSuccess(data.message);
+                    $.modalClose();
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                } else {
+                    $.modalAlertError(data.message);
+                }
+            }
+        });
+
+    }
+    function getCustomControls(editContents) {
+        var custrols = [];
+        var element = $(editContents).get(0);
+        var jqueryobj = $(element);
+        var customcontrols = jqueryobj.find(".flowformcontrol");
+        if (customcontrols != null && customcontrols != undefined && customcontrols.length > 0) {
+            for (var i = 0; i < customcontrols.length; i++) {
+                var custrol = {};
+                var objt = customcontrols[i];
+                var controlType = $(objt).attr("type1");
+                switch (controlType) {
+                    case "flow_text":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 1;
+                        custrol.TypeName = "文本框";
+                        custrol.Value = $("#" + custrol.ControlId)[0].value;
+                        custrols.push(custrol);
+                        break;
+                    case "flow_textarea":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 2;
+                        custrol.TypeName = "文本域";
+                        custrol.Value = $("#" + custrol.ControlId)[0].value;
+                        custrols.push(custrol);
+                        break;
+                    case "flow_radio":
+                        custrol.ControlId = $(objt).attr("name");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 3;
+                        custrol.TypeName = "单选按钮组";
+                        var value = $("input[name='" + custrol.ControlId + "']:checked").val();
+                        custrol.Value = value;
+                        custrols.push(custrol);
+                        break;
+                    case "flow_checkbox":
+                        custrol.ControlId = $(objt).attr("name");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 4;
+                        custrol.TypeName = "复选按钮组";
+                        var checkids = [];
+                        $.each($("input[name='" + custrol.ControlId + "']:checked"), function () {
+                            checkids.push($(this).val());
+                        });
+                        custrol.Value = checkids.toString();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_hidden":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 5;
+                        custrol.TypeName = "隐藏域";
+                        custrol.Value = $("#" + custrol.ControlId)[0].value;
+                        custrols.push(custrol);
+                        break;
+                    case "flow_label":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 6;
+                        custrol.TypeName = "Label标签";
+                        custrol.Value = $("#" + custrol.ControlId)[0].innerText;
+                        custrols.push(custrol);
+                        break;
+                    case "flow_select":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 7;
+                        custrol.TypeName = "下拉列表框";
+                        custrol.Value = $("#" + custrol.ControlId).val().toString();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_combox":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 8;
+                        custrol.TypeName = "下拉组合框";
+                        custrol.Value = $("#" + custrol.ControlId).val().toString();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_org":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 9;
+                        custrol.TypeName = "组织机构选择框";
+                        custrol.Value = $("#" + custrol.ControlId).val().toString();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_date":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 10;
+                        custrol.TypeName = "日期选择";
+                        custrol.Value = $("#" + custrol.ControlId).val();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_datetime":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 11;
+                        custrol.TypeName = "日期时间选择";
+                        custrol.Value = $("#" + custrol.ControlId).val();
+                        custrols.push(custrol);
+                        break;
+                    case "flow_files":
+                        custrol.ControlId = $(objt).attr("id");
+                        custrol.FullName = $(objt).attr("controlname");
+                        custrol.ControlType = 12;
+                        custrol.TypeName = "附件上传";
+                        custrols.push(custrol);
+                        break;
+                }
+            }
+        }
+        return custrols;
     }
 </script>
 

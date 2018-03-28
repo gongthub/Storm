@@ -848,5 +848,21 @@ namespace Storm.Code
             return HttpContext.Current.Server.MapPath(path);
         }
         #endregion
+
+        /// <summary>
+        /// WebForm和WinForm通用的取当前根目录的方法 
+        /// </summary>
+        public static string BasePath
+        {
+            get
+            {
+                if (System.Web.HttpContext.Current != null)
+                    return System.Web.HttpContext.Current.Server.MapPath("~/").TrimEnd(new char[] { '\\' });
+                else //当控件在定时器的触发程序中使用时就为空
+                {
+                    return System.AppDomain.CurrentDomain.BaseDirectory.TrimEnd(new char[] { '\\' });
+                }
+            }
+        }
     }
 }
