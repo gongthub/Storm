@@ -100,7 +100,8 @@ namespace Storm.Application.WFManage
         }
         public WorkEntity GetForm(string keyValue)
         {
-            return service.FindEntity(keyValue);
+            WorkEntity model = service.FindEntity(keyValue);
+            return model;
         }
         public void DeleteForm(string keyValue)
         {
@@ -121,6 +122,19 @@ namespace Storm.Application.WFManage
             }
         }
 
+        public List<WorkControlEntity> GetWorkControls(string workIds)
+        {
+            List<WorkControlEntity> models = new List<WorkControlEntity>();
+            models = service.GetWorkControls(workIds);
+            return models;
+        }
+        public List<WorkFileEntity> GetWorkFiles(string workIds)
+        {
+            List<WorkFileEntity> models = new List<WorkFileEntity>();
+            models = service.GetWorkFiles(workIds);
+            return models;
+        }
+
         public void AddForm(string flowId, int status, string contents, List<WorkControlEntity> controls, List<WorkFileEntity> files)
         {
             WorkEntity workEntity = new WorkEntity();
@@ -129,28 +143,71 @@ namespace Storm.Application.WFManage
                 if (flowId != null)
                 {
                     FlowEntity flowentity = flowApp.GetForm(flowId);
-                    FlowVersionEntity flowVersionEntity = flowApp.GetDesign(flowId);
-                    if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id) && flowVersionEntity != null && !string.IsNullOrEmpty(flowVersionEntity.Id))
+                    if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id))
                     {
-                        workEntity.Create();
-                        workEntity.FullName = flowentity.FullName;
-                        workEntity.FlowVersionId = flowVersionEntity.Id;
-                        workEntity.FlowStatus = status;
-                        if (status == (int)WorkStatus.Save)
+                        FormEntity formEntity = formApp.GetForm(flowentity.FormId);
+                        FlowVersionEntity flowVersionEntity = flowApp.GetDesign(flowId);
+                        if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id)
+                            && formEntity != null && !string.IsNullOrEmpty(formEntity.Id)
+                            && flowVersionEntity != null && !string.IsNullOrEmpty(flowVersionEntity.Id))
                         {
-                            workEntity.Contents = flowVersionEntity.Codes;
+                            workEntity.Create();
+                            workEntity.FullName = flowentity.FullName;
+                            workEntity.FlowVersionId = flowVersionEntity.Id;
+                            workEntity.FlowStatus = status;
+                            if (status == (int)WorkStatus.Save)
+                            {
+                                workEntity.Contents = formEntity.Codes;
+                            }
+                            else
+                                if (status == (int)WorkStatus.Applying)
+                                {
+                                    workEntity.Contents = contents;
+                                }
+                            var loguser = OperatorProvider.Provider.GetCurrent();
+                            if (loguser != null)
+                            {
+                                workEntity.ApplyUserId = loguser.UserId;
+                            }
+                            service.AddForm(workEntity, controls, files);
                         }
                         else
-                            if (status == (int)WorkStatus.Applying)
-                            {
-                                workEntity.Contents = contents;
-                            }
-                        var loguser = OperatorProvider.Provider.GetCurrent();
-                        if (loguser != null)
                         {
-                            workEntity.ApplyUserId = loguser.UserId;
+                            throw new Exception("保存失败！");
                         }
-                        service.AddForm(workEntity, controls, files);
+                    }
+                    else
+                    {
+                        throw new Exception("保存失败！");
+                    }
+                }
+                else
+                {
+                    throw new Exception("保存失败！");
+                }
+            }
+            else
+            {
+                throw new Exception("保存失败，提交状态无效！");
+            }
+        }
+        public void UpdateForm(string workId, int status, string contents, List<WorkControlEntity> controls, List<WorkFileEntity> files, List<string> RemoveFileIds)
+        {
+            WorkEntity workEntity = new WorkEntity();
+            if (status == (int)WorkStatus.Save || status == (int)WorkStatus.Applying)
+            {
+                if (workId != null)
+                {
+                    workEntity = GetForm(workId);
+                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                    {
+                        workEntity.Modify(workId);
+                        workEntity.FlowStatus = status;
+                        if (status == (int)WorkStatus.Applying)
+                        {
+                            workEntity.Contents = contents;
+                        }
+                        service.UpdateForm(workEntity, controls, files, RemoveFileIds);
                     }
                     else
                     {
@@ -233,5 +290,6 @@ namespace Storm.Application.WFManage
             }
             return strContents;
         }
+
     }
 }

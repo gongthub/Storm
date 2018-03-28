@@ -24,6 +24,10 @@ namespace Storm.Web.Areas.WFManage.Controllers
         public ActionResult GetFormJson(string keyValue)
         {
             var data = workApp.GetForm(keyValue);
+            if (data != null && !string.IsNullOrEmpty(data.Contents))
+            {
+                data.Contents = Server.HtmlDecode(data.Contents);
+            }
             return Content(data.ToJson());
         }
         [HttpGet]
@@ -59,6 +63,15 @@ namespace Storm.Web.Areas.WFManage.Controllers
             var data = workApp.GetMyWorkList(keyword);
             return Content(data.ToJson());
         }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetWorkFormResJson(string workId)
+        {
+            var controls = workApp.GetWorkControls(workId);
+            var files = workApp.GetWorkFiles(workId);
+            var data = new { controls = controls, files = files };
+            return Content(data.ToJson());
+        }
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
@@ -73,6 +86,30 @@ namespace Storm.Web.Areas.WFManage.Controllers
                 workControls = custrols.ToObject<List<WorkControlEntity>>();
             }
             workApp.AddForm(flowId, status, contents, workControls, workFiles);
+            if (status == 2)
+            {
+                return Success("提交成功。");
+            }
+            else
+            {
+                return Success("保存成功。");
+            }
+        }
+
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateForm(string workId, int status, string contents)
+        {
+            string custrols = Request["custrols"];
+            var files = Request.Files;
+            List<WorkFileEntity> workFiles = workApp.UploadFiles(files);
+            List<WorkControlEntity> workControls = new List<WorkControlEntity>();
+            if (!string.IsNullOrEmpty(custrols))
+            {
+                workControls = custrols.ToObject<List<WorkControlEntity>>();
+            }
+            workApp.UpdateForm(workId, status, contents, workControls, workFiles, null);
             if (status == 2)
             {
                 return Success("提交成功。");

@@ -111,5 +111,12 @@ namespace Storm.Web.Areas.WFManage.Controllers
             string defaultTypes = formApp.GetCommonCustomDefaultTypeJson(flowId, controlId);
             return Content(defaultTypes);
         }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetCommonCustomDefaultTypeByWorkIdJson(string workId, string controlId)
+        {
+            string defaultTypes = formApp.GetCommonCustomDefaultTypeByWorkIdJson(workId, controlId);
+            return Content(defaultTypes);
+        }
     }
 }

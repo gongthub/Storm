@@ -12,5 +12,6 @@ namespace Storm.Domain.IRepository.WFManage
     {
         void SaveDesign(FormEntity formEntity, List<FormControlEntity> formControlModels);
         FormControlEntity GetControl(string formId, string controlId);
+        FormControlEntity GetControlByWorkId(string workId, string controlId);
     }
 }

@@ -78,7 +78,7 @@
                             var valuetype = $(objt).attr("valuetype");
                             $(otext).attr("valuetype", $(objt).attr("valuetype"));
                             var defauleValues = getDefaueValues(valuetype, otext.id);
-                            $(otext).val(defauleValues);
+                            $(otext).attr("value", defauleValues);
                         }
                         $(objt).after(otext.outerHTML);
                         $(objt).remove();

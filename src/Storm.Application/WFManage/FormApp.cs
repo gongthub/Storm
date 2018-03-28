@@ -205,5 +205,20 @@ namespace Storm.Application.WFManage
             }
             return strTypes;
         }
+        /// <summary>
+        /// 获取当前流程申请时自定义默认值
+        /// </summary>
+        /// <param name="flowId"></param>
+        public string GetCommonCustomDefaultTypeByWorkIdJson(string workId, string controlId)
+        {
+            string strTypes = string.Empty;
+
+            FormControlEntity formControl = service.GetControlByWorkId(workId, controlId);
+            if (formControl != null && !string.IsNullOrEmpty(formControl.Id))
+            {
+                strTypes = formControl.DefaultType;
+            }
+            return strTypes;
+        }
     }
 }

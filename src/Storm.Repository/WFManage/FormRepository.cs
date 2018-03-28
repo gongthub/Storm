@@ -29,10 +29,38 @@ namespace Storm.Repository.WFManage
         }
         public FormControlEntity GetControl(string formId, string controlId)
         {
-            using (var db = new RepositoryBase().BeginTrans())
+            using (var db = new RepositoryBase())
             {
                 return db.FindEntity<FormControlEntity>(m => m.FormId == formId && m.ControlId == controlId);
             }
+        }
+
+
+        public FormControlEntity GetControlByWorkId(string workId, string controlId)
+        {
+            FormControlEntity model = new FormControlEntity();
+
+            using (var db = new RepositoryBase())
+            {
+                WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
+                if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                {
+                    FlowVersionEntity flowVersionEntity = db.FindEntity<FlowVersionEntity>(m => m.Id == workEntity.FlowVersionId);
+                    if (flowVersionEntity != null && !string.IsNullOrEmpty(flowVersionEntity.Id))
+                    {
+                        FlowEntity flowEntity = db.FindEntity<FlowEntity>(m => m.Id == flowVersionEntity.FlowId);
+                        if (flowEntity != null && !string.IsNullOrEmpty(flowEntity.Id))
+                        {
+                            FormEntity formEntity = db.FindEntity<FormEntity>(m => m.Id == flowEntity.FormId);
+                            if (formEntity != null && !string.IsNullOrEmpty(formEntity.Id))
+                            {
+                                model = db.FindEntity<FormControlEntity>(m => m.FormId == formEntity.Id && m.ControlId == controlId);
+                            }
+                        }
+                    }
+                }
+            }
+            return model;
         }
     }
 }
