@@ -13,13 +13,12 @@
             height: $(window).height() - 96,
             colModel: [
                 { label: "主键", name: "Id", hidden: true, key: true },
-                { label: '流程名称', name: 'FullName', width: 150, align: 'left' },
+                { label: '流程名称', name: 'FullName', width: 200, align: 'left' },
                 { label: '状态', name: 'FlowStatusName', width: 150, align: 'left' },
                 {
-                    label: '创建时间', name: 'CreatorTime', width: 80, align: 'left',
-                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
-                },
-                { label: '备注', name: 'Description', width: 300, align: 'left' }
+                    label: '创建时间', name: 'CreatorTime', width:200, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                }
             ]
         });
         $("#btn_search").click(function () {
@@ -28,8 +27,7 @@
             }).trigger('reloadGrid');
         });
     }
-    function btn_edit()
-    {
+    function btn_edit() {
         var keyValue = $("#gridList").jqGridRowValue().Id;
         if (keyValue != null && keyValue != "" && keyValue != undefined) {
             $.modalShowFull({
@@ -44,18 +42,37 @@
             $.modalAlertWarring("请先选择一条数据！");
         }
     }
-    function btn_submit() {
-
+    function btn_detail() {
+        var keyValue = $("#gridList").jqGridRowValue().Id;
+        if (keyValue != null && keyValue != "" && keyValue != undefined) {
+            $.modalShowFull({
+                id: "ApplyDetails",
+                title: "查看申请",
+                url: "/WFManage/Work/ApplyDetails?keyValue=" + keyValue,
+                btn: null
+            });
+        } else {
+            $.modalAlertWarring("请先选择一条数据！");
+        }
     }
-    function btn_apply() {
-        $.modalShowFull({
-            id: "ApplyForm",
-            title: "修改申请",
-            url: "/WFManage/Work/ApplyForm",
-            callBack: function (iframeId) {
-                top.frames[iframeId].submitForm();
-            }
-        });
+    function btn_submit() {
+        var keyValue = $("#gridList").jqGridRowValue().Id;
+        if (keyValue != null && keyValue != "" && keyValue != undefined) {
+            $.modalConfirm("是否确定提交申请？", function (result) {
+                if (result == true) {
+                    $.submitForm({
+                        url: "/WFManage/Work/SubmitApply?workId=" + keyValue,
+                        param: {},
+                        success: function () {
+                            $("#gridList").trigger("reloadGrid");
+                        }
+                    })
+                    top.layer.closeAll('dialog');
+                }
+            });
+        } else {
+            $.modalAlertWarring("请先选择一条数据！");
+        }
     }
 </script>
 
@@ -63,13 +80,13 @@
     <div class="toolbar">
         <div class="btn-group">
             <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
-            <a id="NF-apply" authorize="yes" onclick="btn_apply()"><i class="fa fa-pencil-square-o"></i>修改申请</a>
         </div>
         <div class="operate">
             <ul class="nav nav-pills">
                 <li class="first">已选中<span>1</span>项</li>
                 <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改申请</a></li>
-                <li><a id="NF-submit" authorize="yes" onclick="btn_submit()"><i class="fa fa-pencil-square-o"></i>提交申请</a></li>
+                <li><a id="NF-details" authorize="yes" onclick="btn_detail()"><i class="fa fa-search-plus"></i>查看申请</a></li>
+                <li><a id="NF-submit" authorize="yes" onclick="btn_submit()"><i class="fa fa-random"></i>提交申请</a></li>
             </ul>
             <a href="javascript:;" class="close"></a>
         </div>

@@ -13,6 +13,7 @@
     var defalutselects = [];
     var defalutcomboxs = [];
     var defalutorgs = [];
+    var removefileIds = [];
     var contentCodes = "";
     $(function () {
         if (!!keyValue) {
@@ -24,7 +25,7 @@
                 async: false,
                 success: function (data) {
                     if (data.Contents != null && data.Contents != undefined && data.Contents != "") {
-                        var codeStrs = initContents(data.Contents);
+                        var codeStrs = initContents(data.Codes);
                         contentCodes = codeStrs;
                         $("#dvCentents").html(codeStrs);
                     }
@@ -37,6 +38,7 @@
             initDefalutselects();
             initDefalutcomboxs();
             initDefalutorgs();
+            initFiles();
         }
     });
     function initContents(codes) {
@@ -583,12 +585,16 @@
         }
         formData.append("workId", keyValue);
         var contenthtmls = $("#dvCentents")[0].innerHTML;
+        contenthtmls = initsendHtml(contenthtmls);
         var dvCententhtmls = htmlEncode(contenthtmls);
         formData.append("contents", dvCententhtmls);
         formData.append("status", status);
         var custrols = getCustomControls(contenthtmls);
         if (custrols != null) {
             formData.append("custrols", JSON.stringify(custrols));
+        }
+        if (removefileIds != null && removefileIds != undefined) {
+            formData.append("removefileIds", JSON.stringify(removefileIds));
         }
         if ($('[name=__RequestVerificationToken]').length > 0) {
             formData.append("__RequestVerificationToken", $('[name=__RequestVerificationToken]').val());
@@ -728,6 +734,52 @@
             }
         }
         return custrols;
+    }
+    function initFiles() {
+        if (commonfiles != null && commonfiles != undefined && commonfiles.length > 0) {
+            for (var i = 0; i < commonfiles.length; i++) {
+                var filemodel = commonfiles[i];
+                if (filemodel != null && filemodel != undefined) {
+                    var fileControl = $("#" + filemodel.ControlId)
+                    if (fileControl != null && fileControl != undefined) {
+                        var fileShow = "<span><a href='" + filemodel.Paths + "' download='" + filemodel.FullName + "' style='color:red;'>" + filemodel.FullName
+                            + "</a><span fileid='" + filemodel.Id + "' onclick='fileRemove(this)' style='margin-left:10px;cursor:pointer;' class='spremovefiles'>删除</span><br/></span>";
+                        fileControl.after(fileShow);
+                    }
+                }
+            }
+        }
+    }
+    function fileRemove(e) {
+        $.modalConfirm("是否确定删除附件？", function (result) {
+            if (result == true) {
+                var fileId = $(e).attr("fileId");
+                if (fileId != null && fileId != undefined) {
+                    removefileIds.push(fileId);
+                    var pspan = $(e).parent();
+                    $(pspan).remove();
+                    top.layer.closeAll('dialog');
+                }
+            }
+        })
+
+    }
+    function initsendHtml(codes) {
+        var element = $(codes).get(0);
+        var jqueryobj = $(element);
+        var removebtns = jqueryobj.find(".spremovefiles");
+        if (removebtns != null && removebtns != undefined && removebtns.length > 0) {
+            for (var i = 0; i < removebtns.length; i++) {
+                $(removebtns[i]).remove();
+            }
+        }
+        var flowformfiles = jqueryobj.find(".flowformfiles");
+        if (flowformfiles != null && flowformfiles != undefined && flowformfiles.length > 0) {
+            for (var i = 0; i < flowformfiles.length; i++) {
+                $(flowformfiles[i]).remove();
+            }
+        }
+        return jqueryobj.context.outerHTML;
     }
 </script>
 

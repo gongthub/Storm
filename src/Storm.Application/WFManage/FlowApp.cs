@@ -158,6 +158,8 @@ namespace Storm.Application.WFManage
                     flowNode.Id = Guid.NewGuid().ToString();
                     flowNode.MarkName = itemnode.Key.ToString();
                     flowNode.Marked = false;
+                    flowNode.IsStartNode = false;
+                    flowNode.IsEndNode = false;
                     JObject objnodeitem = JObject.Parse(itemnode.Value.ToString());
                     if (objnodeitem != null)
                     {
@@ -210,6 +212,14 @@ namespace Storm.Application.WFManage
                             if (itemnodeitem.Key == "messagetype")
                             {
                                 flowNode.MessageType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "isstart")
+                            {
+                                flowNode.IsStartNode = (bool)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "isend")
+                            {
+                                flowNode.IsEndNode = (bool)itemnodeitem.Value;
                             }
                         }
                     }

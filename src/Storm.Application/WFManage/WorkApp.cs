@@ -18,6 +18,7 @@ namespace Storm.Application.WFManage
         private IWorkRepository service = new WorkRepository();
         private FlowApp flowApp = new FlowApp();
         private FormApp formApp = new FormApp();
+        private WorkFlowApp workFlowApp = new WorkFlowApp();
         public List<WorkEntity> GetAllList(string keyword = "")
         {
             var expression = ExtLinq.True<WorkEntity>();
@@ -107,20 +108,6 @@ namespace Storm.Application.WFManage
         {
             service.Delete(t => t.Id == keyValue);
         }
-        public void SubmitForm(WorkEntity workEntity, string keyValue)
-        {
-            if (!string.IsNullOrEmpty(keyValue))
-            {
-                workEntity.Modify(keyValue);
-                service.Update(workEntity);
-            }
-            else
-            {
-                workEntity.EnabledMark = true;
-                workEntity.Create();
-                service.Insert(workEntity);
-            }
-        }
 
         public List<WorkControlEntity> GetWorkControls(string workIds)
         {
@@ -155,40 +142,37 @@ namespace Storm.Application.WFManage
                             workEntity.FullName = flowentity.FullName;
                             workEntity.FlowVersionId = flowVersionEntity.Id;
                             workEntity.FlowStatus = status;
-                            if (status == (int)WorkStatus.Save)
-                            {
-                                workEntity.Contents = formEntity.Codes;
-                            }
-                            else
-                                if (status == (int)WorkStatus.Applying)
-                                {
-                                    workEntity.Contents = contents;
-                                }
+                            workEntity.Codes = formEntity.Codes;
+                            workEntity.Contents = contents;
                             var loguser = OperatorProvider.Provider.GetCurrent();
                             if (loguser != null)
                             {
                                 workEntity.ApplyUserId = loguser.UserId;
                             }
                             service.AddForm(workEntity, controls, files);
+                            if (status == (int)WorkStatus.Applying)
+                            {
+                                workFlowApp.Start(workEntity.Id);
+                            }
                         }
                         else
                         {
-                            throw new Exception("保存失败！");
+                            throw new Exception("操作失败！");
                         }
                     }
                     else
                     {
-                        throw new Exception("保存失败！");
+                        throw new Exception("操作失败！");
                     }
                 }
                 else
                 {
-                    throw new Exception("保存失败！");
+                    throw new Exception("操作失败！");
                 }
             }
             else
             {
-                throw new Exception("保存失败，提交状态无效！");
+                throw new Exception("操作失败，提交状态无效！");
             }
         }
         public void UpdateForm(string workId, int status, string contents, List<WorkControlEntity> controls, List<WorkFileEntity> files, List<string> RemoveFileIds)
@@ -203,25 +187,26 @@ namespace Storm.Application.WFManage
                     {
                         workEntity.Modify(workId);
                         workEntity.FlowStatus = status;
+                        workEntity.Contents = contents;
+                        service.UpdateForm(workEntity, controls, files, RemoveFileIds);
                         if (status == (int)WorkStatus.Applying)
                         {
-                            workEntity.Contents = contents;
+                            workFlowApp.Start(workEntity.Id);
                         }
-                        service.UpdateForm(workEntity, controls, files, RemoveFileIds);
                     }
                     else
                     {
-                        throw new Exception("保存失败！");
+                        throw new Exception("操作失败！");
                     }
                 }
                 else
                 {
-                    throw new Exception("保存失败！");
+                    throw new Exception("操作失败！");
                 }
             }
             else
             {
-                throw new Exception("保存失败，提交状态无效！");
+                throw new Exception("操作失败，提交状态无效！");
             }
         }
 

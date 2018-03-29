@@ -28,6 +28,10 @@ namespace Storm.Web.Areas.WFManage.Controllers
             {
                 data.Contents = Server.HtmlDecode(data.Contents);
             }
+            if (data != null && !string.IsNullOrEmpty(data.Codes))
+            {
+                data.Codes = Server.HtmlDecode(data.Codes);
+            }
             return Content(data.ToJson());
         }
         [HttpGet]
@@ -53,6 +57,12 @@ namespace Storm.Web.Areas.WFManage.Controllers
         [HttpGet]
         [HandlerAuthorize]
         public virtual ActionResult ApplyForm()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult ApplyDetails()
         {
             return View();
         }
@@ -102,6 +112,7 @@ namespace Storm.Web.Areas.WFManage.Controllers
         public ActionResult UpdateForm(string workId, int status, string contents)
         {
             string custrols = Request["custrols"];
+            string removefileIds = Request["removefileIds"];
             var files = Request.Files;
             List<WorkFileEntity> workFiles = workApp.UploadFiles(files);
             List<WorkControlEntity> workControls = new List<WorkControlEntity>();
@@ -109,7 +120,12 @@ namespace Storm.Web.Areas.WFManage.Controllers
             {
                 workControls = custrols.ToObject<List<WorkControlEntity>>();
             }
-            workApp.UpdateForm(workId, status, contents, workControls, workFiles, null);
+            List<string> removeFileIds = new List<string>();
+            if (!string.IsNullOrEmpty(removefileIds))
+            {
+                removeFileIds = removefileIds.ToObject<List<string>>();
+            }
+            workApp.UpdateForm(workId, status, contents, workControls, workFiles, removeFileIds);
             if (status == 2)
             {
                 return Success("提交成功。");
@@ -119,11 +135,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
                 return Success("保存成功。");
             }
         }
+
         [HttpPost]
         [HandlerAjaxOnly]
         [ValidateAntiForgeryToken]
         public ActionResult SubmitApply(string workId)
         {
+            new WorkFlowApp().Start(workId);
             return Success("提交成功。");
         }
     }

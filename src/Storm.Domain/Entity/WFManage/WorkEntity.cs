@@ -14,8 +14,9 @@ namespace Storm.Domain.Entity.WFManage
         public string FlowVersionId { get; set; }
         public string ApplyUserId { get; set; }
         public int FlowStatus { get; set; }
-        public string CurrentId { get; set; }
+        public string CurrentNodeId { get; set; }
         public string CurrentUsers { get; set; }
+        public string Codes { get; set; }
         public string Contents { get; set; }
         public bool? DeleteMark { get; set; }
         public bool? EnabledMark { get; set; }

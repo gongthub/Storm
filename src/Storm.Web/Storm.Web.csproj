@@ -1037,6 +1037,9 @@
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\Work\MyFlow.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\Work\ApplyDetails.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

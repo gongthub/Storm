@@ -59,6 +59,7 @@
     <Compile Include="WFManage\FormRepository.cs" />
     <Compile Include="WFManage\WFItemDetailRepository.cs" />
     <Compile Include="WFManage\WFItemRepository.cs" />
+    <Compile Include="WFManage\WorkFlowRepository.cs" />
     <Compile Include="WFManage\WorkRepository.cs" />
   </ItemGroup>
   <ItemGroup>

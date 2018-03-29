@@ -17,7 +17,6 @@ namespace Storm.Repository.WFManage
             {
                 using (var db = new RepositoryBase().BeginTrans())
                 {
-                    workEntity.Create();
                     if (controls != null && controls.Count > 0)
                     {
                         controls.ForEach(delegate(WorkControlEntity control)

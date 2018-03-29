@@ -179,11 +179,15 @@
         return true;
     }
     function itemAdd(id, type, json) {
+        json.isstart = false;
+        json.isend = false;
         if (json.type == "start round") {
             json.name = "开始";
+            json.isstart = true;
         }
         if (json.type == "end round") {
             json.name = "结束";
+            json.isend = true;
         }
         if (!IsHasType(json.type)) {
             return true;

@@ -20,6 +20,8 @@ namespace Storm.Data
         int DeleteById<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class;
         TEntity FindEntity<TEntity>(object keyValue) where TEntity : class;
         TEntity FindEntity<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class;
+        TEntity FindEntity<TEntity>(string strSql);
+        TEntity FindEntity<TEntity>(string strSql, DbParameter[] dbParameter);
         IQueryable<TEntity> IQueryable<TEntity>() where TEntity : class;
         IQueryable<TEntity> IQueryable<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class;
         List<TEntity> FindList<TEntity>(string strSql) where TEntity : class;

@@ -65,6 +65,7 @@
     <Compile Include="IRepository\WFManage\IFormRepository.cs" />
     <Compile Include="IRepository\WFManage\IWFItemDetailRepository.cs" />
     <Compile Include="IRepository\WFManage\IWFItemRepository.cs" />
+    <Compile Include="IRepository\WFManage\IWorkFlowRepository.cs" />
     <Compile Include="IRepository\WFManage\IWorkRepository.cs" />
     <Compile Include="ViewModel\AuthorizeActionModel.cs" />
     <Compile Include="Entity\SystemManage\AreaEntity.cs" />

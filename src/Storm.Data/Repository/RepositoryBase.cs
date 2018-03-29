@@ -177,6 +177,14 @@ namespace Storm.Data
         {
             return dbcontext.Set<TEntity>().FirstOrDefault(predicate);
         }
+        public TEntity FindEntity<TEntity>(string strSql)
+        {
+            return dbcontext.Database.SqlQuery<TEntity>(strSql).FirstOrDefault<TEntity>();
+        }
+        public TEntity FindEntity<TEntity>(string strSql, DbParameter[] dbParameter)
+        {
+            return dbcontext.Database.SqlQuery<TEntity>(strSql, dbParameter).FirstOrDefault<TEntity>();
+        }
         public IQueryable<TEntity> IQueryable<TEntity>() where TEntity : class
         {
             return dbcontext.Set<TEntity>();

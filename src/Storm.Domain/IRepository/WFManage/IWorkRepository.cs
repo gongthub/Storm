@@ -14,5 +14,6 @@ namespace Storm.Domain.IRepository.WFManage
         void UpdateForm(WorkEntity workEntity, List<WorkControlEntity> controls, List<WorkFileEntity> files, List<string> RemoveFileIds);
         List<WorkControlEntity> GetWorkControls(string workIds);
         List<WorkFileEntity> GetWorkFiles(string workIds);
+        
     }
 }

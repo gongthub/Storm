@@ -39,9 +39,9 @@ namespace Storm.Domain.Entity.WFManage
         [Description("岗位")]
         Post = 1,
         [Description("指定人")]
-        Last = 2,
+        Specified = 2,
         [Description("上一级领导")]
-        Specified = 3
+        Last = 3
     }
     /// <summary>
     /// 消息提醒类型
@@ -156,6 +156,18 @@ namespace Storm.Domain.Entity.WFManage
         [Description("审核通过")]
         Success = 3,
         [Description("审核不通过")]
-        Fail = 4
+        Fail = 4,
+        [Description("已撤回")]
+        Retract = 5
+    }
+    /// <summary>
+    /// 审核状态
+    /// </summary>
+    public enum ApprovalStatus
+    {
+        [Description("通过")]
+        Pass = 1,
+        [Description("不通过")]
+        Fail = 2
     }
 }
