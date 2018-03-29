@@ -572,6 +572,10 @@ $.fn.dataGrid = function (options) {
         $operate.find('.close').click(function () {
             $operate.animate({ "left": '-100.1%' }, 200);
         })
+        if (options.callBack != null && options.callBack != undefined)
+        {
+            options.callBack(rowid);
+        }
     };
     $element.jqGrid(options);
 };

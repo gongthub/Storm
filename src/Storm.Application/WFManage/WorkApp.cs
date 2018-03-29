@@ -99,6 +99,19 @@ namespace Storm.Application.WFManage
             }
             return models;
         }
+        public List<MyPendingWorkEntity> GetMyPendingList(string keyword = "")
+        {
+            List<MyPendingWorkEntity> models = service.GetMyPendingList(keyword);
+            if (models != null && models.Count > 0)
+            {
+                models.ForEach(delegate(MyPendingWorkEntity model)
+                {
+                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                    model.FlowStatusName = desc;
+                });
+            }
+            return models;
+        }
         public WorkEntity GetForm(string keyValue)
         {
             WorkEntity model = service.FindEntity(keyValue);
@@ -185,6 +198,10 @@ namespace Storm.Application.WFManage
                     workEntity = GetForm(workId);
                     if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
                     {
+                        if (workEntity.FlowStatus != (int)WorkStatus.Save)
+                        {
+                            throw new Exception("该申请已申请，不能修改！");
+                        }
                         workEntity.Modify(workId);
                         workEntity.FlowStatus = status;
                         workEntity.Contents = contents;

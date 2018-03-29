@@ -584,7 +584,7 @@
             }
         }
         formData.append("workId", keyValue);
-        var contenthtmls = $("#dvCentents")[0].innerHTML;
+        var contenthtmls = $("#dvCentents").formhtml();
         contenthtmls = initsendHtml(contenthtmls);
         var dvCententhtmls = htmlEncode(contenthtmls);
         formData.append("contents", dvCententhtmls);
@@ -742,8 +742,8 @@
                 if (filemodel != null && filemodel != undefined) {
                     var fileControl = $("#" + filemodel.ControlId)
                     if (fileControl != null && fileControl != undefined) {
-                        var fileShow = "<span><a href='" + filemodel.Paths + "' download='" + filemodel.FullName + "' style='color:red;'>" + filemodel.FullName
-                            + "</a><span fileid='" + filemodel.Id + "' onclick='fileRemove(this)' style='margin-left:10px;cursor:pointer;' class='spremovefiles'>删除</span><br/></span>";
+                        var fileShow = "<span  class='spremovefiles'><a href='" + filemodel.Paths + "' download='" + filemodel.FullName + "' style='color:red;'>" + filemodel.FullName
+                            + "</a><span fileid='" + filemodel.Id + "' onclick='fileRemove(this)' style='margin-left:10px;cursor:pointer;'>删除</span><br/></span>";
                         fileControl.after(fileShow);
                     }
                 }
@@ -773,12 +773,12 @@
                 $(removebtns[i]).remove();
             }
         }
-        var flowformfiles = jqueryobj.find(".flowformfiles");
-        if (flowformfiles != null && flowformfiles != undefined && flowformfiles.length > 0) {
-            for (var i = 0; i < flowformfiles.length; i++) {
-                $(flowformfiles[i]).remove();
-            }
-        }
+        //var flowformfiles = jqueryobj.find(".flowformfiles");
+        //if (flowformfiles != null && flowformfiles != undefined && flowformfiles.length > 0) {
+        //    for (var i = 0; i < flowformfiles.length; i++) {
+        //        $(flowformfiles[i]).remove();
+        //    }
+        //}
         return jqueryobj.context.outerHTML;
     }
 </script>

@@ -50,6 +50,7 @@
     <Compile Include="Entity\WFManage\FormControlEntity.cs" />
     <Compile Include="Entity\WFManage\FormEntity.cs" />
     <Compile Include="Entity\WFManage\GooFlowEntity.cs" />
+    <Compile Include="Entity\WFManage\MyPendingWorkEntity.cs" />
     <Compile Include="Entity\WFManage\WFItemDetailEntity.cs" />
     <Compile Include="Entity\WFManage\WFItemEntity.cs" />
     <Compile Include="Entity\WFManage\WorkControlEntity.cs" />

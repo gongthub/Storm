@@ -471,3 +471,27 @@ Date.prototype.Format = function (formatStr) {
 
     return str;
 }
+
+var oldHTML = $.fn.html;
+$.fn.formhtml = function () {
+    if (arguments.length) return oldHTML.apply(this, arguments);
+    $("input,textarea,button", this).each(function () {
+        this.setAttribute('value', this.value);
+    });
+    $("textarea", this).each(function () {
+        debugger
+        this.innerText = this.value
+    });
+    $(":radio,:checkbox", this).each(function () {
+        // im not really even sure you need to do this for "checked"  
+        // but what the heck, better safe than sorry  
+        if (this.checked) this.setAttribute('checked', 'checked');
+        else this.removeAttribute('checked');
+    });
+    $("option", this).each(function () {
+        // also not sure, but, better safe...  
+        if (this.selected) this.setAttribute('selected', 'selected');
+        else this.removeAttribute('selected');
+    });
+    return oldHTML.apply(this);
+};

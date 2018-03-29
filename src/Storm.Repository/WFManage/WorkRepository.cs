@@ -1,8 +1,11 @@
-﻿using Storm.Data;
+﻿using Storm.Code;
+using Storm.Data;
 using Storm.Domain.Entity.WFManage;
 using Storm.Domain.IRepository.WFManage;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -106,5 +109,59 @@ namespace Storm.Repository.WFManage
         }
 
 
+        public List<MyPendingWorkEntity> GetMyPendingList(string keyword = "")
+        {
+            try
+            {
+                string applyUserId = string.Empty;
+                var loguser = OperatorProvider.Provider.GetCurrent();
+                if (loguser != null)
+                {
+                    applyUserId = loguser.UserId;
+                }
+                else
+                {
+                    throw new Exception("当前用户信息异常！");
+                }
+                List<MyPendingWorkEntity> models = new List<MyPendingWorkEntity>();
+                using (var db = new RepositoryBase())
+                {
+                    string strSql = @"select * from (
+	                                select A.*,B.RealName UserName,C.FullName DeptName from WF_Works A
+	                                left join Sys_User B ON A.ApplyUserId=B.Id
+	                                left join Sys_Organize C ON B.DepartmentId=C.Id
+                                )A
+                                where A.CreatorUserId like @appuserId and (A.DeleteMark  is null or A.DeleteMark !=1) and A.FlowStatus=2";
+
+                    if (!string.IsNullOrEmpty(keyword))
+                    {
+                        strSql += " and (A.UserName like @userName or A.DeptName like @deptName or A.FullName like @name)";
+                        DbParameter[] parameter = 
+                            {
+                                 new SqlParameter("@userName",keyword),
+                                 new SqlParameter("@deptName",keyword),
+                                 new SqlParameter("@name",keyword),
+                                 new SqlParameter("@appuserId",applyUserId)
+                            };
+                        models = db.FindList<MyPendingWorkEntity>(strSql.ToString(), parameter);
+                    }
+                    else
+                    {
+
+                        DbParameter[] parameter = 
+                            {
+                                 new SqlParameter("@appuserId",applyUserId)
+                            };
+                        models = db.FindList<MyPendingWorkEntity>(strSql.ToString(), parameter);
+                    }
+                }
+                models = models.OrderByDescending(m => m.CreatorTime).ToList();
+                return models;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

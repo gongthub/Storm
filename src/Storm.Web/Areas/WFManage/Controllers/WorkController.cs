@@ -144,5 +144,27 @@ namespace Storm.Web.Areas.WFManage.Controllers
             new WorkFlowApp().Start(workId);
             return Success("提交成功。");
         }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetMyPendingGridJson(string keyword)
+        {
+            var data = workApp.GetMyPendingList(keyword);
+            return Content(data.ToJson());
+        }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult MyPending()
+        {
+            return View();
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ValidateAntiForgeryToken]
+        public ActionResult Approval(string workId)
+        {
+            new WorkFlowApp().Start(workId);
+            return Success("提交成功。");
+        }
     }
 }

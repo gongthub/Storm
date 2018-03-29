@@ -596,7 +596,7 @@
         }
         debugger
         formData.append("flowId", keyValue);
-        var contenthtmls = $("#dvCentents")[0].innerHTML;
+        var contenthtmls = $("#dvCentents").formhtml();
         var dvCententhtmls = htmlEncode(contenthtmls);
         formData.append("contents", dvCententhtmls);
         formData.append("status", status);
