@@ -15,7 +15,10 @@ namespace Storm.Domain.Entity.WFManage
         public string ApprovalUserName { get; set; }
         public int ApprovalStatus { get; set; }
         public string NodeId { get; set; }
+        public string NodeName { get; set; }
         public string LastLineId { get; set; }
+        public bool IsStart { get; set; }
+        public bool IsEnd { get; set; }
         public bool? DeleteMark { get; set; }
         public bool? EnabledMark { get; set; }
         public string Description { get; set; }

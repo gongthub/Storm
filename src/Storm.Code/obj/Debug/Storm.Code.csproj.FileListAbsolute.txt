@@ -22,4 +22,3 @@ D:\MyFiles\GIT\Storm\src\Storm.Code\bin\Debug\Newtonsoft.Json.xml
 D:\MyFiles\GIT\Storm\src\Storm.Code\obj\Debug\Storm.Code.dll
 D:\MyFiles\GIT\Storm\src\Storm.Code\obj\Debug\Storm.Code.pdb
 E:\WorkFiles\Project\GIT\Storm\src\Storm.Code\obj\Debug\Storm.Code.csprojResolveAssemblyReference.cache
-D:\MyFiles\GIT\Storm\src\Storm.Code\obj\Debug\Storm.Code.csprojResolveAssemblyReference.cache

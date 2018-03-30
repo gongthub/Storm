@@ -11,6 +11,7 @@ namespace Storm.Web.Areas.WFManage.Controllers
     public class WorkController : ControllerBase
     {
         private WorkApp workApp = new WorkApp();
+        private WorkFlowApp workFlowApp = new WorkFlowApp();
 
         [HttpGet]
         [HandlerAjaxOnly]
@@ -141,7 +142,7 @@ namespace Storm.Web.Areas.WFManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SubmitApply(string workId)
         {
-            new WorkFlowApp().Start(workId);
+            workFlowApp.Start(workId);
             return Success("提交成功。");
         }
 
@@ -163,8 +164,22 @@ namespace Storm.Web.Areas.WFManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Approval(string workId)
         {
-            new WorkFlowApp().Start(workId);
+            workFlowApp.Start(workId);
             return Success("提交成功。");
+        }
+
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult ApplyApproval()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetApproPocessridJson(string workId)
+        {
+            var data = workFlowApp.GetApproProcessList(workId);
+            return Content(data.ToJson());
         }
     }
 }

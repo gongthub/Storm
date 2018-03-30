@@ -33,7 +33,7 @@ namespace Storm.Application.WFManage
                 expression = expression.And(t => t.FullName.Contains(keyword));
                 expression = expression.Or(t => t.EnCode.Contains(keyword));
             }
-            expression = expression.Or(t => t.DeleteMark != true);
+            expression = expression.And(t => t.DeleteMark != true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public List<FormEntity> GetEnableList(string keyword = "")
@@ -44,7 +44,7 @@ namespace Storm.Application.WFManage
                 expression = expression.And(t => t.FullName.Contains(keyword));
                 expression = expression.Or(t => t.EnCode.Contains(keyword));
             }
-            expression = expression.Or(t => t.DeleteMark != true && t.EnabledMark == true);
+            expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public FormEntity GetForm(string keyValue)

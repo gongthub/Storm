@@ -33,9 +33,9 @@
         var keyValue = $("#gridList").jqGridRowValue().Id;
         if (keyValue != null && keyValue != "" && keyValue != undefined) {
             $.modalShowFull({
-                id: "ApproForm",
+                id: "ApplyApproval",
                 title: "审核",
-                url: "/WFManage/Work/ApplyDetails?keyValue=" + keyValue,
+                url: "/WFManage/Work/ApplyApproval?keyValue=" + keyValue,
                 callBack: function (iframeId) {
                     top.frames[iframeId].submitForm();
                 }

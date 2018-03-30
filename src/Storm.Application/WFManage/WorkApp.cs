@@ -44,7 +44,7 @@ namespace Storm.Application.WFManage
             {
                 expression = expression.And(t => t.FullName.Contains(keyword));
             }
-            expression = expression.Or(t => t.DeleteMark != true);
+            expression = expression.And(t => t.DeleteMark != true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
@@ -63,7 +63,7 @@ namespace Storm.Application.WFManage
             {
                 expression = expression.And(t => t.FullName.Contains(keyword));
             }
-            expression = expression.Or(t => t.DeleteMark != true && t.EnabledMark == true);
+            expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
@@ -85,9 +85,9 @@ namespace Storm.Application.WFManage
             var loguser = OperatorProvider.Provider.GetCurrent();
             if (loguser != null)
             {
-                expression = expression.Or(t => t.ApplyUserId == loguser.UserId);
+                expression = expression.And(t => t.ApplyUserId == loguser.UserId);
             }
-            expression = expression.Or(t => t.DeleteMark != true);
+            expression = expression.And(t => t.DeleteMark != true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {

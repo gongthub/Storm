@@ -40,25 +40,12 @@ namespace Storm.Repository.WFManage
                             workEntity.CurrentUsers = userIds;
                         }
                         workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        AddStartApproProcess(workId, db);
                         if (nextNode.IsEndNode)
                         {
                             workEntity.FlowStatus = (int)WorkStatus.Success;
+                            AddEndApproProcess(workId, nextNode, db);
                         }
-
-                        ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
-                        appproEntity.Create();
-                        appproEntity.WorkId = workId;
-                        appproEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
-                        appproEntity.NodeId = workEntity.CurrentNodeId;
-                        appproEntity.LastLineId = flowLineEntity.Id;
-                        var LoginInfo = OperatorProvider.Provider.GetCurrent();
-                        if (LoginInfo != null)
-                        {
-                            appproEntity.ApprovalUserId = LoginInfo.UserId;
-                            appproEntity.ApprovalUserName = LoginInfo.UserName;
-
-                        }
-                        db.Insert(appproEntity);
                         db.Update(workEntity);
                         db.Commit();
                     }
@@ -73,12 +60,37 @@ namespace Storm.Repository.WFManage
         {
             throw new NotImplementedException();
         }
-
         public void ApplyFail(string workId, RejectType rejectType, string desc)
         {
             throw new NotImplementedException();
         }
-
+        private FlowNodeEntity GetCurrentNode(string workId)
+        {
+            try
+            {
+                FlowNodeEntity currentNode = new FlowNodeEntity();
+                using (var db = new RepositoryBase())
+                {
+                    WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
+                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                    {
+                        if (string.IsNullOrEmpty(workEntity.CurrentNodeId))
+                        {
+                            currentNode = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == workEntity.FlowVersionId && m.IsStartNode == true);
+                        }
+                        else
+                        {
+                            currentNode = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
+                        }
+                    }
+                }
+                return currentNode;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         private FlowNodeEntity GetNextNodeId(string workId, ApprovalStatus approvalStatus, RejectType rejectType = RejectType.Last)
         {
             try
@@ -243,7 +255,6 @@ namespace Storm.Repository.WFManage
                 throw ex;
             }
         }
-
         private bool JudgmentPlot(string workId, int plotType, string plots)
         {
             try
@@ -274,7 +285,6 @@ namespace Storm.Repository.WFManage
                 throw ex;
             }
         }
-
         private string GenNewPlots(string workId, string plots)
         {
             List<WorkControlEntity> workControls = new List<WorkControlEntity>();
@@ -306,7 +316,6 @@ namespace Storm.Repository.WFManage
             }
             return plots;
         }
-
         private string GetCurrentUserIds(FlowNodeEntity nextNode)
         {
             string userIds = string.Empty;
@@ -349,7 +358,61 @@ namespace Storm.Repository.WFManage
                     }
             return userIds;
         }
-
-
+        private void AddStartApproProcess(string workId, IRepositoryBase db)
+        {
+            FlowNodeEntity currentNode = GetCurrentNode(workId);
+            ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
+            appproEntity.Create();
+            appproEntity.WorkId = workId;
+            appproEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
+            appproEntity.NodeId = currentNode.Id;
+            appproEntity.NodeName = currentNode.Name;
+            appproEntity.IsStart = true;
+            appproEntity.IsEnd = false;
+            var LoginInfo = OperatorProvider.Provider.GetCurrent();
+            if (LoginInfo != null)
+            {
+                appproEntity.ApprovalUserId = LoginInfo.UserId;
+                appproEntity.ApprovalUserName = LoginInfo.UserName;
+            }
+            db.Insert(appproEntity);
+        }
+        private void AddEndApproProcess(string workId, FlowNodeEntity node, IRepositoryBase db)
+        {
+            ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
+            appproEntity.Create();
+            appproEntity.WorkId = workId;
+            appproEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
+            appproEntity.NodeId = node.Id;
+            appproEntity.NodeName = node.Name;
+            appproEntity.IsStart = false;
+            appproEntity.IsEnd = true;
+            var LoginInfo = OperatorProvider.Provider.GetCurrent();
+            if (LoginInfo != null)
+            {
+                appproEntity.ApprovalUserId = LoginInfo.UserId;
+                appproEntity.ApprovalUserName = LoginInfo.UserName;
+            }
+            db.Insert(appproEntity);
+        }
+        private void AddApproProcess(string workId, string desc, ApprovalStatus status, FlowNodeEntity node, IRepositoryBase db)
+        {
+            ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
+            appproEntity.Create();
+            appproEntity.WorkId = workId;
+            appproEntity.ApprovalStatus = (int)status;
+            appproEntity.NodeId = node.Id;
+            appproEntity.NodeName = node.Name;
+            appproEntity.Description = desc;
+            appproEntity.IsStart = false;
+            appproEntity.IsEnd = false;
+            var LoginInfo = OperatorProvider.Provider.GetCurrent();
+            if (LoginInfo != null)
+            {
+                appproEntity.ApprovalUserId = LoginInfo.UserId;
+                appproEntity.ApprovalUserName = LoginInfo.UserName;
+            }
+            db.Insert(appproEntity);
+        }
     }
 }

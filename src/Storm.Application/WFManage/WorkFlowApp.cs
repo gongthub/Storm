@@ -1,4 +1,5 @@
-﻿using Storm.Domain.IRepository.WFManage;
+﻿using Storm.Domain.Entity.WFManage;
+using Storm.Domain.IRepository.WFManage;
 using Storm.Repository.WFManage;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,17 @@ namespace Storm.Application.WFManage
     public class WorkFlowApp
     {
         private IWorkFlowRepository service = new WorkFlowRepository();
+        private IApprovalProcessRepository approservice = new ApprovalProcessRepository();
         public void Start(string workId)
         {
             service.Start(workId);
+        }
+        public List<ApprovalProcessEntity> GetApproProcessList(string workId)
+        {
+            List<ApprovalProcessEntity> models = new List<ApprovalProcessEntity>();
+            models = approservice.IQueryable(m => m.WorkId == workId && m.DeleteMark != true
+                && m.IsEnd != true && m.IsStart != true).OrderByDescending(m => m.CreatorTime).ToList();
+            return models;
         }
     }
 }
