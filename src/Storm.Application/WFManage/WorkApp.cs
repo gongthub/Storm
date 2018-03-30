@@ -165,7 +165,16 @@ namespace Storm.Application.WFManage
                             service.AddForm(workEntity, controls, files);
                             if (status == (int)WorkStatus.Applying)
                             {
-                                workFlowApp.Start(workEntity.Id);
+                                try
+                                {
+                                    workFlowApp.Start(workEntity.Id);
+                                }
+                                catch (Exception ex)
+                                {
+                                    workEntity.FlowStatus = (int)WorkStatus.Save;
+                                    service.Update(workEntity);
+                                    throw ex;
+                                }
                             }
                         }
                         else
@@ -208,7 +217,16 @@ namespace Storm.Application.WFManage
                         service.UpdateForm(workEntity, controls, files, RemoveFileIds);
                         if (status == (int)WorkStatus.Applying)
                         {
-                            workFlowApp.Start(workEntity.Id);
+                            try
+                            {
+                                workFlowApp.Start(workEntity.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                workEntity.FlowStatus = (int)WorkStatus.Save;
+                                service.Update(workEntity);
+                                throw ex;
+                            }
                         }
                     }
                     else

@@ -479,7 +479,6 @@ $.fn.formhtml = function () {
         this.setAttribute('value', this.value);
     });
     $("textarea", this).each(function () {
-        debugger
         this.innerText = this.value
     });
     $(":radio,:checkbox", this).each(function () {

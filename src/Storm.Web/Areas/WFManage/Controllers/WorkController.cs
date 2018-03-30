@@ -159,14 +159,6 @@ namespace Storm.Web.Areas.WFManage.Controllers
         {
             return View();
         }
-        [HttpPost]
-        [HandlerAjaxOnly]
-        [ValidateAntiForgeryToken]
-        public ActionResult Approval(string workId)
-        {
-            workFlowApp.Start(workId);
-            return Success("提交成功。");
-        }
 
         [HttpGet]
         [HandlerAuthorize]
@@ -180,6 +172,15 @@ namespace Storm.Web.Areas.WFManage.Controllers
         {
             var data = workFlowApp.GetApproProcessList(workId);
             return Content(data.ToJson());
+        }
+
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ValidateAntiForgeryToken]
+        public ActionResult Approval(string workId, int status, string desc)
+        {
+            workFlowApp.Approval(workId, status, desc);
+            return Success("审核成功。");
         }
     }
 }

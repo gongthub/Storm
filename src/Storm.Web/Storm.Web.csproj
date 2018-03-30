@@ -1020,12 +1020,6 @@
     <Content Include="Areas\WFManage\Views\Flow\ReviewerPeople.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\WFManage\Views\Work\Form.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\WFManage\Views\Work\Details.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\WFManage\Views\Work\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

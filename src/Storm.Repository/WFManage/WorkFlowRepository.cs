@@ -58,12 +58,106 @@ namespace Storm.Repository.WFManage
         }
         public void ApplySuccess(string workId, string desc)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var db = new RepositoryBase().BeginTrans())
+                {
+                    WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
+                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                    {
+                        workEntity.Modify(workEntity.Id);
+                        FlowLineEntity flowLineEntity = new FlowLineEntity();
+                        FlowNodeEntity currentNode = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
+                        FlowNodeEntity nextNode = GetNextNodeId(workId, ApprovalStatus.Pass, ref flowLineEntity);
+                        if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))
+                        {
+                            workEntity.CurrentNodeId = nextNode.Id;
+                        }
+                        else
+                        {
+                            workEntity.CurrentNodeId = string.Empty;
+                        }
+                        string userIds = GetCurrentUserIds(nextNode);
+                        if (!string.IsNullOrEmpty(userIds))
+                        {
+                            workEntity.CurrentUsers = userIds;
+                        }
+                        workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
+                        if (nextNode.IsEndNode)
+                        {
+                            workEntity.FlowStatus = (int)WorkStatus.Success;
+                            AddEndApproProcess(workId, nextNode, db);
+                        }
+                        db.Update(workEntity);
+                        db.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        public void ApplyFail(string workId, RejectType rejectType, string desc)
+        public void ApplyFail(string workId, string desc)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var db = new RepositoryBase().BeginTrans())
+                {
+                    WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
+                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                    {
+                        workEntity.Modify(workEntity.Id);
+                        FlowLineEntity flowLineEntity = new FlowLineEntity();
+                        FlowNodeEntity currentNode = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
+                        FlowNodeEntity nextNode = GetNextNodeId(workId, ApprovalStatus.Pass, ref flowLineEntity);
+                        if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))
+                        {
+                            workEntity.CurrentNodeId = nextNode.Id;
+                        }
+                        else
+                        {
+                            workEntity.CurrentNodeId = string.Empty;
+                        }
+                        string userIds = GetCurrentUserIds(nextNode);
+                        if (!string.IsNullOrEmpty(userIds))
+                        {
+                            workEntity.CurrentUsers = userIds;
+                        }
+                        if (currentNode.RejectType == (int)RejectType.End)
+                        {
+                            workEntity.FlowStatus = (int)WorkStatus.Fail;
+                            AddEndApproProcess(workId, nextNode, db);
+                        }
+                        else
+                        {
+                            workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        }
+                        AddApproProcess(workId, desc, ApprovalStatus.Fail, currentNode, db);
+                        db.Update(workEntity);
+                        db.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
+        public void Approval(string workId, int status, string desc)
+        {
+            if (status == (int)ApprovalStatus.Pass)
+            {
+                ApplySuccess(workId, desc);
+            }
+            else
+                if (status == (int)ApprovalStatus.Fail)
+                {
+                    ApplyFail(workId, desc);
+                }
+        }
+
         private FlowNodeEntity GetCurrentNode(string workId)
         {
             try
@@ -144,6 +238,39 @@ namespace Storm.Repository.WFManage
                             }
                             nextNode = GetNextNodeIdPass(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId, ref flowLineEntity);
                         }
+                        else
+                            if (approvalStatus == ApprovalStatus.Fail)
+                            {
+                                if (!string.IsNullOrEmpty(workEntity.CurrentNodeId))
+                                {
+                                    FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
+                                    if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
+                                    {
+                                        switch (flowNodeEntity.RejectType)
+                                        {
+                                            case (int)RejectType.Reviewer:
+                                                FlowNodeEntity startflowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == workEntity.FlowVersionId);
+                                                if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
+                                                {
+                                                    workEntity.CurrentNodeId = flowNodeEntity.Id;
+                                                }
+                                                nextNode = GetNextNodeIdPass(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId, ref flowLineEntity);
+                                                break;
+                                            case (int)RejectType.Last:
+                                                nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId, ref flowLineEntity);
+                                                break;
+                                            case (int)RejectType.Specified:
+                                                break;
+                                            default:
+                                                throw new Exception("当前节点驳回配置异常！");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("当前节点异常！");
+                                }
+                            }
                     }
                 }
                 return nextNode;
@@ -168,7 +295,7 @@ namespace Storm.Repository.WFManage
                         {
                             if (flowLines.Count == 1)
                             {
-                                string markName = flowLines[0].MarkName;
+                                string markName = flowLines[0].ToNode;
                                 FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
                                 if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
                                 {
@@ -219,7 +346,109 @@ namespace Storm.Repository.WFManage
                             if (flowLines.Count == 1)
                             {
                                 flowLineEntity = flowLines[0];
-                                string markName = flowLines[0].MarkName;
+                                string markName = flowLines[0].ToNode;
+                                FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
+                                if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
+                                {
+                                    nextNode = flowNodeEntityT;
+                                }
+                            }
+                            else
+                            {
+                                foreach (FlowLineEntity flowline in flowLines)
+                                {
+                                    bool bresult = JudgmentPlot(workId, flowline.PlotType, flowline.Plot);
+                                    if (bresult)
+                                    {
+                                        flowLineEntity = flowline;
+                                        string markName = flowline.ToNode;
+                                        FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
+                                        if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
+                                        {
+                                            nextNode = flowNodeEntityT;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return nextNode;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        private FlowNodeEntity GetNextNodeIdFail(string workId, string CurrentNodeId, string flowVersionId)
+        {
+            try
+            {
+                FlowNodeEntity nextNode = new FlowNodeEntity();
+                using (var db = new RepositoryBase())
+                {
+                    FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.Id == CurrentNodeId);
+                    if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
+                    {
+                        List<FlowLineEntity> flowLines = db.IQueryable<FlowLineEntity>(m => m.FlowVersionId == flowVersionId && m.ToNode == flowNodeEntity.MarkName).ToList();
+                        if (flowLines != null && flowLines.Count > 0)
+                        {
+                            if (flowLines.Count == 1)
+                            {
+                                string markName = flowLines[0].ToNode;
+                                FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
+                                if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
+                                {
+                                    nextNode = flowNodeEntityT;
+                                }
+                            }
+                            else
+                            {
+                                foreach (FlowLineEntity flowline in flowLines)
+                                {
+                                    bool bresult = JudgmentPlot(workId, flowline.PlotType, flowline.Plot);
+                                    if (bresult)
+                                    {
+                                        string markName = flowline.ToNode;
+                                        FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
+                                        if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
+                                        {
+                                            nextNode = flowNodeEntityT;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return nextNode;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        private FlowNodeEntity GetNextNodeIdFail(string workId, string CurrentNodeId, string flowVersionId, ref FlowLineEntity flowLineEntity)
+        {
+            try
+            {
+                FlowNodeEntity nextNode = new FlowNodeEntity();
+                using (var db = new RepositoryBase())
+                {
+                    FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.Id == CurrentNodeId);
+                    if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
+                    {
+                        List<FlowLineEntity> flowLines = db.IQueryable<FlowLineEntity>(m => m.FlowVersionId == flowVersionId && m.ToNode == flowNodeEntity.MarkName).ToList();
+                        if (flowLines != null && flowLines.Count > 0)
+                        {
+                            if (flowLines.Count == 1)
+                            {
+                                flowLineEntity = flowLines[0];
+                                string markName = flowLines[0].ToNode;
                                 FlowNodeEntity flowNodeEntityT = db.FindEntity<FlowNodeEntity>(m => m.FlowVersionId == flowVersionId && m.MarkName == markName);
                                 if (flowNodeEntityT != null && !string.IsNullOrEmpty(flowNodeEntityT.Id))
                                 {
@@ -397,22 +626,29 @@ namespace Storm.Repository.WFManage
         }
         private void AddApproProcess(string workId, string desc, ApprovalStatus status, FlowNodeEntity node, IRepositoryBase db)
         {
-            ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
-            appproEntity.Create();
-            appproEntity.WorkId = workId;
-            appproEntity.ApprovalStatus = (int)status;
-            appproEntity.NodeId = node.Id;
-            appproEntity.NodeName = node.Name;
-            appproEntity.Description = desc;
-            appproEntity.IsStart = false;
-            appproEntity.IsEnd = false;
-            var LoginInfo = OperatorProvider.Provider.GetCurrent();
-            if (LoginInfo != null)
+            if (node != null && !string.IsNullOrEmpty(node.Id))
             {
-                appproEntity.ApprovalUserId = LoginInfo.UserId;
-                appproEntity.ApprovalUserName = LoginInfo.UserName;
+                ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
+                appproEntity.Create();
+                appproEntity.WorkId = workId;
+                appproEntity.ApprovalStatus = (int)status;
+                appproEntity.NodeId = node.Id;
+                appproEntity.NodeName = node.Name;
+                appproEntity.Description = desc;
+                appproEntity.IsStart = false;
+                appproEntity.IsEnd = false;
+                var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                if (LoginInfo != null)
+                {
+                    appproEntity.ApprovalUserId = LoginInfo.UserId;
+                    appproEntity.ApprovalUserName = LoginInfo.UserName;
+                }
+                db.Insert(appproEntity);
             }
-            db.Insert(appproEntity);
+            else
+            {
+                throw new Exception("当前节点异常！");
+            }
         }
     }
 }

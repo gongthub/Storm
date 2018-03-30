@@ -17,6 +17,10 @@ namespace Storm.Application.WFManage
         {
             service.Start(workId);
         }
+        public void Approval(string workId, int status, string desc)
+        {
+            service.Approval(workId, status, desc);
+        }
         public List<ApprovalProcessEntity> GetApproProcessList(string workId)
         {
             List<ApprovalProcessEntity> models = new List<ApprovalProcessEntity>();

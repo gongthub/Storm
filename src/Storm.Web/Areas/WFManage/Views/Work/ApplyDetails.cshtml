@@ -55,11 +55,13 @@
                     }
                 }
             }
-            for (var i = 0; i < commonfiles.length; i++) {
-                var filemodel = commonfiles[i];
-                if (filemodel != null && filemodel != undefined) {
-                    var fileControl = $("#" + filemodel.ControlId)
-                    $(fileControl).remove();
+        }
+        var fileControls = $(".flowformfiles");
+        if (fileControls != null && fileControls != undefined && fileControls.length > 0) {
+            for (var i = 0; i < fileControls.length; i++) {
+                var filecontrol = fileControls[i];
+                if (filecontrol != null && filecontrol != undefined) {
+                    $(filecontrol).remove();
                 }
             }
         }

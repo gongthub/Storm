@@ -69,6 +69,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetApprovalStatusSelectJson()
+        {
+            List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(ApprovalStatus));
+            return Content(models.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetDesignJson(string keyValue)
         {
             var data = flowApp.GetDesign(keyValue);

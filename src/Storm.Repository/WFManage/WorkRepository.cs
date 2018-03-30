@@ -131,7 +131,7 @@ namespace Storm.Repository.WFManage
 	                                left join Sys_User B ON A.ApplyUserId=B.Id
 	                                left join Sys_Organize C ON B.DepartmentId=C.Id
                                 )A
-                                where A.CreatorUserId like @appuserId and (A.DeleteMark  is null or A.DeleteMark !=1) and A.FlowStatus=2";
+                                where A.CurrentUsers like @appuserId and (A.DeleteMark  is null or A.DeleteMark !=1) and A.FlowStatus=2";
 
                     if (!string.IsNullOrEmpty(keyword))
                     {
