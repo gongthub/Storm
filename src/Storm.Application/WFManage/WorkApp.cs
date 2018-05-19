@@ -1,21 +1,19 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.WFManage;
 using Storm.Domain.IRepository.WFManage;
-using Storm.Repository.WFManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Storm.Application.WFManage
 {
     public class WorkApp
     {
-        private static string WFFILEPATHS = Configs.GetValue("WFFilePaths");
-        private IWorkRepository service = new WorkRepository();
+        private static string WFFILEPATHS = ConfigHelp.configHelp.WFFILEPATHS;
+        private IWorkRepository service = DataAccess.CreateIWorkRepository();
         private FlowApp flowApp = new FlowApp();
         private FormApp formApp = new FormApp();
         private WorkFlowApp workFlowApp = new WorkFlowApp();
@@ -29,7 +27,7 @@ namespace Storm.Application.WFManage
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
-                models.ForEach(delegate(WorkEntity model)
+                models.ForEach(delegate (WorkEntity model)
                 {
                     string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
                     model.FlowStatusName = desc;
@@ -48,7 +46,7 @@ namespace Storm.Application.WFManage
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
-                models.ForEach(delegate(WorkEntity model)
+                models.ForEach(delegate (WorkEntity model)
                 {
                     string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
                     model.FlowStatusName = desc;
@@ -67,7 +65,7 @@ namespace Storm.Application.WFManage
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
-                models.ForEach(delegate(WorkEntity model)
+                models.ForEach(delegate (WorkEntity model)
                 {
                     string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
                     model.FlowStatusName = desc;
@@ -91,7 +89,7 @@ namespace Storm.Application.WFManage
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
             if (models != null && models.Count > 0)
             {
-                models.ForEach(delegate(WorkEntity model)
+                models.ForEach(delegate (WorkEntity model)
                 {
                     string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
                     model.FlowStatusName = desc;
@@ -104,7 +102,7 @@ namespace Storm.Application.WFManage
             List<MyPendingWorkEntity> models = service.GetMyPendingList(keyword);
             if (models != null && models.Count > 0)
             {
-                models.ForEach(delegate(MyPendingWorkEntity model)
+                models.ForEach(delegate (MyPendingWorkEntity model)
                 {
                     string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
                     model.FlowStatusName = desc;

@@ -1,7 +1,7 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemSecurity;
 using Storm.Domain.IRepository.SystemSecurity;
-using Storm.Repository.SystemSecurity;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Storm.Application.SystemSecurity
 {
     public class DbBackupApp
     {
-        private IDbBackupRepository service = new DbBackupRepository();
+        private IDbBackupRepository service = DataAccess.CreateIDbBackupRepository();
 
         public List<DbBackupEntity> GetList(string queryJson)
         {

@@ -1,7 +1,7 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemSecurity;
 using Storm.Domain.IRepository.SystemSecurity;
-using Storm.Repository.SystemSecurity;
+using Storm.RepositoryFactory;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemSecurity
 {
     public class FilterIPApp
     {
-        private IFilterIPRepository service = new FilterIPRepository();
+        private IFilterIPRepository service = DataAccess.CreateIFilterIPRepository();
 
         public List<FilterIPEntity> GetList(string keyword)
         {

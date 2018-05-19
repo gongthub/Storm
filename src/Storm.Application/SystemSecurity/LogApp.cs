@@ -1,7 +1,7 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemSecurity;
 using Storm.Domain.IRepository.SystemSecurity;
-using Storm.Repository.SystemSecurity;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemSecurity
 {
     public class LogApp
     {
-        private ILogRepository service = new LogRepository();
+        private ILogRepository service = DataAccess.CreateILogRepository();
 
         public List<LogEntity> GetList(Pagination pagination, string queryJson)
         {

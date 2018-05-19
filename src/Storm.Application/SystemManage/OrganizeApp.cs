@@ -1,6 +1,6 @@
 ﻿using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemManage
 {
     public class OrganizeApp
     {
-        private IOrganizeRepository service = new OrganizeRepository();
+        private IOrganizeRepository service = DataAccess.CreateIOrganizeRepository();
 
         public List<OrganizeEntity> GetAllList()
         {

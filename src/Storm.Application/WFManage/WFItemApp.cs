@@ -1,19 +1,17 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.WFManage;
 using Storm.Domain.IRepository.WFManage;
-using Storm.Repository.WFManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Storm.Application.WFManage
 {
     public class WFItemApp
     {
-        private IWFItemRepository service = new WFItemRepository();
-        private IWFItemDetailRepository serviceDetail = new WFItemDetailRepository();
+        private IWFItemRepository service = DataAccess.CreateIWFItemRepository();
+        private IWFItemDetailRepository serviceDetail = DataAccess.CreateIWFItemDetailRepository();
         public List<WFItemEntity> GetList()
         {
             return service.IQueryable().ToList();

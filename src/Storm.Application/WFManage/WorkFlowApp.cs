@@ -1,18 +1,15 @@
 ﻿using Storm.Domain.Entity.WFManage;
 using Storm.Domain.IRepository.WFManage;
-using Storm.Repository.WFManage;
-using System;
+using Storm.RepositoryFactory;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Storm.Application.WFManage
 {
     public class WorkFlowApp
     {
-        private IWorkFlowRepository service = new WorkFlowRepository();
-        private IApprovalProcessRepository approservice = new ApprovalProcessRepository();
+        private IWorkFlowRepository service = DataAccess.CreateIWorkFlowRepository();
+        private IApprovalProcessRepository approservice = DataAccess.CreateIApprovalProcessRepository();
         public void Start(string workId)
         {
             service.Start(workId);

@@ -1,6 +1,6 @@
 ﻿using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemManage
 {
     public class AreaApp
     {
-        private IAreaRepository service = new AreaRepository();
+        private IAreaRepository service = DataAccess.CreateIAreaRepository();
 
         public List<AreaEntity> GetList()
         {

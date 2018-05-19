@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Storm.Application</RootNamespace>
     <AssemblyName>Storm.Application</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,9 +80,17 @@
       <Project>{04857f03-e3a5-4c04-a4d4-84cfc0764389}</Project>
       <Name>Storm.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Storm.Repository\Storm.Repository.csproj">
-      <Project>{f4ac84e8-54e6-439e-823b-d96f7d9ff55d}</Project>
-      <Name>Storm.Repository</Name>
+    <ProjectReference Include="..\Storm.MySqlRepository\Storm.MySqlRepository.csproj">
+      <Project>{ec0420b8-fe50-42be-820d-5209c858c5f9}</Project>
+      <Name>Storm.MySqlRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storm.RepositoryFactory\Storm.RepositoryFactory.csproj">
+      <Project>{d5df48d5-ab77-484a-b31a-f8d6e3d50446}</Project>
+      <Name>Storm.RepositoryFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storm.SqlServerRepository\Storm.SqlServerRepository.csproj">
+      <Project>{898d993d-9c89-4d21-a78d-aaaa875f2fbb}</Project>
+      <Name>Storm.SqlServerRepository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,7 +2,7 @@
 using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
 using Storm.Domain.ViewModel;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Storm.Application.SystemManage
 {
     public class RoleAuthorizeApp
     {
-        private IRoleAuthorizeRepository service = new RoleAuthorizeRepository();
+        private IRoleAuthorizeRepository service = DataAccess.CreateIRoleAuthorizeRepository();
         private ModuleApp moduleApp = new ModuleApp();
         private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
 

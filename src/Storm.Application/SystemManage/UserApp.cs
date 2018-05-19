@@ -1,7 +1,7 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemManage
 {
     public class UserApp
     {
-        private IUserRepository service = new UserRepository();
+        private IUserRepository service = DataAccess.CreateIUserRepository();
         private UserLogOnApp userLogOnApp = new UserLogOnApp();
 
         public List<UserEntity> GetAllList(Pagination pagination, string keyword)

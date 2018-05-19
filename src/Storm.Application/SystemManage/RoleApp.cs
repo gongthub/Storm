@@ -1,7 +1,7 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +9,7 @@ namespace Storm.Application.SystemManage
 {
     public class RoleApp
     {
-        private IRoleRepository service = new RoleRepository();
+        private IRoleRepository service = DataAccess.CreateIRoleRepository();
         private ModuleApp moduleApp = new ModuleApp();
         private ModuleButtonApp moduleButtonApp = new ModuleButtonApp();
 

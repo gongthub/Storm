@@ -1,13 +1,13 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.SystemManage;
 using Storm.Domain.IRepository.SystemManage;
-using Storm.Repository.SystemManage;
+using Storm.RepositoryFactory;
 
 namespace Storm.Application.SystemManage
 {
     public class UserLogOnApp
     {
-        private IUserLogOnRepository service = new UserLogOnRepository();
+        private IUserLogOnRepository service = DataAccess.CreateIUserLogOnRepository();
 
         public UserLogOnEntity GetForm(string keyValue)
         {

@@ -1,18 +1,16 @@
 ﻿using Storm.Code;
 using Storm.Domain.Entity.WFManage;
 using Storm.Domain.IRepository.WFManage;
-using Storm.Repository.WFManage;
+using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Storm.Application.WFManage
 {
     public class FormApp
     {
-        private IFormRepository service = new FormRepository();
+        private IFormRepository service = DataAccess.CreateIFormRepository();
         private FlowApp flowApp = new FlowApp();
 
         public List<FormEntity> GetAllList(string keyword = "")
