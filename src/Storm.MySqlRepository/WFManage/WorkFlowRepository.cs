@@ -456,7 +456,7 @@ namespace Storm.MySqlRepository
                     FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.Id == CurrentNodeId);
                     if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
                     {
-                        List<FlowLineEntity> flowLines = db.IQueryable<FlowLineEntity>(m => m.FlowVersionId == flowVersionId && m.ToNode == flowNodeEntity.MarkName).ToList();
+                        List<FlowLineEntity> flowLines = db.IQueryable<FlowLineEntity>(m => m.FlowVersionId == flowVersionId && m.FromNode == flowNodeEntity.MarkName).ToList();
                         if (flowLines != null && flowLines.Count > 0)
                         {
                             if (flowLines.Count == 1)
