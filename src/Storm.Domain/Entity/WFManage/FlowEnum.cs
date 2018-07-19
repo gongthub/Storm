@@ -22,14 +22,12 @@ namespace Storm.Domain.Entity.WFManage
     /// </summary>
     public enum RejectType
     {
-        [Description("驳回申请人")]
-        Reviewer = 1,
+        [Description("直接驳回")]
+        End = 1,
         [Description("驳回上一节点")]
         Last = 2,
         [Description("驳回指定节点")]
-        Specified = 3,
-        [Description("结束")]
-        End = 4
+        Specified = 3
     }
     /// <summary>
     /// 审核人类型
