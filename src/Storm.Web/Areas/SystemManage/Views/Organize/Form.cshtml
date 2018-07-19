@@ -23,6 +23,11 @@
         $("#ParentId").bindSelect({
             url: "/SystemManage/Organize/GetTreeSelectJson",
         });
+        $("#ManagerId").bindSelect({
+            url: "/SystemManage/User/GetGridJson",
+            id: "Id",
+            text: "FullName"
+        });
     }
     function submitForm() {
         if (!$('#form1').formValid()) {
@@ -78,7 +83,9 @@
                 <tr>
                     <th class="formTitle">负责人</th>
                     <td class="formValue">
-                        <input id="ManagerId" name="ManagerId" type="text" class="form-control" />
+                        <select id="ManagerId" name="ManagerId" class="form-control required">
+                        </select>
+                        @*<input id="ManagerId" name="ManagerId" type="text" class="form-control" />*@
                     </td>
                     <th class="formTitle">手机</th>
                     <td class="formValue">
