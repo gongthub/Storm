@@ -99,12 +99,16 @@
                         break;
                     case "selRejectType":
                         focmodel.rejecttype = this.value;
+                        RejectTypeChange(focNode);
                         break;
                     case "selReviewerType":
                         focmodel.reviewertype = this.value;
                         break;
                     case "selMessageType":
                         focmodel.messagetype = this.value;
+                        break;
+                    case "selRejectNode":
+                        focmodel.rejectnode = this.value;
                         break;
                 }
             }
@@ -168,8 +172,13 @@
             $("#txtNodeHeight").val(obj.height);
             if (obj.steptype != null && obj.steptype != undefined)
                 $("#selStepType").val(obj.steptype).trigger("change").change();
-            if (obj.rejecttype != null && obj.rejecttype != undefined)
+            if (obj.rejecttype != null && obj.rejecttype != undefined) {
                 $("#selRejectType").val(obj.rejecttype).trigger("change").change();
+                RejectTypeChange(id);
+            }
+            if (obj.rejectnode != null && obj.rejectnode != undefined) {
+                $("#selRejectNode").val(obj.rejectnode).trigger("change").change();
+            }
             if (obj.reviewertype != null && obj.reviewertype != undefined)
                 $("#selReviewerType").val(obj.reviewertype).trigger("change").change();
             if (obj.messagetype != null && obj.messagetype != undefined)
@@ -261,6 +270,7 @@
         $("#txtNodeTop").val('');
         $("#txtNodeWidth").val('');
         $("#txtNodeHeight").val('');
+        $("#txtRejectNode").val('');
         $("#selStepType").val(0).trigger("change");
         $("#selRejectType").val(0).trigger("change");
         $("#selReviewerType").val(0).trigger("change");
@@ -344,6 +354,27 @@
             });
         }
     }
+    function RejectTypeChange(id) {
+        $("#selRejectNode").empty();
+        $("#selRejectNode").append("<option value=''>==请选择==</option>");
+        var rejectType = $("#selRejectType").val();
+        if (rejectType == "3") {
+            initRejectNode(id);
+        }
+    }
+    function initRejectNode(id) {;
+        $("#selRejectNode").empty();
+        $("#selRejectNode").append("<option value=''>==请选择==</option>");
+        var datas = myflowdesign.exportData();
+        if (datas != null) {
+            var nodes = myflowdesign.$nodeData;
+            $.each(nodes, function (i, n) {
+                if (nodes[i].type != "start round" && nodes[i].type != "end round" && i != id) {
+                    $("#selRejectNode").append($("<option></option>").val(i).html(nodes[i].name));
+                }
+            });
+        }
+    }
 
 </script>
 <form class="myForm" id="propertyForm">
@@ -381,6 +412,14 @@
                     <td>
                         <select id="selRejectType" name="selRejectType" class="form-control comflowtxt">
                             <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="th">驳回节点：</td>
+                    <td>
+                        <select id="selRejectNode" name="selRejectNode" class="form-control comflowtxt">
+                            <option value="">==请选择==</option>
                         </select>
                     </td>
                 </tr>

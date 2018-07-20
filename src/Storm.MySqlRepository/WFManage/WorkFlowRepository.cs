@@ -313,6 +313,7 @@ namespace Storm.MySqlRepository
                                         nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
                                         break;
                                     case (int)RejectType.Specified:
+                                        nextNode = db.IQueryable<FlowNodeEntity>(m => m.FlowVersionId == workEntity.FlowVersionId && m.MarkName == flowNodeEntity.RejectNode).FirstOrDefault();
                                         break;
                                     default:
                                         throw new Exception("当前节点驳回配置异常！");

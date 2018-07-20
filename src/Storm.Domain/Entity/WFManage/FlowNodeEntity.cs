@@ -20,6 +20,7 @@ namespace Storm.Domain.Entity.WFManage
         public int Height { set; get; }
         public int StepType { set; get; }
         public int RejectType { set; get; }
+        public string RejectNode { set; get; }
         public int ReviewerType { set; get; }
         public string ReviewerOrg { set; get; }
         public string ReviewerUser { set; get; }

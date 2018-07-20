@@ -222,6 +222,10 @@ namespace Storm.Application.WFManage
                             {
                                 flowNode.RejectType = (int)itemnodeitem.Value;
                             }
+                            if (itemnodeitem.Key == "rejectnode")
+                            {
+                                flowNode.RejectNode = itemnodeitem.Value.ToString();
+                            }
                             if (itemnodeitem.Key == "reviewertype")
                             {
                                 flowNode.ReviewerType = (int)itemnodeitem.Value;
