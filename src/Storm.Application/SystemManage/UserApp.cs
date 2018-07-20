@@ -4,6 +4,7 @@ using Storm.Domain.IRepository.SystemManage;
 using Storm.RepositoryFactory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Storm.Application.SystemManage
 {
@@ -36,6 +37,13 @@ namespace Storm.Application.SystemManage
             expression = expression.And(t => t.Account != "admin");
             expression = expression.And(t => t.DeleteMark != true);
             return service.FindList(expression, pagination);
+        }
+        public List<UserEntity> GetEnableList()
+        {
+            var expression = ExtLinq.True<UserEntity>();
+            expression = expression.And(t => t.Account != "admin");
+            expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
         public List<UserEntity> GetEnableList(Pagination pagination, string keyword)
         {

@@ -18,6 +18,12 @@ namespace Storm.MySqlRepository
         {
             try
             {
+                string userId = string.Empty;
+                var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                if (LoginInfo != null)
+                {
+                    userId = LoginInfo.UserId;
+                }
                 using (var db = new RepositoryBase().BeginTrans())
                 {
                     WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
@@ -33,7 +39,7 @@ namespace Storm.MySqlRepository
                         {
                             workEntity.CurrentNodeId = string.Empty;
                         }
-                        string userIds = GetCurrentUserIds(nextNode);
+                        string userIds = GetCurrentUserIds(nextNode, userId);
                         if (!string.IsNullOrEmpty(userIds))
                         {
                             workEntity.CurrentUsers = userIds;
@@ -94,12 +100,13 @@ namespace Storm.MySqlRepository
                             {
                                 string[] strUsers = workEntity.CurrentUsers.Split(',');
                                 string[] strUsersNew = strUsers?.Where(m => m != applyUserId)?.ToArray();
-                                if (strUsersNew != null && strUsersNew.Length > 0)
+                                if (strUsersNew != null && strUsersNew.Length > 1)
                                 {
                                     workEntity.CurrentUsers = string.Join(",", strUsersNew.ToArray());
                                     AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
                                 }
                                 else
+                                if (strUsersNew.Length == 1)
                                 {
                                     ApplySuccessOne(workId, desc, db, workEntity, currentNode);
                                 }
@@ -134,7 +141,7 @@ namespace Storm.MySqlRepository
             {
                 workEntity.CurrentNodeId = string.Empty;
             }
-            string userIds = GetCurrentUserIds(nextNode);
+            string userIds = GetCurrentUserIds(nextNode, workEntity.CurrentUsers);
             if (!string.IsNullOrEmpty(userIds))
             {
                 workEntity.CurrentUsers = userIds;
@@ -177,18 +184,19 @@ namespace Storm.MySqlRepository
                         workEntity.Modify(workEntity.Id);
                         FlowNodeEntity currentNode = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
                         bool isFail = false;
-                        FlowNodeEntity nextNode = GetFailNextNodeId(workId, out isFail);
+                        FlowNodeEntity lastNode = GetFailNextNodeId(workId, out isFail);
                         if (isFail)
                         {
                             workEntity.FlowStatus = (int)WorkStatus.Fail;
-                            AddEndApproProcess(workId, nextNode, db);
+                            AddEndApproProcess(workId, lastNode, db);
                         }
                         else
                         {
-                            if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))
+                            if (lastNode != null && !string.IsNullOrEmpty(lastNode.Id))
                             {
-                                workEntity.CurrentNodeId = nextNode.Id;
-                                string userIds = GetCurrentUserIds(nextNode);
+                                workEntity.CurrentNodeId = lastNode.Id;
+                                string lastUserId = GetApplyUserByNode(lastNode, workId);
+                                string userIds = GetCurrentUserIds(lastNode, lastUserId);
                                 if (!string.IsNullOrEmpty(userIds))
                                 {
                                     workEntity.CurrentUsers = userIds;
@@ -558,7 +566,7 @@ namespace Storm.MySqlRepository
             }
             return plots;
         }
-        private string GetCurrentUserIds(FlowNodeEntity nextNode)
+        private string GetCurrentUserIds(FlowNodeEntity nextNode, string currUser)
         {
             string userIds = string.Empty;
             if (nextNode.ReviewerType == (int)ReviewerType.Specified)
@@ -597,14 +605,13 @@ namespace Storm.MySqlRepository
             }
             else if (nextNode.ReviewerType == (int)ReviewerType.Last)
             {
-                var LoginInfo = OperatorProvider.Provider.GetCurrent();
-                if (LoginInfo != null)
+                using (var db = new RepositoryBase())
                 {
-                    string deptId = LoginInfo.DepartmentId;
-                    using (var db = new RepositoryBase())
+                    UserEntity userEntity = db.IQueryable<UserEntity>(m => m.Id == currUser && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                    if (userEntity != null && !string.IsNullOrWhiteSpace(userEntity.Id))
                     {
-                        OrganizeEntity organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == deptId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
-                        if (organizeEntity?.ManagerId == LoginInfo.UserId)
+                        OrganizeEntity organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == userEntity.DepartmentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                        if (organizeEntity?.ManagerId == currUser)
                         {
                             organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == organizeEntity.ParentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
                         }
@@ -676,6 +683,22 @@ namespace Storm.MySqlRepository
             {
                 throw new Exception("当前节点异常！");
             }
+        }
+        private string GetApplyUserByNode(FlowNodeEntity node, string workId)
+        {
+            string userId = string.Empty;
+            if (node != null && !string.IsNullOrWhiteSpace(node.Id))
+            {
+                using (var db = new RepositoryBase())
+                {
+                    ApprovalProcessEntity approvalProcessEntity = db.IQueryable<ApprovalProcessEntity>(m => m.WorkId == workId
+                     && m.DeleteMark != true
+                     && m.EnabledMark == true
+                     && m.NodeId == node.Id).OrderByDescending(m => m.CreatorTime).FirstOrDefault();
+                    userId = approvalProcessEntity?.ApprovalUserId;
+                }
+            }
+            return userId;
         }
     }
 }

@@ -41,6 +41,13 @@ namespace Storm.Web.Areas.SystemManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetEnableUsers()
+        {
+            var data = userApp.GetEnableList();
+            return Content(data.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
             var data = userApp.GetForm(keyValue);
