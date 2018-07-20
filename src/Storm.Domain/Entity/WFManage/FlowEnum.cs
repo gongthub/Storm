@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Storm.Domain.Entity.WFManage
 {
+    public delegate void MyDEl(EventArgs eventArgs);
     /// <summary>
     /// 步骤类型
     /// </summary>

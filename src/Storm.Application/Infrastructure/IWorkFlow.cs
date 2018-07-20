@@ -24,5 +24,6 @@ namespace Storm.Application.Infrastructure
         /// <param name="prarms">需要用于条件判断的参数 参数名称、 值</param>
         /// <returns></returns>
         bool Start(SystemForm systemForm, string key, Dictionary<string, string> prarms);
+        void AddEndActive(Action action, int i);
     }
 }
