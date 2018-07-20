@@ -1182,6 +1182,7 @@ CREATE TABLE `wf_flownodes` (
   `Height` int(11) DEFAULT NULL,
   `StepType` int(11) DEFAULT NULL,
   `RejectType` int(11) DEFAULT NULL,
+  `RejectType` varchar(255) DEFAULT NULL,
   `ReviewerType` int(11) DEFAULT NULL,
   `ReviewerOrg` varchar(255) DEFAULT NULL,
   `ReviewerUser` varchar(255) DEFAULT NULL,
