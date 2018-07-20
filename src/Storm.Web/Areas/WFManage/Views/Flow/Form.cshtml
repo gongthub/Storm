@@ -44,7 +44,12 @@
         });
     }
     function initFormId() {
+        $("#SystemFormType").empty();
+        $("#trFormUrl").hide();
+        $("#trFormUrl").removeClass("required");
         $("#FormId").empty();
+        $("#trFormId").hide();
+        $("#trFormId").removeClass("required");
         var formType = $("#FormType").val();
         if (formType == 1) {
             $("#FormId").bindSelect({
@@ -52,9 +57,17 @@
                 id: "Id",
                 text: "FullName"
             });
+            $("#trFormId").show();
+            $("#trFormId").addClass("required");
         } else
             if (formType == 2) {
-
+                $("#SystemFormType").bindSelect({
+                    url: "/WFManage/Flow/GetSystemFormSelectJson",
+                    id: "Value",
+                    text: "Desc"
+                });
+                $("#trFormUrl").show();
+                $("#trFormUrl").addClass("required");
             }
     }
 </script>
@@ -83,23 +96,21 @@
             <tr>
                 <th class="formTitle">表单类型</th>
                 <td class="formValue">
-                    <select id="FormType" name="FormType" class="form-control required">
-                    </select>
+                    <select id="FormType" name="FormType" class="form-control required"></select>
                 </td>
             </tr>
-            <tr>
+            <tr id="trFormId" style="display:none;">
                 <th class="formTitle">表单名称</th>
                 <td class="formValue">
-                    <select id="FormId" name="FormId" class="form-control required">
-                    </select>
+                    <select id="FormId" name="FormId" class="form-control required"></select>
                 </td>
             </tr>
-            @*<tr>
-                <th class="formTitle">表单地址</th>
+            <tr id="trFormUrl" style="display:none;">
+                <th class="formTitle">可选表单</th>
                 <td class="formValue">
-                    <input id="FormUrl" name="FormUrl" type="text" class="form-control required" placeholder="请输入流程名称" />
+                    <select id="SystemFormType" name="SystemFormType" class="form-control required"></select>
                 </td>
-            </tr>*@
+            </tr>
             <tr>
                 <th class="formTitle" valign="top" style="padding-top: 5px;">
                     备注

@@ -139,8 +139,8 @@ namespace Storm.Domain.Entity.WFManage
     {
         [Description("自定义表单")]
         Custom = 1,
-        //[Description("系统表单")]
-        //System = 2
+        [Description("系统表单")]
+        System = 2
     }
     /// <summary>
     /// 申请状态
@@ -167,5 +167,12 @@ namespace Storm.Domain.Entity.WFManage
         Pass = 1,
         [Description("不通过")]
         Fail = 2
+    }
+
+    public enum SystemForm
+    {
+        [Description("系统测试表单")]
+        [DefaultValue("/Test/View")]
+        Test = 1,
     }
 }

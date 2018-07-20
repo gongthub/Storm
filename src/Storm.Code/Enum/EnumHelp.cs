@@ -94,6 +94,55 @@ namespace Storm.Code
         }
         #endregion
 
+        #region 从枚举中获取DefaultValue +string GetDefaultValue(Enum enumName)
+        /// <summary>
+        /// 从枚举中获取DefaultValue
+        /// 说明：
+        /// 单元测试-->通过
+        /// </summary>
+        /// <param name="enumName">需要获取枚举DefaultValue的枚举</param>
+        /// <returns>描述内容</returns>
+        public string GetDefaultValue(Enum enumName)
+        {
+            string _defaultValue = string.Empty;
+            FieldInfo _fieldInfo = enumName.GetType().GetField(enumName.ToString());
+            object[] attrs = _fieldInfo.GetCustomAttributes(typeof(System.ComponentModel.DefaultValueAttribute), false);
+            if (attrs != null && attrs.Length > 0)
+            {
+                _defaultValue = ((DefaultValueAttribute)attrs[0]).Value.ToString();
+            }
+            else
+                _defaultValue = enumName.ToString();
+            return _defaultValue;
+        }
+        #endregion
+
+        #region 从枚举中获取DefaultValue +string GetDefaultValue(T t, int value)
+        /// <summary>
+        /// 从枚举中获取DefaultValue
+        /// 说明：
+        /// 单元测试-->通过
+        /// </summary>
+        /// <param name="enumName">需要获取枚举DefaultValue的枚举</param>
+        /// <returns>描述内容</returns>
+        public string GetDefaultValue(Type type, int value)
+        {
+            string _defaultValue = string.Empty;
+            if (type.IsEnum)
+            {
+                Array _enumValues = Enum.GetValues(type);
+                foreach (Enum item in _enumValues)
+                {
+                    if (Convert.ToInt32(item) == value)
+                    {
+                        _defaultValue = GetDefaultValue(item);
+                        break;
+                    }
+                }
+            }
+            return _defaultValue;
+        }
+        #endregion
 
         #region 获取字段Description +DescriptionAttribute[] GetDescriptAttr(FieldInfo fieldInfo)
         /// <summary>

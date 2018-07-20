@@ -419,7 +419,7 @@ $.fn.jqGridRowValue = function () {
     if (selectedRowIds != "") {
         var json = [];
         var len = selectedRowIds.length;
-        for (var i = 0; i < len ; i++) {
+        for (var i = 0; i < len; i++) {
             var rowData = $grid.jqGrid('getRowData', selectedRowIds[i]);
             json.push(rowData);
         }
@@ -484,7 +484,7 @@ $.fn.formSerialize = function (formdate) {
                 break;
             default:
                 var value = $this.val() == "" ? "&nbsp;" : $this.val();
-                if (!$.request("keyValue")) {
+                if (!$.request("keyValue") && value != null) {
                     value = value.replace(/&nbsp;/g, '');
                 }
                 postdata[id] = value;
@@ -572,8 +572,7 @@ $.fn.dataGrid = function (options) {
         $operate.find('.close').click(function () {
             $operate.animate({ "left": '-100.1%' }, 200);
         })
-        if (options.callBack != null && options.callBack != undefined)
-        {
+        if (options.callBack != null && options.callBack != undefined) {
             options.callBack(rowid);
         }
     };

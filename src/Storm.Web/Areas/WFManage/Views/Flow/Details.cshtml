@@ -28,6 +28,10 @@
         });
     }
     function initFormId() {
+        $("#SystemFormType").empty();
+        $("#trFormUrl").hide();
+        $("#FormId").empty();
+        $("#trFormId").hide();
         var formType = $("#FormType").val();
         if (formType == 1) {
             $("#FormId").bindSelect({
@@ -35,9 +39,15 @@
                 id: "Id",
                 text: "FullName"
             });
+            $("#trFormId").show();
         } else
             if (formType == 2) {
-
+                $("#SystemFormType").bindSelect({
+                    url: "/WFManage/Flow/GetSystemFormSelectJson",
+                    id: "Value",
+                    text: "Desc"
+                });
+                $("#trFormUrl").show();
             }
     }
 </script>
@@ -71,10 +81,18 @@
                     </select>
                 </td>
             </tr>
-            <tr>
+            <tr id="trFormId" style="display:none;">
                 <th class="formTitle">表单名称</th>
                 <td class="formValue">
                     <select id="FormId" name="FormId" class="form-control">
+                        <option value="">==请选择==</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="trFormUrl" style="display:none;">
+                <th class="formTitle">表单地址</th>
+                <td class="formValue">
+                    <select id="SystemFormType" name="SystemFormType" class="form-control">
                         <option value="">==请选择==</option>
                     </select>
                 </td>

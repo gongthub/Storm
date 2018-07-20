@@ -90,11 +90,37 @@ namespace Storm.Application.WFManage
         {
             if (!string.IsNullOrEmpty(keyValue))
             {
+                if (flowEntity.FormType == (int)FormType.Custom)
+                {
+                    flowEntity.FormUrl = string.Empty;
+                }
+                if (flowEntity.FormType == (int)FormType.System)
+                {
+                    if (flowEntity.SystemFormType != null)
+                    {
+                        flowEntity.FormUrl = EnumHelp.enumHelp.GetDefaultValue(typeof(SystemForm), (int)flowEntity.SystemFormType);
+                        flowEntity.SystemFormName = EnumHelp.enumHelp.GetDescription(typeof(SystemForm), (int)flowEntity.SystemFormType);
+                    }
+                    flowEntity.FormId = string.Empty;
+                }
                 flowEntity.Modify(keyValue);
                 service.Update(flowEntity);
             }
             else
             {
+                if (flowEntity.FormType == (int)FormType.Custom)
+                {
+                    flowEntity.FormUrl = string.Empty;
+                }
+                if (flowEntity.FormType == (int)FormType.System)
+                {
+                    if (flowEntity.SystemFormType != null)
+                    {
+                        flowEntity.FormUrl = EnumHelp.enumHelp.GetDefaultValue(typeof(SystemForm), (int)flowEntity.SystemFormType);
+                        flowEntity.SystemFormName = EnumHelp.enumHelp.GetDescription(typeof(SystemForm), (int)flowEntity.SystemFormType);
+                    }
+                    flowEntity.FormId = string.Empty;
+                }
                 flowEntity.EnabledMark = true;
                 flowEntity.Create();
                 service.Insert(flowEntity);
@@ -343,9 +369,9 @@ namespace Storm.Application.WFManage
                 }
                 else
                     if (flotType == (int)StrategiesType.Sql)
-                    {
-                        flowLineEntity.SqlPlot = plots;
-                    }
+                {
+                    flowLineEntity.SqlPlot = plots;
+                }
 
                 flowVersionService.UpdateLine(flowLineEntity);
             }

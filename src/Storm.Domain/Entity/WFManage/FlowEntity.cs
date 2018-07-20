@@ -9,6 +9,8 @@ namespace Storm.Domain.Entity.WFManage
         public string Id { get; set; }
         public string FormId { get; set; }
         public int FormType { get; set; }
+        public int? SystemFormType { get; set; }
+        public string SystemFormName { get; set; }
         public string FormUrl { get; set; }
         public string EnCode { get; set; }
         public string FullName { get; set; }

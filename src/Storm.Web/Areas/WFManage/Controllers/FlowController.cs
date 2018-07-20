@@ -76,6 +76,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetSystemFormSelectJson()
+        {
+            List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(SystemForm));
+            return Content(models.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetDesignJson(string keyValue)
         {
             var data = flowApp.GetDesign(keyValue);
