@@ -35,6 +35,17 @@ namespace Storm.Application.WFManage
             expression = expression.And(t => t.DeleteMark != true);
             return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
         }
+        public List<FlowEntity> GetCustomList(string keyword = "")
+        {
+            var expression = ExtLinq.True<FlowEntity>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                expression = expression.And(t => t.FullName.Contains(keyword));
+                expression = expression.Or(t => t.EnCode.Contains(keyword));
+            }
+            expression = expression.And(t => t.DeleteMark != true && t.FormType == (int)FormType.Custom);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).ToList();
+        }
         public List<FlowEntity> GetEnableList(string keyword = "")
         {
             var expression = ExtLinq.True<FlowEntity>();
@@ -49,6 +60,12 @@ namespace Storm.Application.WFManage
         public FlowEntity GetForm(string keyValue)
         {
             return service.FindEntity(keyValue);
+        }
+        public FlowEntity GetForm(SystemForm systemForm)
+        {
+            var expression = ExtLinq.True<FlowEntity>();
+            expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true && t.FormType == (int)FormType.System && t.SystemFormType == (int)systemForm);
+            return service.IQueryable(expression).OrderBy(t => t.SortCode).FirstOrDefault();
         }
         public FlowVersionEntity GetDesign(string keyValue)
         {
@@ -96,6 +113,10 @@ namespace Storm.Application.WFManage
                 }
                 if (flowEntity.FormType == (int)FormType.System)
                 {
+                    if (IsExistSystemFlow((SystemForm)flowEntity.SystemFormType, keyValue))
+                    {
+                        throw new Exception("当前系统表单已存在流程，请确认！");
+                    }
                     if (flowEntity.SystemFormType != null)
                     {
                         flowEntity.FormUrl = EnumHelp.enumHelp.GetDefaultValue(typeof(SystemForm), (int)flowEntity.SystemFormType);
@@ -114,6 +135,10 @@ namespace Storm.Application.WFManage
                 }
                 if (flowEntity.FormType == (int)FormType.System)
                 {
+                    if (IsExistSystemFlow((SystemForm)flowEntity.SystemFormType, keyValue))
+                    {
+                        throw new Exception("当前系统表单已存在流程，请确认！");
+                    }
                     if (flowEntity.SystemFormType != null)
                     {
                         flowEntity.FormUrl = EnumHelp.enumHelp.GetDefaultValue(typeof(SystemForm), (int)flowEntity.SystemFormType);
@@ -412,6 +437,26 @@ namespace Storm.Application.WFManage
         public FlowAreaEntity GetArea(string flowId, string markName)
         {
             return flowVersionService.GetArea(flowId, markName);
+        }
+
+        private bool IsExistSystemFlow(SystemForm systemForm, string flowId)
+        {
+            bool bResult = false;
+            var expression = ExtLinq.True<FlowEntity>();
+            expression = expression.And(t => t.DeleteMark != true
+            && t.EnabledMark == true
+            && t.FormType == (int)FormType.System
+            && t.SystemFormType == (int)systemForm);
+            if (!string.IsNullOrWhiteSpace(flowId))
+            {
+                expression = expression.And(t => t.Id != flowId);
+            }
+            FlowEntity flow = service.IQueryable(expression).OrderBy(t => t.SortCode).FirstOrDefault();
+            if (flow == null || string.IsNullOrWhiteSpace(flow.Id))
+            {
+                bResult = true;
+            }
+            return bResult;
         }
     }
 }

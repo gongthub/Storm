@@ -19,6 +19,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetCustomGridJson(string keyword)
+        {
+            var data = flowApp.GetCustomList(keyword);
+            return Content(data.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetFormJson(string keyValue)
         {
             var data = flowApp.GetForm(keyValue);

@@ -133,6 +133,110 @@ namespace Storm.Application.WFManage
             return models;
         }
 
+        public void StartApply(string flowId, string key)
+        {
+            WorkEntity workEntity = new WorkEntity();
+            if (flowId != null)
+            {
+                FlowEntity flowentity = flowApp.GetForm(flowId);
+                if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id))
+                {
+                    FormEntity formEntity = formApp.GetForm(flowentity.FormId);
+                    FlowVersionEntity flowVersionEntity = flowApp.GetDesign(flowId);
+                    if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id)
+                        && formEntity != null && !string.IsNullOrEmpty(formEntity.Id)
+                        && flowVersionEntity != null && !string.IsNullOrEmpty(flowVersionEntity.Id))
+                    {
+                        workEntity.Create();
+                        workEntity.FullName = flowentity.FullName;
+                        workEntity.FlowVersionId = flowVersionEntity.Id;
+                        workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        workEntity.Codes = formEntity.Codes;
+                        workEntity.Contents = key;
+                        var loguser = OperatorProvider.Provider.GetCurrent();
+                        if (loguser != null)
+                        {
+                            workEntity.ApplyUserId = loguser.UserId;
+                        }
+                        service.AddForm(workEntity, null, null);
+                        try
+                        {
+                            workFlowApp.Start(workEntity.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            workEntity.FlowStatus = (int)WorkStatus.Save;
+                            service.Update(workEntity);
+                            throw ex;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("操作失败！");
+                    }
+                }
+                else
+                {
+                    throw new Exception("操作失败！");
+                }
+            }
+            else
+            {
+                throw new Exception("操作失败，提交状态无效！");
+            }
+        }
+        public void StartApply(string flowId, string key, List<WorkControlEntity> controls)
+        {
+            WorkEntity workEntity = new WorkEntity();
+            if (flowId != null)
+            {
+                FlowEntity flowentity = flowApp.GetForm(flowId);
+                if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id))
+                {
+                    FormEntity formEntity = formApp.GetForm(flowentity.FormId);
+                    FlowVersionEntity flowVersionEntity = flowApp.GetDesign(flowId);
+                    if (flowentity != null && !string.IsNullOrEmpty(flowentity.Id)
+                        && formEntity != null && !string.IsNullOrEmpty(formEntity.Id)
+                        && flowVersionEntity != null && !string.IsNullOrEmpty(flowVersionEntity.Id))
+                    {
+                        workEntity.Create();
+                        workEntity.FullName = flowentity.FullName;
+                        workEntity.FlowVersionId = flowVersionEntity.Id;
+                        workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        workEntity.Codes = formEntity.Codes;
+                        workEntity.Contents = key;
+                        var loguser = OperatorProvider.Provider.GetCurrent();
+                        if (loguser != null)
+                        {
+                            workEntity.ApplyUserId = loguser.UserId;
+                        }
+                        service.AddForm(workEntity, controls, null);
+                        try
+                        {
+                            workFlowApp.Start(workEntity.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            workEntity.FlowStatus = (int)WorkStatus.Save;
+                            service.Update(workEntity);
+                            throw ex;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("操作失败！");
+                    }
+                }
+                else
+                {
+                    throw new Exception("操作失败！");
+                }
+            }
+            else
+            {
+                throw new Exception("操作失败，提交状态无效！");
+            }
+        }
         public void AddForm(string flowId, int status, string contents, List<WorkControlEntity> controls, List<WorkFileEntity> files)
         {
             WorkEntity workEntity = new WorkEntity();
