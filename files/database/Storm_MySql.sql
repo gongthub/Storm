@@ -1204,6 +1204,8 @@ CREATE TABLE `wf_flows` (
   `FormId` varchar(50) DEFAULT NULL,
   `FormType` int(11) DEFAULT NULL,
   `FormUrl` varchar(255) DEFAULT NULL,
+  `SystemFormType` int(11) DEFAULT NULL,
+  `SystemFormName` varchar(200) DEFAULT NULL,
   `EnCode` varchar(50) DEFAULT NULL,
   `FullName` varchar(50) DEFAULT NULL,
   `SortCode` int(11) DEFAULT NULL,
