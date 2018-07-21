@@ -10,9 +10,7 @@ namespace Storm.Domain.IRepository.WFManage
 {
     public interface IWorkFlowRepository : IRepositoryBase
     {
-        void Start(string workId);
-        void ApplySuccess(string workId, string desc);
-        void ApplyFail(string workId, string desc);
-        void Approval(string workId, int status, string desc);
+        void Start(string workId,ref bool IsEnd);
+        void Approval(string workId, int status, string desc, ref bool IsEnd);
     }
 }

@@ -107,6 +107,16 @@ namespace Storm.Application.WFManage
             });
             return models;
         }
+        public List<WorkEntity> GetSystemFormApplyings()
+        {
+            List<WorkEntity> models = service.GetSystemFormApplyings();
+            models?.ForEach(delegate (WorkEntity model)
+            {
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
+            return models;
+        }
         public WorkEntity GetForm(string keyValue)
         {
             WorkEntity model = service.FindEntity(keyValue);
@@ -121,7 +131,6 @@ namespace Storm.Application.WFManage
         {
             service.Delete(t => t.Id == keyValue);
         }
-
         public List<WorkControlEntity> GetWorkControls(string workIds)
         {
             List<WorkControlEntity> models = new List<WorkControlEntity>();
@@ -134,7 +143,6 @@ namespace Storm.Application.WFManage
             models = service.GetWorkFiles(workIds);
             return models;
         }
-
         public void StartApply(string flowId, string key)
         {
             WorkEntity workEntity = new WorkEntity();
@@ -348,7 +356,6 @@ namespace Storm.Application.WFManage
                 throw new Exception("操作失败，提交状态无效！");
             }
         }
-
         public List<WorkFileEntity> UploadFiles(HttpFileCollectionBase Files)
         {
             try
@@ -402,7 +409,6 @@ namespace Storm.Application.WFManage
             strPath = WFFILEPATHS + dates + "/";
             return strPath;
         }
-
         public string GetFormDesign(string flowId)
         {
             string strContents = string.Empty;
@@ -414,6 +420,10 @@ namespace Storm.Application.WFManage
             }
             return strContents;
         }
-
+        public int GetSystemFormTypeByworkId(string workId)
+        {
+            int systemForm = service.GetSystemFormTypeByworkId(workId);
+            return systemForm;
+        }
     }
 }

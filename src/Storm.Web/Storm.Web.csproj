@@ -168,6 +168,7 @@
     <Compile Include="Areas\WFManage\Controllers\FlowDictionaryController.cs" />
     <Compile Include="Areas\WFManage\Controllers\FlowDictionaryDetailController.cs" />
     <Compile Include="Areas\WFManage\Controllers\WorkController.cs" />
+    <Compile Include="Areas\WFManage\Controllers\WorkTestController.cs" />
     <Compile Include="Areas\WFManage\WFManageAreaRegistration.cs" />
     <Compile Include="Content\js\ueditor\net\App_Code\Config.cs" />
     <Compile Include="Content\js\ueditor\net\App_Code\ConfigHandler.cs" />
@@ -1068,6 +1069,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\WFManage\Views\Work\MyApproval.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\WorkTest\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\WFManage\Views\WorkTest\Details.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

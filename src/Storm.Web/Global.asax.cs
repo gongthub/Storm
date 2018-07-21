@@ -1,7 +1,10 @@
 ﻿using Storm.Application.Infrastructure;
-using Storm.Code;
+using Storm.Application.WFManage;
+using Storm.Domain.Entity.WFManage;
+using System;
 using System.Web.Mvc;
 using System.Web.Routing;
+using static Storm.Application.Infrastructure.WorkFlowCommon;
 
 namespace Storm.Web
 {
@@ -15,27 +18,11 @@ namespace Storm.Web
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-
-            IWorkFlow workFlow = new WorkFlow();
-            workFlow.AddEndActive(m1,1);
-            workFlow.AddEndActive(m3, 1);
-            workFlow.AddEndActive(m2,2);
-            workFlow.AddEndActive(m4, 2);
-            WorkFlow workFlowe = new WorkFlow();
-            workFlowe.DoEndActive(1);
         }
 
-        public void m1()
+        protected void Application_BeginRequest()
         {
-        }
-        public void m2()
-        {
-        }
-        public void m3()
-        {
-        }
-        public void m4()
-        {
+           
         }
     }
 }

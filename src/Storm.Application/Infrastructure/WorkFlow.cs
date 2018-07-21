@@ -4,27 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using static Storm.Application.Infrastructure.WorkFlowCommon;
 
 namespace Storm.Application.Infrastructure
 {
-    public class TOne
-    {
-        public int key { get; set; }
-        public int value { get; set; }
-    }
     public class WorkFlow : IWorkFlow
     {
         private WorkApp workApp = new WorkApp();
         private FlowApp flowApp = new FlowApp();
-        private static event Action MyMethodEvent;
-        private static List<TOne> dic = new List<TOne>();
 
-        public void AddEndActive(Action action, int i)
+        public void RegisteredEndActive(EndFlowDelegate action)
         {
-            dic.Add(new TOne() { key = i, value = action.GetHashCode() });
-            MyMethodEvent += action;
+            WorkFlowApp.EndFlowEvent += action;
         }
 
         public bool Start(SystemForm systemForm, string key)
@@ -70,21 +61,5 @@ namespace Storm.Application.Infrastructure
             }
             return bResult;
         }
-
-        public void DoEndActive(int iT)
-        {
-            Delegate[] delegates = MyMethodEvent.GetInvocationList();
-            List<int> lst = dic.Where(m => m.key == iT).Select(m => m.value).ToList();
-            for (int i = 0; i < delegates.Length; i++)
-            {
-                int inum = delegates[i].GetHashCode();
-                if (lst.Contains(inum))
-                {
-                    lst.Remove(inum);
-                    delegates[i].DynamicInvoke();
-                }
-            }
-        }
-
     }
 }

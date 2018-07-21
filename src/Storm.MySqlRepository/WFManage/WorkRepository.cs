@@ -23,7 +23,7 @@ namespace Storm.MySqlRepository
                 {
                     if (controls != null && controls.Count > 0)
                     {
-                        controls.ForEach(delegate(WorkControlEntity control)
+                        controls.ForEach(delegate (WorkControlEntity control)
                         {
                             control.Id = Guid.NewGuid().ToString();
                             control.WorkId = workEntity.Id;
@@ -32,7 +32,7 @@ namespace Storm.MySqlRepository
                     }
                     if (files != null && files.Count > 0)
                     {
-                        files.ForEach(delegate(WorkFileEntity file)
+                        files.ForEach(delegate (WorkFileEntity file)
                         {
                             file.Id = Guid.NewGuid().ToString();
                             file.WorkId = workEntity.Id;
@@ -48,7 +48,6 @@ namespace Storm.MySqlRepository
                 throw e;
             }
         }
-
         public void UpdateForm(WorkEntity workEntity, List<WorkControlEntity> controls, List<WorkFileEntity> files, List<string> RemoveFileIds)
         {
             try
@@ -59,7 +58,7 @@ namespace Storm.MySqlRepository
                     db.Delete<WorkControlEntity>(m => m.WorkId == workEntity.Id);
                     if (controls != null && controls.Count > 0)
                     {
-                        controls.ForEach(delegate(WorkControlEntity control)
+                        controls.ForEach(delegate (WorkControlEntity control)
                         {
                             control.Id = Guid.NewGuid().ToString();
                             control.WorkId = workEntity.Id;
@@ -72,7 +71,7 @@ namespace Storm.MySqlRepository
                     }
                     if (files != null && files.Count > 0)
                     {
-                        files.ForEach(delegate(WorkFileEntity file)
+                        files.ForEach(delegate (WorkFileEntity file)
                         {
                             file.Id = Guid.NewGuid().ToString();
                             file.WorkId = workEntity.Id;
@@ -88,7 +87,6 @@ namespace Storm.MySqlRepository
                 throw e;
             }
         }
-
         public List<WorkControlEntity> GetWorkControls(string workIds)
         {
             List<WorkControlEntity> models = new List<WorkControlEntity>();
@@ -98,7 +96,6 @@ namespace Storm.MySqlRepository
             }
             return models;
         }
-
         public List<WorkFileEntity> GetWorkFiles(string workIds)
         {
             List<WorkFileEntity> models = new List<WorkFileEntity>();
@@ -108,8 +105,6 @@ namespace Storm.MySqlRepository
             }
             return models;
         }
-
-
         public List<MyPendingWorkEntity> GetMyPendingList(string keyword = "")
         {
             try
@@ -168,7 +163,7 @@ namespace Storm.MySqlRepository
                     if (!string.IsNullOrEmpty(keyword))
                     {
                         strSql += " and (A.UserName like @userName or A.DeptName like @deptName or A.FullName like @name)";
-                        DbParameter[] parameter = 
+                        DbParameter[] parameter =
                             {
                                  new MySqlParameter("@userName","%" + keyword+ "%"),
                                  new MySqlParameter("@deptName","%" + keyword+ "%"),
@@ -180,7 +175,7 @@ namespace Storm.MySqlRepository
                     else
                     {
 
-                        DbParameter[] parameter = 
+                        DbParameter[] parameter =
                             {
                                  new MySqlParameter("@appuserId","%" + applyUserId+ "%")
                             };
@@ -277,6 +272,71 @@ namespace Storm.MySqlRepository
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public List<WorkEntity> GetSystemFormApplyings()
+        {
+            List<WorkEntity> models = new List<WorkEntity>();
+            using (var db = new RepositoryBase())
+            {
+                string strSql = @"SELECT
+	                                        wfwk.Id,
+	                                        wfwk.FullName,
+	                                        wfwk.FlowVersionId,
+	                                        wfwk.ApplyUserId,
+	                                        wfwk.FlowStatus,
+	                                        wfwk.CurrentNodeId,
+	                                        wfwk.CurrentUsers,
+	                                        wfwk.Codes,
+	                                        wfwk.Contents,
+	                                        wfwk.DeleteMark,
+	                                        wfwk.EnabledMark,
+	                                        wfwk.Description,
+	                                        wfwk.CreatorTime,
+	                                        wfwk.CreatorUserId,
+	                                        wfwk.LastModifyTime,
+	                                        wfwk.LastModifyUserId,
+	                                        wfwk.DeleteTime,
+	                                        wfwk.DeleteUserId
+                                        FROM
+	                                        wf_works wfwk
+                                        JOIN wf_flowversions wffv ON wfwk.FlowVersionId = wffv.Id
+                                        JOIN wf_flows wffw ON wffw.Id = wffv.FlowId
+                                        AND wffw.FormType = 2
+                                        WHERE
+	                                        wfwk.FlowStatus = 2
+                                        AND (
+	                                        wfwk.DeleteMark IS NULL
+	                                        OR wfwk.DeleteMark != 1
+                                        )";
+
+                models = db.FindList<WorkEntity>(strSql.ToString());
+                return models;
+            }
+        }
+        public int GetSystemFormTypeByworkId(string workId)
+        {
+            int type = -1;
+            List<WorkEntity> models = new List<WorkEntity>();
+            using (var db = new RepositoryBase())
+            {
+                string strSql = @"SELECT
+	                                    wffw.SystemFormType
+                                    FROM
+	                                    wf_works wfwk
+                                    JOIN wf_flowversions wffv ON wfwk.FlowVersionId = wffv.Id
+                                    JOIN wf_flows wffw ON wffw.Id = wffv.FlowId
+                                    AND wffw.FormType = 2
+                                    WHERE
+	                                    wfwk.Id =@workId";
+
+                DbParameter[] parameter =
+                    {
+                                 new MySqlParameter("@workId",workId)
+                            };
+                string strType = db.FindEntity<string>(strSql.ToString(), parameter);
+                int.TryParse(strType, out type);
+                return type;
             }
         }
     }

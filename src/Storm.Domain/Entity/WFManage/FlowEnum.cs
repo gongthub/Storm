@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Storm.Domain.Entity.WFManage
 {
-    public delegate void MyDEl(EventArgs eventArgs);
+
     /// <summary>
     /// 步骤类型
     /// </summary>
@@ -175,5 +175,8 @@ namespace Storm.Domain.Entity.WFManage
         [Description("系统测试表单")]
         [DefaultValue("/Test/View")]
         Test = 1,
+        [Description("系统测试表单2")]
+        [DefaultValue("/Test/View2")]
+        Test2 = 2,
     }
 }

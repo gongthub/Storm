@@ -1,9 +1,6 @@
 ﻿using Storm.Domain.Entity.WFManage;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static Storm.Application.Infrastructure.WorkFlowCommon;
 
 namespace Storm.Application.Infrastructure
 {
@@ -24,6 +21,10 @@ namespace Storm.Application.Infrastructure
         /// <param name="prarms">需要用于条件判断的参数 参数名称、 值</param>
         /// <returns></returns>
         bool Start(SystemForm systemForm, string key, Dictionary<string, string> prarms);
-        void AddEndActive(Action action, int i);
+        /// <summary>
+        /// 注册系统表单流程审核结束函数
+        /// </summary>
+        /// <param name="action">函数</param>
+        void RegisteredEndActive(EndFlowDelegate action);
     }
 }
