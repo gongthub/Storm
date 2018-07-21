@@ -20,6 +20,7 @@ namespace Storm.Domain.Entity.WFManage
         public string LastLineId { get; set; }
         public bool IsStart { get; set; }
         public bool IsEnd { get; set; }
+        public bool IsSkip { get; set; }
         public bool? DeleteMark { get; set; }
         public bool? EnabledMark { get; set; }
         public string Description { get; set; }

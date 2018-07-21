@@ -33,24 +33,31 @@ namespace Storm.SqlServerRepository
                         {
                             throw new Exception("当前流程已进行申请，无法重复提交申请！");
                         }
-                        workEntity.Modify(workEntity.Id);
-                        FlowNodeEntity nextNode = GetNextNodeId(workId, ApprovalStatus.Pass);
-                        if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))
-                        {
-                            workEntity.CurrentNodeId = nextNode.Id;
-                        }
-                        else
-                        {
-                            workEntity.CurrentNodeId = string.Empty;
-                        }
-                        string userIds = GetCurrentUserIds(nextNode, userId);
-                        if (!string.IsNullOrEmpty(userIds))
-                        {
-                            workEntity.CurrentUsers = userIds;
-                        }
-                        workEntity.FlowStatus = (int)WorkStatus.Applying;
                         AddStartApproProcess(workId, db);
-                        if (nextNode.IsEndNode)
+                        workEntity.Modify(workEntity.Id);
+                        workEntity.FlowStatus = (int)WorkStatus.Applying;
+                        FlowNodeEntity nextNode = GetPassNextNodeId(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
+                        if (nextNode == null || string.IsNullOrEmpty(nextNode.Id))
+                        {
+                            throw new Exception("当前审批下一流程节点不存在，请联系管理员！");
+                        }
+                        bool isEndNode = nextNode.IsEndNode;
+                        if (!isEndNode)
+                        {
+                            bool isNeedSkip = false;
+                            string userIds = GetCurrentUserIds(nextNode, userId, out isNeedSkip);
+                            string nextNodeId = nextNode.Id;
+                            if (isNeedSkip && !nextNode.IsEndNode)
+                            {
+                                nextNodeId = SkipNode(workId, workEntity.CurrentNodeId, nextNode, workEntity.FlowVersionId, db, out userIds, out isEndNode);
+                            }
+                            workEntity.CurrentNodeId = nextNodeId;
+                            if (!string.IsNullOrEmpty(userIds))
+                            {
+                                workEntity.CurrentUsers = userIds;
+                            }
+                        }
+                        if (isEndNode)
                         {
                             workEntity.FlowStatus = (int)WorkStatus.Success;
                             AddEndApproProcess(workId, nextNode, db);
@@ -138,23 +145,30 @@ namespace Storm.SqlServerRepository
         }
         private void ApplySuccessOne(string workId, string desc, IRepositoryBase db, WorkEntity workEntity, FlowNodeEntity currentNode)
         {
-            FlowNodeEntity nextNode = GetPassNextNodeId(workId);
-            if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))
+            string nextNodeId = string.Empty;
+            FlowNodeEntity nextNode = GetPassNextNodeId(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
+            bool isEndNode = nextNode.IsEndNode;
+            if (!isEndNode)
             {
-                workEntity.CurrentNodeId = nextNode.Id;
+                AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
+                bool isNeedSkip = false;
+                string userIds = GetCurrentUserIds(nextNode, workEntity.CurrentUsers, out isNeedSkip);
+                nextNodeId = nextNode.Id;
+                if (isNeedSkip && !nextNode.IsEndNode)
+                {
+                    nextNodeId = SkipNode(workId, workEntity.CurrentNodeId, nextNode, workEntity.FlowVersionId, db, out userIds, out isEndNode);
+                }
+                if (!string.IsNullOrEmpty(userIds))
+                {
+                    workEntity.CurrentUsers = userIds;
+                }
+                if (!string.IsNullOrEmpty(nextNodeId))
+                {
+                    workEntity.CurrentNodeId = nextNodeId;
+                }
+                workEntity.FlowStatus = (int)WorkStatus.Applying;
             }
-            else
-            {
-                workEntity.CurrentNodeId = string.Empty;
-            }
-            string userIds = GetCurrentUserIds(nextNode, workEntity.CurrentUsers);
-            if (!string.IsNullOrEmpty(userIds))
-            {
-                workEntity.CurrentUsers = userIds;
-            }
-            workEntity.FlowStatus = (int)WorkStatus.Applying;
-            AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
-            if (nextNode.IsEndNode)
+            if (isEndNode)
             {
                 workEntity.FlowStatus = (int)WorkStatus.Success;
                 AddEndApproProcess(workId, nextNode, db);
@@ -203,7 +217,8 @@ namespace Storm.SqlServerRepository
                             {
                                 workEntity.CurrentNodeId = lastNode.Id;
                                 string lastUserId = GetApplyUserByNode(lastNode, workId);
-                                string userIds = GetCurrentUserIds(lastNode, lastUserId);
+                                bool isNeedSkip = false;
+                                string userIds = GetCurrentUserIds(lastNode, lastUserId, out isNeedSkip);
                                 if (!string.IsNullOrEmpty(userIds))
                                 {
                                     workEntity.CurrentUsers = userIds;
@@ -269,26 +284,22 @@ namespace Storm.SqlServerRepository
                 throw ex;
             }
         }
-        private FlowNodeEntity GetPassNextNodeId(string workId)
+        private FlowNodeEntity GetPassNextNodeId(string workId, string currentNodeId, string flowVersionId)
         {
             try
             {
                 FlowNodeEntity nextNode = new FlowNodeEntity();
                 using (var db = new RepositoryBase())
                 {
-                    WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
-                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
+                    if (string.IsNullOrEmpty(currentNodeId))
                     {
-                        if (string.IsNullOrEmpty(workEntity.CurrentNodeId))
+                        FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == flowVersionId);
+                        if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
                         {
-                            FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == workEntity.FlowVersionId);
-                            if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
-                            {
-                                workEntity.CurrentNodeId = flowNodeEntity.Id;
-                            }
+                            currentNodeId = flowNodeEntity.Id;
                         }
-                        nextNode = GetNextNodeIdPass(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
                     }
+                    nextNode = GetNextNodeIdPass(workId, currentNodeId, flowVersionId);
                 }
                 return nextNode;
             }
@@ -317,12 +328,6 @@ namespace Storm.SqlServerRepository
                                 {
                                     case (int)RejectType.End:
                                         isFail = true;
-                                        //FlowNodeEntity startflowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == workEntity.FlowVersionId);
-                                        //if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
-                                        //{
-                                        //    workEntity.CurrentNodeId = flowNodeEntity.Id;
-                                        //}
-                                        //nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId, ref flowLineEntity);
                                         break;
                                     case (int)RejectType.Last:
                                         nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
@@ -338,70 +343,6 @@ namespace Storm.SqlServerRepository
                         else
                         {
                             throw new Exception("当前节点异常！");
-                        }
-                    }
-                }
-                return nextNode;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        private FlowNodeEntity GetNextNodeId(string workId, ApprovalStatus approvalStatus)
-        {
-            try
-            {
-                FlowNodeEntity nextNode = new FlowNodeEntity();
-                using (var db = new RepositoryBase())
-                {
-                    WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
-                    if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
-                    {
-                        if (approvalStatus == ApprovalStatus.Pass)
-                        {
-                            if (string.IsNullOrEmpty(workEntity.CurrentNodeId))
-                            {
-                                FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == workEntity.FlowVersionId);
-                                if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
-                                {
-                                    workEntity.CurrentNodeId = flowNodeEntity.Id;
-                                }
-                            }
-                            nextNode = GetNextNodeIdPass(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
-                        }
-                        else
-                            if (approvalStatus == ApprovalStatus.Fail)
-                        {
-                            if (!string.IsNullOrEmpty(workEntity.CurrentNodeId))
-                            {
-                                FlowNodeEntity flowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.Id == workEntity.CurrentNodeId);
-                                if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
-                                {
-                                    switch (flowNodeEntity.RejectType)
-                                    {
-                                        case (int)RejectType.End:
-                                            //FlowNodeEntity startflowNodeEntity = db.FindEntity<FlowNodeEntity>(m => m.IsStartNode == true && m.FlowVersionId == workEntity.FlowVersionId);
-                                            //if (flowNodeEntity != null && !string.IsNullOrEmpty(flowNodeEntity.Id))
-                                            //{
-                                            //    workEntity.CurrentNodeId = flowNodeEntity.Id;
-                                            //}
-                                            //nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId, ref flowLineEntity);
-                                            break;
-                                        case (int)RejectType.Last:
-                                            nextNode = GetNextNodeIdFail(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
-                                            break;
-                                        case (int)RejectType.Specified:
-                                            break;
-                                        default:
-                                            throw new Exception("当前节点驳回配置异常！");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                throw new Exception("当前节点异常！");
-                            }
                         }
                     }
                 }
@@ -504,7 +445,11 @@ namespace Storm.SqlServerRepository
                         }
                     }
                 }
-
+                bool bIsSkip = IsSkipLastNode(workId, nextNode.Id);
+                if (bIsSkip)
+                {
+                    nextNode = GetNextNodeIdFail(workId, nextNode.Id, flowVersionId);
+                }
                 return nextNode;
             }
             catch (Exception ex)
@@ -573,8 +518,9 @@ namespace Storm.SqlServerRepository
             }
             return plots;
         }
-        private string GetCurrentUserIds(FlowNodeEntity nextNode, string currUser)
+        private string GetCurrentUserIds(FlowNodeEntity nextNode, string currUser, out bool isNeedSkip)
         {
+            isNeedSkip = false;
             string userIds = string.Empty;
             if (nextNode.ReviewerType == (int)ReviewerType.Specified)
             {
@@ -618,9 +564,20 @@ namespace Storm.SqlServerRepository
                     if (userEntity != null && !string.IsNullOrWhiteSpace(userEntity.Id))
                     {
                         OrganizeEntity organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == userEntity.DepartmentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                        if (organizeEntity == null
+                            || string.IsNullOrWhiteSpace(organizeEntity.Id)
+                            || string.IsNullOrWhiteSpace(organizeEntity.ManagerId))
+                        {
+                            throw new Exception("上一级审批人未配置，请联系管理员！");
+                        }
                         if (organizeEntity?.ManagerId == currUser)
                         {
                             organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == organizeEntity.ParentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                            if (organizeEntity == null
+                            || string.IsNullOrWhiteSpace(organizeEntity.Id))
+                            {
+                                isNeedSkip = true;
+                            }
                         }
                         userIds = organizeEntity?.ManagerId;
                     }
@@ -691,6 +648,33 @@ namespace Storm.SqlServerRepository
                 throw new Exception("当前节点异常！");
             }
         }
+        private void AddSkipProcess(string workId, FlowNodeEntity node, IRepositoryBase db)
+        {
+            if (node != null && !string.IsNullOrEmpty(node.Id))
+            {
+                ApprovalProcessEntity appproEntity = new ApprovalProcessEntity();
+                appproEntity.Create();
+                appproEntity.WorkId = workId;
+                appproEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
+                appproEntity.NodeId = node.Id;
+                appproEntity.NodeName = node.Name;
+                appproEntity.Description = string.Empty;
+                appproEntity.IsStart = false;
+                appproEntity.IsEnd = false;
+                appproEntity.IsSkip = true;
+                var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                if (LoginInfo != null)
+                {
+                    appproEntity.ApprovalUserId = LoginInfo.UserId;
+                    appproEntity.ApprovalUserName = LoginInfo.UserName;
+                }
+                db.Insert(appproEntity);
+            }
+            else
+            {
+                throw new Exception("当前节点异常！");
+            }
+        }
         private string GetApplyUserByNode(FlowNodeEntity node, string workId)
         {
             string userId = string.Empty;
@@ -706,6 +690,43 @@ namespace Storm.SqlServerRepository
                 }
             }
             return userId;
+        }
+        private string SkipNode(string workId, string curentUser, FlowNodeEntity selNextNode,
+            string flowVersionId, IRepositoryBase db, out string userIds, out bool isEnd)
+        {
+            isEnd = false;
+            userIds = string.Empty;
+            string nextNodeId = string.Empty;
+            AddSkipProcess(workId, selNextNode, db);
+            FlowNodeEntity nextNode = GetPassNextNodeId(workId, selNextNode.Id, flowVersionId);
+            if (nextNode == null || string.IsNullOrEmpty(nextNode.Id))
+            {
+                throw new Exception("当前审批下一流程节点不存在，请联系管理员！");
+            }
+            isEnd = nextNode.IsEndNode;
+            if (!isEnd)
+            {
+                bool isNeedSkip = false;
+                userIds = GetCurrentUserIds(nextNode, curentUser, out isNeedSkip);
+                nextNodeId = nextNode.Id;
+                if (isNeedSkip && !nextNode.IsEndNode)
+                {
+                    nextNodeId = SkipNode(workId, curentUser, nextNode, flowVersionId, db, out userIds, out isEnd);
+                }
+            }
+            return nextNodeId;
+        }
+        private bool IsSkipLastNode(string workId, string lastNodeId)
+        {
+            bool bResult = false;
+            using (var db = new RepositoryBase())
+            {
+                ApprovalProcessEntity approvalProcessEntity = db.IQueryable<ApprovalProcessEntity>(m => m.WorkId == workId
+                && m.NodeId == lastNodeId && m.DeleteMark != true).FirstOrDefault();
+                if (approvalProcessEntity != null && !string.IsNullOrWhiteSpace(approvalProcessEntity.Id))
+                    bResult = approvalProcessEntity.IsSkip;
+            }
+            return bResult;
         }
     }
 }
