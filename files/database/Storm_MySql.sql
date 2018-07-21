@@ -1107,6 +1107,7 @@ CREATE TABLE `wf_approvalprocess` (
   `NodeName` varchar(500) DEFAULT NULL,
   `IsStart` tinyint(4) DEFAULT NULL,
   `IsEnd` tinyint(4) DEFAULT NULL,
+  `IsSkip` tinyint(4) DEFAULT NULL,
   `LastLineId` varchar(50) DEFAULT NULL,
   `DeleteMark` tinyint(4) DEFAULT NULL,
   `EnabledMark` tinyint(4) DEFAULT NULL,
