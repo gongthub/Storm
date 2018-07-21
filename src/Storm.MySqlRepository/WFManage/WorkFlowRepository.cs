@@ -103,16 +103,18 @@ namespace Storm.MySqlRepository
                             else
                             {
                                 string[] strUsers = workEntity.CurrentUsers.Split(',');
-                                string[] strUsersNew = strUsers?.Where(m => m != applyUserId)?.ToArray();
-                                if (strUsersNew != null && strUsersNew.Length > 1)
-                                {
-                                    workEntity.CurrentUsers = string.Join(",", strUsersNew.ToArray());
-                                    AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
-                                }
-                                else
-                                if (strUsersNew.Length == 1)
+                                if (strUsers != null && strUsers.Length == 1)
                                 {
                                     ApplySuccessOne(workId, desc, db, workEntity, currentNode);
+                                }
+                                else
+                                {
+                                    string[] strUsersNew = strUsers?.Where(m => m != applyUserId)?.ToArray();
+                                    if (strUsersNew != null && strUsersNew.Length > 0)
+                                    {
+                                        workEntity.CurrentUsers = string.Join(",", strUsersNew.ToArray());
+                                        AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
+                                    }
                                 }
                             }
                         }
@@ -191,6 +193,7 @@ namespace Storm.MySqlRepository
                         FlowNodeEntity lastNode = GetFailNextNodeId(workId, out isFail);
                         if (isFail)
                         {
+                            AddApproProcess(workId, desc, ApprovalStatus.Fail, currentNode, db);
                             workEntity.FlowStatus = (int)WorkStatus.Fail;
                             AddEndApproProcess(workId, lastNode, db);
                         }

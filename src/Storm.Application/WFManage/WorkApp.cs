@@ -25,14 +25,11 @@ namespace Storm.Application.WFManage
                 expression = expression.And(t => t.FullName.Contains(keyword));
             }
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (WorkEntity model)
             {
-                models.ForEach(delegate (WorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
             return models;
         }
         public List<WorkEntity> GetList(string keyword = "")
@@ -44,14 +41,11 @@ namespace Storm.Application.WFManage
             }
             expression = expression.And(t => t.DeleteMark != true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (WorkEntity model)
             {
-                models.ForEach(delegate (WorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
             return models;
         }
         public List<WorkEntity> GetEnableList(string keyword = "")
@@ -63,14 +57,11 @@ namespace Storm.Application.WFManage
             }
             expression = expression.And(t => t.DeleteMark != true && t.EnabledMark == true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (WorkEntity model)
             {
-                models.ForEach(delegate (WorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
             return models;
         }
         public List<WorkEntity> GetMyWorkList(string keyword = "")
@@ -87,47 +78,43 @@ namespace Storm.Application.WFManage
             }
             expression = expression.And(t => t.DeleteMark != true);
             List<WorkEntity> models = service.IQueryable(expression).OrderByDescending(t => t.CreatorTime).ToList();
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (WorkEntity model)
             {
-                models.ForEach(delegate (WorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
             return models;
         }
         public List<MyPendingWorkEntity> GetMyPendingList(string keyword = "")
         {
             List<MyPendingWorkEntity> models = service.GetMyPendingList(keyword);
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (MyPendingWorkEntity model)
             {
-                models.ForEach(delegate (MyPendingWorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            });
             return models;
         }
         public List<MyApprovalWorkEntity> GetMyApprovalList(string keyword = "")
         {
             List<MyApprovalWorkEntity> models = service.GetMyApprovalList(keyword);
-            if (models != null && models.Count > 0)
+            models?.ForEach(delegate (MyApprovalWorkEntity model)
             {
-                models.ForEach(delegate (MyApprovalWorkEntity model)
-                {
-                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
-                    model.FlowStatusName = desc;
-                    string approvalStatusName = Code.EnumHelp.enumHelp.GetDescription(typeof(ApprovalStatus), model.ApprovalStatus);
-                    model.ApprovalStatusName = approvalStatusName;
-                });
-            }
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+                string approvalStatusName = Code.EnumHelp.enumHelp.GetDescription(typeof(ApprovalStatus), model.ApprovalStatus);
+                model.ApprovalStatusName = approvalStatusName;
+            });
             return models;
         }
         public WorkEntity GetForm(string keyValue)
         {
             WorkEntity model = service.FindEntity(keyValue);
+            if (model != null && !string.IsNullOrWhiteSpace(model.Id))
+            {
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                model.FlowStatusName = desc;
+            }
             return model;
         }
         public void DeleteForm(string keyValue)
@@ -271,7 +258,7 @@ namespace Storm.Application.WFManage
                             workEntity.Create();
                             workEntity.FullName = flowentity.FullName;
                             workEntity.FlowVersionId = flowVersionEntity.Id;
-                            workEntity.FlowStatus = status;
+                            workEntity.FlowStatus = (int)WorkStatus.Save;
                             workEntity.Codes = formEntity.Codes;
                             workEntity.Contents = contents;
                             var loguser = OperatorProvider.Provider.GetCurrent();
@@ -329,7 +316,7 @@ namespace Storm.Application.WFManage
                             throw new Exception("该申请已申请，不能修改！");
                         }
                         workEntity.Modify(workId);
-                        workEntity.FlowStatus = status;
+                        workEntity.FlowStatus = (int)WorkStatus.Save;
                         workEntity.Contents = contents;
                         service.UpdateForm(workEntity, controls, files, RemoveFileIds);
                         if (status == (int)WorkStatus.Applying)

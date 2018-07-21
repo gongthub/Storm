@@ -127,22 +127,53 @@ namespace Storm.MySqlRepository
                 List<MyPendingWorkEntity> models = new List<MyPendingWorkEntity>();
                 using (var db = new RepositoryBase())
                 {
-                    string strSql = @"select * from (
-	                                select A.*,B.RealName UserName,C.FullName DeptName from WF_Works A
-	                                left join Sys_User B ON A.ApplyUserId=B.Id
-	                                left join Sys_Organize C ON B.DepartmentId=C.Id
-                                )A
-                                where A.CurrentUsers like @appuserId and (A.DeleteMark  is null or A.DeleteMark !=1) and A.FlowStatus=2";
+                    string strSql = @"SELECT
+	                                            *
+                                            FROM
+	                                            (
+		                                            SELECT
+			                                            A.Id,
+			                                            A.FullName,
+			                                            A.FlowVersionId,
+			                                            A.ApplyUserId,
+			                                            A.FlowStatus,
+			                                            A.CurrentNodeId,
+			                                            A.CurrentUsers,
+			                                            A.Codes,
+			                                            A.Contents,
+			                                            A.DeleteMark,
+			                                            A.EnabledMark,
+			                                            A.Description,
+			                                            A.CreatorTime,
+			                                            A.CreatorUserId,
+			                                            A.LastModifyTime,
+			                                            A.LastModifyUserId,
+			                                            A.DeleteTime,
+			                                            A.DeleteUserId,
+			                                            B.RealName UserName,
+			                                            C.FullName DeptName
+		                                            FROM
+			                                            WF_Works A
+		                                            LEFT JOIN Sys_User B ON A.ApplyUserId = B.Id
+		                                            LEFT JOIN Sys_Organize C ON B.DepartmentId = C.Id
+	                                            ) A
+                                            WHERE
+	                                            A.CurrentUsers LIKE @appuserId
+                                            AND (
+	                                            A.DeleteMark IS NULL
+	                                            OR A.DeleteMark != 1
+                                            )
+                                            AND A.FlowStatus = 2";
 
                     if (!string.IsNullOrEmpty(keyword))
                     {
                         strSql += " and (A.UserName like @userName or A.DeptName like @deptName or A.FullName like @name)";
                         DbParameter[] parameter = 
                             {
-                                 new MySqlParameter("@userName",keyword),
-                                 new MySqlParameter("@deptName",keyword),
-                                 new MySqlParameter("@name",keyword),
-                                 new MySqlParameter("@appuserId",applyUserId)
+                                 new MySqlParameter("@userName","%" + keyword+ "%"),
+                                 new MySqlParameter("@deptName","%" + keyword+ "%"),
+                                 new MySqlParameter("@name","%" + keyword+ "%"),
+                                 new MySqlParameter("@appuserId", "%" + applyUserId+ "%")
                             };
                         models = db.FindList<MyPendingWorkEntity>(strSql.ToString(), parameter);
                     }
@@ -151,7 +182,7 @@ namespace Storm.MySqlRepository
 
                         DbParameter[] parameter = 
                             {
-                                 new MySqlParameter("@appuserId",applyUserId)
+                                 new MySqlParameter("@appuserId","%" + applyUserId+ "%")
                             };
                         models = db.FindList<MyPendingWorkEntity>(strSql.ToString(), parameter);
                     }
@@ -221,12 +252,12 @@ namespace Storm.MySqlRepository
                         strSql += " and (A.FullName like @FullName or A.ApplyUserName like @ApplyUserName or A.ApplyDeptName like @ApplyDeptName or A.ApprovalUserName like @ApprovalUserName or A.ApprovalDeptName like @ApprovalDeptName) ";
                         DbParameter[] parameter =
                             {
-                                 new MySqlParameter("@FullName",keyword),
-                                 new MySqlParameter("@ApplyUserName",keyword),
-                                 new MySqlParameter("@ApplyDeptName",keyword),
-                                 new MySqlParameter("@ApprovalUserName",keyword),
-                                 new MySqlParameter("@ApprovalDeptName",keyword),
-                                 new MySqlParameter("@approvalUser",approvalUserId)
+                                 new MySqlParameter("@FullName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApplyUserName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApplyDeptName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApprovalUserName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApprovalDeptName","%" + keyword+ "%"),
+                                 new MySqlParameter("@approvalUser","%" + approvalUserId+ "%")
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }
@@ -235,7 +266,7 @@ namespace Storm.MySqlRepository
 
                         DbParameter[] parameter =
                             {
-                                 new MySqlParameter("@approvalUser",approvalUserId)
+                                 new MySqlParameter("@approvalUser","%" + approvalUserId+ "%")
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }

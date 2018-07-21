@@ -609,9 +609,9 @@
             contentType: false,
             success: function (data) {
                 if (data.state == "success") {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
                     $.modalAlertSuccess(data.message);
                     $.modalClose();
-                    $.currentWindow().$("#gridList").trigger("reloadGrid");
                 } else {
                     $.modalAlertError(data.message);
                 }

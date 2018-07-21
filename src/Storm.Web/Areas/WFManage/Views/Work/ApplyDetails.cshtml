@@ -17,6 +17,7 @@
                 success: function (data) {
                     if (data.Contents != null && data.Contents != undefined && data.Contents != "") {
                         var codeStrs = data.Contents;
+                        $("#spStatusName").html(data.FlowStatusName);
                         $("#dvCentents").html(codeStrs);
                         $("#form1").find('.form-control,select,input').attr('disabled', 'disabled');
                         $("#form1").find('div.ckbox label').attr('for', '');
@@ -66,8 +67,7 @@
             }
         }
     }
-    function initApproDesc()
-    {
+    function initApproDesc() {
         if (!!keyValue) {
             $.ajax({
                 url: "/WFManage/Work/GetApproPocessridJson",
@@ -75,14 +75,16 @@
                 dataType: "json",
                 async: false,
                 success: function (data) {
-                    if (data != null && data != undefined && data.length > 0)
-                    {
+                    if (data != null && data != undefined && data.length > 0) {
                         for (var i = 0; i < data.length; i++) {
                             var daTemp = data[i];
-                            var strHtmls = "<tr><td class='dvApproDescTitle'>" + daTemp.NodeName
-                                + "</td><td class='dvApproDescText'><div><div>" + daTemp.Description
-                                + "</div><br /><div class='dvApproDescTextuser'>" + daTemp.ApprovalUserName
-                                + "[" + daTemp.CreatorTime + "]</div></div></td></tr>";
+                            var strHtmls = "<tr><td class='dvApproDescTitle'>" + daTemp.NodeName + "</td>"
+                                + "<td class='dvApproDescText'>"
+                                + "<div><div>审核结果：" + daTemp.ApprovalStatusName + "</div><br />"
+                                + "<div><div>" + daTemp.Description + "</div><br />"
+                                + "<div class='dvApproDescTextuser'>" + daTemp.ApprovalUserName
+                                + "[" + daTemp.CreatorTime + "]</div></div>"
+                                + "</td></tr>";
                             $("#dvApproDescContenttbs").append(strHtmls);
                         }
                     }
@@ -103,6 +105,23 @@
         border-top: 1px solid black;
     }
 
+    #dvApproStatus {
+        margin: 0 auto;
+        width: 90%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+        #dvApproStatus span {
+            margin-left: 10px;
+        }
+
+    #spStatusName {
+        color: red;
+    }
+
+
     #dvApproDescContents {
         margin: 0 auto;
         width: 90%;
@@ -122,17 +141,19 @@
 
         #dvApproDescContents .dvApproDescTitle {
             width: 20%;
-            height:100px;
-            font-size:18px;
-            text-align:center;
-            background-color:#dbd7d6;
+            height: 100px;
+            font-size: 18px;
+            text-align: center;
+            background-color: #dbd7d6;
         }
+
         #dvApproDescContents .dvApproDescText div {
-            width:96%;
+            width: 96%;
             margin: 0 auto;
         }
-        #dvApproDescContents .dvApproDescTextuser{
-            text-align:right;
+
+        #dvApproDescContents .dvApproDescTextuser {
+            text-align: right;
         }
 </style>
 <form id="form1">
@@ -140,10 +161,13 @@
         <div id="dvCentents" name="dvCentents" style="margin:0 auto;width:90%;margin-top:20px;" class="form">
         </div>
         <div id="dvApproDesc">
+            <div id="dvApproStatus">
+                <span>审核状态:</span>
+                <span id="spStatusName"></span>
+            </div>
             <div id="dvApproDescContents">
                 <h3>处理意见</h3>
-                <table id="dvApproDescContenttbs">
-                </table>
+                <table id="dvApproDescContenttbs"></table>
             </div>
         </div>
     </div>

@@ -23,6 +23,10 @@ namespace Storm.Application.WFManage
             List<ApprovalProcessEntity> models = new List<ApprovalProcessEntity>();
             models = approservice.IQueryable(m => m.WorkId == workId && m.DeleteMark != true
                 && m.IsEnd != true && m.IsStart != true).OrderByDescending(m => m.CreatorTime).ToList();
+            models?.ForEach(delegate(ApprovalProcessEntity model) {
+                string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(ApprovalStatus), model.ApprovalStatus);
+                model.ApprovalStatusName = desc;
+            });
             return models;
         }
     }

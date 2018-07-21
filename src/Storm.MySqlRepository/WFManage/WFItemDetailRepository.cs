@@ -14,7 +14,21 @@ namespace Storm.MySqlRepository
         public List<WFItemDetailEntity> GetItemDetailList(string enCode)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append(@"SELECT  d.*
+            strSql.Append(@"SELECT     d.Id
+                                      ,d.ItemId
+                                      ,d.ParentId
+                                      ,d.ItemCode
+                                      ,d.ItemName
+                                      ,d.SortCode
+                                      ,d.DeleteMark
+                                      ,d.EnabledMark
+                                      ,d.Description
+                                      ,d.CreatorTime
+                                      ,d.CreatorUserId
+                                      ,d.LastModifyTime
+                                      ,d.LastModifyUserId
+                                      ,d.DeleteTime
+                                      ,d.DeleteUserId
                             FROM    WF_ItemDetails d
                                     INNER  JOIN WF_Items i ON i.Id = d.ItemId
                             WHERE   1 = 1
@@ -35,7 +49,21 @@ namespace Storm.MySqlRepository
         public List<WFItemDetailEntity> GetItemDetailByItemIdList(string itemId)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append(@"SELECT  d.*
+            strSql.Append(@"SELECT     d.Id
+                                      ,d.ItemId
+                                      ,d.ParentId
+                                      ,d.ItemCode
+                                      ,d.ItemName
+                                      ,d.SortCode
+                                      ,d.DeleteMark
+                                      ,d.EnabledMark
+                                      ,d.Description
+                                      ,d.CreatorTime
+                                      ,d.CreatorUserId
+                                      ,d.LastModifyTime
+                                      ,d.LastModifyUserId
+                                      ,d.DeleteTime
+                                      ,d.DeleteUserId
                             FROM    WF_ItemDetails d
                                     INNER  JOIN WF_Items i ON i.Id = d.ItemId
                             WHERE   1 = 1
