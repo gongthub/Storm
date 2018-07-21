@@ -182,5 +182,18 @@ namespace Storm.Web.Areas.WFManage.Controllers
             workFlowApp.Approval(workId, status, desc);
             return Success("审核成功。");
         }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult MyApproval()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetMyApprovalGridJson(string keyword)
+        {
+            var data = workApp.GetMyApprovalList(keyword);
+            return Content(data.ToJson());
+        }
     }
 }

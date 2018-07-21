@@ -110,6 +110,21 @@ namespace Storm.Application.WFManage
             }
             return models;
         }
+        public List<MyApprovalWorkEntity> GetMyApprovalList(string keyword = "")
+        {
+            List<MyApprovalWorkEntity> models = service.GetMyApprovalList(keyword);
+            if (models != null && models.Count > 0)
+            {
+                models.ForEach(delegate (MyApprovalWorkEntity model)
+                {
+                    string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.FlowStatus);
+                    model.FlowStatusName = desc;
+                    string approvalStatusName = Code.EnumHelp.enumHelp.GetDescription(typeof(ApprovalStatus), model.ApprovalStatus);
+                    model.ApprovalStatusName = approvalStatusName;
+                });
+            }
+            return models;
+        }
         public WorkEntity GetForm(string keyValue)
         {
             WorkEntity model = service.FindEntity(keyValue);

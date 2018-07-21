@@ -163,5 +163,90 @@ namespace Storm.SqlServerRepository
                 throw ex;
             }
         }
+
+        public List<MyApprovalWorkEntity> GetMyApprovalList(string keyword = "")
+        {
+            try
+            {
+                string approvalUserId = string.Empty;
+                var loguser = OperatorProvider.Provider.GetCurrent();
+                if (loguser != null)
+                {
+                    approvalUserId = loguser.UserId;
+                }
+                else
+                {
+                    throw new Exception("当前用户信息异常！");
+                }
+                List<MyApprovalWorkEntity> models = new List<MyApprovalWorkEntity>();
+                using (var db = new RepositoryBase())
+                {
+                    string strSql = @"SELECT DISTINCT
+	                                        *
+                                        FROM
+	                                        (
+		                                        SELECT
+			                                        A.Id,
+			                                        A.FullName,
+			                                        A.ApplyUserId,
+			                                        A.FlowStatus,
+			                                        A.CreatorTime,
+			                                        A.DeleteMark,
+			                                        D.RealName ApplyUserName,
+			                                        E.FullName ApplyDeptName,
+			                                        B.Id ApprovalUserId,
+			                                        B.RealName ApprovalUserName,
+			                                        C.FullName ApprovalDeptName,
+			                                        wfap.ApprovalStatus,
+			                                        wfap.CreatorTime ApprovalTime
+		                                        FROM
+			                                        WF_Works A
+		                                        LEFT JOIN wf_approvalprocess wfap ON A.Id = wfap.WorkId
+		                                        AND wfap.IsStart != 1
+		                                        AND wfap.IsEnd != 1
+		                                        LEFT JOIN Sys_User B ON wfap.ApprovalUserId = B.Id
+		                                        LEFT JOIN Sys_Organize C ON B.DepartmentId = C.Id
+		                                        LEFT JOIN Sys_User D ON A.ApplyUserId = D.Id
+		                                        LEFT JOIN Sys_Organize E ON D.DepartmentId = E.Id
+	                                        ) A
+                                        WHERE
+	                                        A.ApprovalUserId = @approvalUser
+                                        AND (
+	                                        A.DeleteMark IS NULL
+	                                        OR A.DeleteMark != 1
+                                        )";
+
+                    if (!string.IsNullOrEmpty(keyword))
+                    {
+                        strSql += " and (A.FullName like @FullName or A.ApplyUserName like @ApplyUserName or A.ApplyDeptName like @ApplyDeptName or A.ApprovalUserName like @ApprovalUserName or A.ApprovalDeptName like @ApprovalDeptName) ";
+                        DbParameter[] parameter =
+                            {
+                                 new SqlParameter("@FullName",keyword),
+                                 new SqlParameter("@ApplyUserName",keyword),
+                                 new SqlParameter("@ApplyDeptName",keyword),
+                                 new SqlParameter("@ApprovalUserName",keyword),
+                                 new SqlParameter("@ApprovalDeptName",keyword),
+                                 new SqlParameter("@approvalUser",approvalUserId)
+                            };
+                        models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
+                    }
+                    else
+                    {
+
+                        DbParameter[] parameter =
+                            {
+                                 new SqlParameter("@approvalUser",approvalUserId)
+                            };
+                        models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
+                    }
+                }
+                models = models.OrderByDescending(m => m.ApprovalTime).ToList();
+                return models;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

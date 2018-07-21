@@ -29,6 +29,10 @@ namespace Storm.SqlServerRepository
                     WorkEntity workEntity = db.FindEntity<WorkEntity>(m => m.Id == workId);
                     if (workEntity != null && !string.IsNullOrEmpty(workEntity.Id))
                     {
+                        if (workEntity.FlowStatus != (int)WorkStatus.Save)
+                        {
+                            throw new Exception("当前流程已进行申请，无法重复提交申请！");
+                        }
                         workEntity.Modify(workEntity.Id);
                         FlowNodeEntity nextNode = GetNextNodeId(workId, ApprovalStatus.Pass);
                         if (nextNode != null && !string.IsNullOrEmpty(nextNode.Id))

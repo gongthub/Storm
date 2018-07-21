@@ -15,6 +15,7 @@ namespace Storm.Domain.IRepository.WFManage
         List<WorkControlEntity> GetWorkControls(string workIds);
         List<WorkFileEntity> GetWorkFiles(string workIds);
         List<MyPendingWorkEntity> GetMyPendingList(string keyword = "");
+        List<MyApprovalWorkEntity> GetMyApprovalList(string keyword = "");
         
     }
 }
