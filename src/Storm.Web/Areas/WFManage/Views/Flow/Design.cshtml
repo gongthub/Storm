@@ -110,6 +110,9 @@
                     case "selRejectNode":
                         focmodel.rejectnode = this.value;
                         break;
+                    case "selCcType":
+                        focmodel.cctype = this.value;
+                        break;
                 }
             }
 
@@ -181,6 +184,8 @@
             }
             if (obj.reviewertype != null && obj.reviewertype != undefined)
                 $("#selReviewerType").val(obj.reviewertype).trigger("change").change();
+            if (obj.cctype != null && obj.cctype != undefined)
+                $("#selCcType").val(obj.cctype).trigger("change").change();
             if (obj.messagetype != null && obj.messagetype != undefined)
                 $("#selMessageType").val(obj.messagetype).trigger("change").change();
 
@@ -235,6 +240,11 @@
             id: "Value",
             text: "Desc"
         });
+        $("#selCcType").bindSelect({
+            url: "/WFManage/Flow/GetCcTypeSelectJson",
+            id: "Value",
+            text: "Desc"
+        });
         $("#selMessageType").bindSelect({
             url: "/WFManage/Flow/GetMessageTypeSelectJson",
             id: "Value",
@@ -274,6 +284,7 @@
         $("#selStepType").val(0).trigger("change");
         $("#selRejectType").val(0).trigger("change");
         $("#selReviewerType").val(0).trigger("change");
+        $("#selCcType").val(0).trigger("change");
         $("#selMessageType").val(0).trigger("change");
         $("#selStrategiesType").val(0).trigger("change");
     }
@@ -349,6 +360,41 @@
                     var selnode = myflowdesign.$nodeData[markName];
                     if (selnode != null) {
                         selnode.reviewerusers = reviewerusers.toString();
+                    }
+                }
+            });
+        }
+    }
+    function ccConfig() {
+        var ccType = $("#selCcType").val();
+        var markName = $("#hdNodeMarkName").val();
+        if (ccType == 1) {
+            $.modalOpen({
+                id: "ReviewerOrg",
+                title: "配置岗位",
+                url: "/WFManage/Flow/ReviewerOrg?keyValue=" + keyValue + "&markName=" + markName,
+                width: "600px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    var ccorgs = top.frames[iframeId].submitForm();
+                    var selnode = myflowdesign.$nodeData[markName];
+                    if (selnode != null) {
+                        selnode.ccorgs = ccrorgs.toString();
+                    }
+                }
+            });
+        } else if (ccType == 2) {
+            $.modalOpen({
+                id: "CcPeople",
+                title: "配置指定人",
+                url: "/WFManage/Flow/ReviewerPeople?keyValue=" + keyValue + "&markName=" + markName,
+                width: "600px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    var ccusers = top.frames[iframeId].submitForm();
+                    var selnode = myflowdesign.$nodeData[markName];
+                    if (selnode != null) {
+                        selnode.ccusers = ccusers.toString();
                     }
                 }
             });
@@ -445,6 +491,31 @@
                         <div class="input-group">
                             <input type="text" placeholder="请选择配置..." aria-describedby="spnodereviewer" readonly="readonly" />
                             <span class="input-group-addon" id="spnodereviewer" style="cursor:pointer;" onclick="reviewerConfig()">配置</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary btnflow" data-toggle="collapse"
+                data-target="#dvccpeople">
+            抄送人设置
+        </button>
+        <div id="dvccpeople" class="collapse in dvflowcontent">
+            <table>
+                <tr>
+                    <td class="th">抄送人类型：</td>
+                    <td>
+                        <select id="selCcType" name="selCcType" class="form-control comflowtxt">
+                            <option value="0">==请选择==</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="th">抄送人：</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" placeholder="请选择配置..." aria-describedby="spnodeCc" readonly="readonly" />
+                            <span class="input-group-addon" id="spnodeCc" style="cursor:pointer;" onclick="ccConfig()">配置</span>
                         </div>
                     </td>
                 </tr>

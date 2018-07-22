@@ -274,6 +274,102 @@ namespace Storm.MySqlRepository
                 throw ex;
             }
         }
+        public List<ApprovalCcsEntity> GetWorkCcList(string keyword = "")
+        {
+            try
+            {
+                string approvalUserId = string.Empty;
+                var loguser = OperatorProvider.Provider.GetCurrent();
+                if (loguser != null)
+                {
+                    approvalUserId = loguser.UserId;
+                }
+                else
+                {
+                    throw new Exception("当前用户信息异常！");
+                }
+                List<ApprovalCcsEntity> models = new List<ApprovalCcsEntity>();
+                using (var db = new RepositoryBase())
+                {
+                    string strSql = @"SELECT
+	                                                *
+                                                FROM
+	                                                (
+		                                                SELECT
+			                                                A.Id,
+			                                                A.WorkId,
+			                                                A.NodeId,
+			                                                A.ApprovalUserId,
+			                                                A.CcUserId,
+			                                                A.ApprovalStatus,
+			                                                A.IsViewed,
+			                                                A.DeleteMark,
+			                                                A.Description,
+			                                                A.CreatorTime,
+			                                                A.CreatorUserId,
+			                                                A.LastModifyTime,
+			                                                A.LastModifyUserId,
+			                                                A.DeleteTime,
+			                                                A.DeleteUserId,
+			                                                B.FullName WorkName,
+			                                                B.FlowStatus WorkStatus,
+			                                                E.RealName ApplyUserName,
+			                                                F.FullName ApplyDeptName,
+			                                                B.CreatorTime ApplyTime,
+			                                                C.RealName ApprovalUserName,
+			                                                G.FullName ApprovalDeptName,
+			                                                D.RealName CcUserName
+		                                                FROM
+			                                                wf_approvalccs A
+		                                                LEFT JOIN wf_works B ON A.WorkId = B.Id
+		                                                LEFT JOIN sys_user C ON A.ApprovalUserId = C.Id
+		                                                LEFT JOIN sys_user D ON A.CcUserId = C.Id
+		                                                LEFT JOIN sys_user E ON B.ApplyUserId = E.Id
+		                                                LEFT JOIN sys_organize F ON E.DepartmentId = F.Id
+		                                                LEFT JOIN sys_organize G ON C.DepartmentId = G.Id
+		                                                WHERE
+			                                                (
+				                                                A.DeleteMark IS NULL
+				                                                OR A.DeleteMark != 1
+			                                                )
+		                                                AND (
+			                                                B.DeleteMark IS NULL
+			                                                OR B.DeleteMark != 1
+		                                                )
+	                                                ) A CcUserId =@ccUserId";
+
+                    if (!string.IsNullOrEmpty(keyword))
+                    {
+                        strSql += " and (A.WorkName like @WorkName or A.ApplyUserName like @ApplyUserName or A.ApplyDeptName like @ApplyDeptName or A.ApprovalUserName like @ApprovalUserName or A.ApprovalDeptName like @ApprovalDeptName) ";
+                        DbParameter[] parameter =
+                            {
+                                 new MySqlParameter("@WorkName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApplyUserName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApplyDeptName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApprovalUserName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ApprovalDeptName","%" + keyword+ "%"),
+                                 new MySqlParameter("@ccUserId",approvalUserId)
+                            };
+                        models = db.FindList<ApprovalCcsEntity>(strSql.ToString(), parameter);
+                    }
+                    else
+                    {
+
+                        DbParameter[] parameter =
+                            {
+                                 new MySqlParameter("@ccUserId",approvalUserId)
+                            };
+                        models = db.FindList<ApprovalCcsEntity>(strSql.ToString(), parameter);
+                    }
+                }
+                models = models.OrderByDescending(m => m.CreatorTime).ToList();
+                return models;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public List<WorkEntity> GetSystemFormApplyings()
         {
             List<WorkEntity> models = new List<WorkEntity>();

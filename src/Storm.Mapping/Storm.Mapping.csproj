@@ -66,6 +66,7 @@
     <Compile Include="SystemSecurity\DbBackupMap.cs" />
     <Compile Include="SystemSecurity\FilterIPMap.cs" />
     <Compile Include="SystemSecurity\LogMap.cs" />
+    <Compile Include="WFManage\ApprovalCcsMap.cs" />
     <Compile Include="WFManage\ApprovalProcessMap.cs" />
     <Compile Include="WFManage\FlowAreaMap.cs" />
     <Compile Include="WFManage\FlowLineMap.cs" />

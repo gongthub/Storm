@@ -55,6 +55,7 @@
     <Compile Include="SystemSecurity\DbBackupRepository.cs" />
     <Compile Include="SystemSecurity\FilterIPRepository.cs" />
     <Compile Include="SystemSecurity\LogRepository.cs" />
+    <Compile Include="WFManage\ApprovalCcsRepository.cs" />
     <Compile Include="WFManage\ApprovalProcessRepository.cs" />
     <Compile Include="WFManage\FlowRepository.cs" />
     <Compile Include="WFManage\FlowVersionRepository.cs" />

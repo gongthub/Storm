@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\WFManage\ApprovalCcsEntity.cs" />
     <Compile Include="Entity\WFManage\ApprovalProcessEntity.cs" />
     <Compile Include="Entity\WFManage\FlowAreaEntity.cs" />
     <Compile Include="Entity\WFManage\FlowEntity.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Infrastructure\IDeleteAudited.cs" />
     <Compile Include="Infrastructure\IEntity.cs" />
     <Compile Include="Infrastructure\IModificationAudited.cs" />
+    <Compile Include="IRepository\WFManage\IApprovalCcsRepository.cs" />
     <Compile Include="IRepository\WFManage\IApprovalProcessRepository.cs" />
     <Compile Include="IRepository\WFManage\IFlowRepository.cs" />
     <Compile Include="IRepository\WFManage\IFlowVersionRepository.cs" />

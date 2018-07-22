@@ -263,6 +263,18 @@ namespace Storm.Application.WFManage
                             {
                                 flowNode.ReviewerOrg = itemnodeitem.Value.ToString();
                             }
+                            if (itemnodeitem.Key == "cctype")
+                            {
+                                flowNode.CcType = (int)itemnodeitem.Value;
+                            }
+                            if (itemnodeitem.Key == "ccusers")
+                            {
+                                flowNode.CcUser = itemnodeitem.Value.ToString();
+                            }
+                            if (itemnodeitem.Key == "ccorgs")
+                            {
+                                flowNode.CcOrg = itemnodeitem.Value.ToString();
+                            }
                             if (itemnodeitem.Key == "messagetype")
                             {
                                 flowNode.MessageType = (int)itemnodeitem.Value;

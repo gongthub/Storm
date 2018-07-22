@@ -63,6 +63,7 @@ namespace Storm.SqlServerRepository
                             workEntity.FlowStatus = (int)WorkStatus.Success;
                             AddEndApproProcess(workId, nextNode, db);
                         }
+                        AddCc(workId, nextNode.Id, userId, db);
                         db.Update(workEntity);
                         db.Commit();
                     }
@@ -122,6 +123,8 @@ namespace Storm.SqlServerRepository
                                     {
                                         workEntity.CurrentUsers = string.Join(",", strUsersNew.ToArray());
                                         AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
+
+                                        AddCc(workId, workEntity.CurrentNodeId, applyUserId, db);
                                     }
                                 }
                             }
@@ -175,6 +178,7 @@ namespace Storm.SqlServerRepository
                 workEntity.FlowStatus = (int)WorkStatus.Success;
                 AddEndApproProcess(workId, nextNode, db);
             }
+            AddCc(workId, nextNode.Id, workEntity.CurrentUsers, db);
         }
         private void ApplyFail(string workId, string desc)
         {
@@ -233,6 +237,7 @@ namespace Storm.SqlServerRepository
                                 throw new Exception("当前节点驳回配置异常,请联系管理员！");
                             }
                         }
+                        AddCc(workId, lastNode.Id, applyUserId, db);
                         db.Update(workEntity);
                         db.Commit();
                     }
@@ -588,6 +593,67 @@ namespace Storm.SqlServerRepository
             }
             return userIds;
         }
+        private string GetCurrentCcUserIds(FlowNodeEntity nextNode, string currUser)
+        {
+            string userIds = string.Empty;
+            if (nextNode.CcType == (int)CcType.Specified)
+            {
+                userIds = nextNode.CcUser;
+            }
+            else
+                if (nextNode.CcType == (int)CcType.Post)
+            {
+                if (!string.IsNullOrEmpty(nextNode.CcOrg))
+                {
+                    List<string> orgIds = nextNode.CcOrg.Split(',').ToList();
+                    if (orgIds != null && orgIds.Count > 0)
+                    {
+                        List<UserEntity> userModels = new List<UserEntity>();
+                        using (var db = new RepositoryBase())
+                        {
+                            List<string> useridsTemp = new List<string>();
+                            foreach (var orgId in orgIds)
+                            {
+                                userModels = db.IQueryable<UserEntity>(m => m.OrganizeId == orgId && m.DeleteMark != true && m.EnabledMark == true).ToList();
+                                if (userModels != null && userModels.Count > 0)
+                                {
+                                    string[] userids = userModels.Select(m => m.Id).ToArray();
+                                    string strusers = string.Join(",", userids);
+                                    useridsTemp.Add(strusers);
+                                }
+                            }
+                            if (useridsTemp != null && useridsTemp.Count > 0)
+                            {
+                                userIds = string.Join(",", useridsTemp.ToArray());
+                            }
+                        }
+                    }
+                }
+            }
+            else if (nextNode.CcType == (int)CcType.Last)
+            {
+                using (var db = new RepositoryBase())
+                {
+                    UserEntity userEntity = db.IQueryable<UserEntity>(m => m.Id == currUser && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                    if (userEntity != null && !string.IsNullOrWhiteSpace(userEntity.Id))
+                    {
+                        OrganizeEntity organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == userEntity.DepartmentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                        if (organizeEntity == null
+                            || string.IsNullOrWhiteSpace(organizeEntity.Id)
+                            || string.IsNullOrWhiteSpace(organizeEntity.ManagerId))
+                        {
+                            throw new Exception("上一级审批人未配置，请联系管理员！");
+                        }
+                        if (organizeEntity?.ManagerId == currUser)
+                        {
+                            organizeEntity = db.IQueryable<OrganizeEntity>(m => m.Id == organizeEntity.ParentId && m.DeleteMark != true && m.EnabledMark == true).FirstOrDefault();
+                        }
+                        userIds = organizeEntity?.ManagerId;
+                    }
+                }
+            }
+            return userIds;
+        }
         private void AddStartApproProcess(string workId, IRepositoryBase db)
         {
             FlowNodeEntity currentNode = GetCurrentNode(workId);
@@ -730,6 +796,34 @@ namespace Storm.SqlServerRepository
                     bResult = approvalProcessEntity.IsSkip;
             }
             return bResult;
+        }
+        private void AddCc(string workId, string nodeId, string currUserId, IRepositoryBase db)
+        {
+            FlowNodeEntity node = db.FindEntity<FlowNodeEntity>(nodeId);
+            if (node != null && !string.IsNullOrWhiteSpace(node.Id))
+            {
+                string ccUserIds = GetCurrentCcUserIds(node, currUserId);
+                if (ccUserIds != null && !string.IsNullOrWhiteSpace(ccUserIds))
+                {
+                    List<string> ccUserIdslst = ccUserIds.Split(',').ToList();
+                    ccUserIdslst.ForEach(delegate (string ccUserId)
+                    {
+                        ApprovalCcsEntity appproccEntity = new ApprovalCcsEntity();
+                        appproccEntity.Create();
+                        appproccEntity.WorkId = workId;
+                        appproccEntity.CcUserId = ccUserId;
+                        appproccEntity.NodeId = nodeId;
+                        appproccEntity.ApprovalUserId = currUserId;
+                        appproccEntity.IsViewed = false;
+                        var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                        if (LoginInfo != null)
+                        {
+                            appproccEntity.CreatorUserId = LoginInfo.UserId;
+                        }
+                        db.Insert(appproccEntity);
+                    });
+                }
+            }
         }
     }
 }

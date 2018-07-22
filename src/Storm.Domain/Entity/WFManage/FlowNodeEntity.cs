@@ -24,6 +24,9 @@ namespace Storm.Domain.Entity.WFManage
         public int ReviewerType { set; get; }
         public string ReviewerOrg { set; get; }
         public string ReviewerUser { set; get; }
+        public int CcType { set; get; }
+        public string CcOrg { set; get; }
+        public string CcUser { set; get; }
         public int MessageType { set; get; }
         public bool IsStartNode { set; get; }
         public bool IsEndNode { set; get; }

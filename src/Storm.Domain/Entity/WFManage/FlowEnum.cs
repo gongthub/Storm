@@ -43,6 +43,18 @@ namespace Storm.Domain.Entity.WFManage
         Last = 3
     }
     /// <summary>
+    /// 抄送人类型
+    /// </summary>
+    public enum CcType
+    {
+        [Description("岗位")]
+        Post = 1,
+        [Description("指定人")]
+        Specified = 2,
+        [Description("上一级领导")]
+        Last = 3
+    }
+    /// <summary>
     /// 消息提醒类型
     /// </summary>
     public enum MessageType

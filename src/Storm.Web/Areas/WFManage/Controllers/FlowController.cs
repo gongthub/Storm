@@ -62,6 +62,13 @@ namespace Storm.Web.Areas.WFManage.Controllers
         }
         [HttpGet]
         [HandlerAjaxOnly]
+        public ActionResult GetCcTypeSelectJson()
+        {
+            List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(CcType));
+            return Content(models.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
         public ActionResult GetMessageTypeSelectJson()
         {
             List<EnumModel> models = EnumHelp.enumHelp.EnumToList(typeof(MessageType));

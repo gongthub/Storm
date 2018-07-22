@@ -195,5 +195,18 @@ namespace Storm.Web.Areas.WFManage.Controllers
             var data = workApp.GetMyApprovalList(keyword);
             return Content(data.ToJson());
         }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult WorkCcIndex()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetWorkCcGridJson(string keyword)
+        {
+            var data = workApp.GetWorkCcList(keyword);
+            return Content(data.ToJson());
+        }
     }
 }
