@@ -1186,10 +1186,13 @@ CREATE TABLE `wf_flownodes` (
   `Height` int(11) DEFAULT NULL,
   `StepType` int(11) DEFAULT NULL,
   `RejectType` int(11) DEFAULT NULL,
-  `RejectType` varchar(255) DEFAULT NULL,
+  `RejectType` varchar(255) DEFAULT NULL
   `ReviewerType` int(11) DEFAULT NULL,
   `ReviewerOrg` varchar(255) DEFAULT NULL,
   `ReviewerUser` varchar(255) DEFAULT NULL,
+  `CcType` int(11) DEFAULT NULL,
+  `CcOrg` varchar(255) DEFAULT NULL,
+  `CcUser` varchar(255) DEFAULT NULL,
   `MessageType` int(11) DEFAULT NULL,
   `IsStartNode` tinyint(4) DEFAULT NULL,
   `IsEndNode` tinyint(4) DEFAULT NULL,
@@ -1198,6 +1201,33 @@ CREATE TABLE `wf_flownodes` (
 
 -- ----------------------------
 -- Records of wf_flownodes
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `wf_approvalccs`
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_approvalccs`;
+CREATE TABLE `wf_approvalccs` (
+  `Id` varchar(50) NOT NULL,
+  `WorkId` varchar(50) DEFAULT NULL,
+  `NodeId` varchar(50) DEFAULT NULL,
+  `ApprovalUserId` varchar(5000) DEFAULT NULL,
+  `CcUserId` varchar(50) DEFAULT NULL,
+  `ApprovalStatus` int(11) DEFAULT NULL,
+  `IsViewed` tinyint(4) DEFAULT NULL,
+  `DeleteMark` tinyint(4) DEFAULT NULL,
+  `Description` varchar(255) DEFAULT NULL,
+  `CreatorTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `CreatorUserId` varchar(50) DEFAULT NULL,
+  `LastModifyTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `LastModifyUserId` varchar(50) DEFAULT NULL,
+  `DeleteTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `DeleteUserId` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of wf_approvalccs
 -- ----------------------------
 
 -- ----------------------------
