@@ -147,14 +147,15 @@ namespace Storm.MySqlRepository
         }
         private void ApplySuccessOne(string workId, string desc, IRepositoryBase db, WorkEntity workEntity, FlowNodeEntity currentNode, ref bool IsEnd)
         {
-            string nextNodeId = string.Empty;
             FlowNodeEntity nextNode = GetPassNextNodeId(workId, workEntity.CurrentNodeId, workEntity.FlowVersionId);
+            string nextNodeId = nextNode.Id;
+            string currUsers = workEntity.CurrentUsers;
             bool isEndNode = nextNode.IsEndNode;
+            AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
             if (!isEndNode)
             {
-                AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
                 bool isNeedSkip = false;
-                string userIds = GetCurrentUserIds(nextNode, workEntity.CurrentUsers, out isNeedSkip);
+                string userIds = GetCurrentUserIds(nextNode, currUsers, out isNeedSkip);
                 nextNodeId = nextNode.Id;
                 if (isNeedSkip && !nextNode.IsEndNode)
                 {
@@ -176,7 +177,7 @@ namespace Storm.MySqlRepository
                 workEntity.FlowStatus = (int)WorkStatus.Success;
                 AddEndApproProcess(workId, nextNode, db);
             }
-            AddCcSuccess(workId, nextNode.Id, workEntity.CurrentUsers, db);
+            AddCcSuccess(workId, nextNodeId, currUsers, db);
         }
         private void ApplyFail(string workId, string desc)
         {

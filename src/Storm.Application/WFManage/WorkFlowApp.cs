@@ -62,23 +62,26 @@ namespace Storm.Application.WFManage
 
         public void DoEndActive(string key)
         {
-            int type = new WorkApp().GetSystemFormTypeByworkId(key);
-            EndFlowEventArgs endFlowEventArgs = new EndFlowEventArgs();
-            endFlowEventArgs.key = key;
-            System.Delegate[] delegates = EndFlowEvent.GetInvocationList();
-            List<int> activelst = RegisteredFormLst.Where(m => m.key == key)
-                .Select(m => m.value).Distinct().ToList();
-            for (int i = 0; i < delegates.Length; i++)
+            if (EndFlowEvent != null)
             {
-                int inum = delegates[i].Method.GetHashCode();
-                object[] attributes = delegates[i].Method.GetCustomAttributes(typeof(WorkFlowAttribute), true);
-                if (attributes != null && attributes.Count() > 0)
+                int type = new WorkApp().GetSystemFormTypeByworkId(key);
+                EndFlowEventArgs endFlowEventArgs = new EndFlowEventArgs();
+                endFlowEventArgs.key = key;
+                System.Delegate[] delegates = EndFlowEvent.GetInvocationList();
+                List<int> activelst = RegisteredFormLst.Where(m => m.key == key)
+                    .Select(m => m.value).Distinct().ToList();
+                for (int i = 0; i < delegates.Length; i++)
                 {
-                    WorkFlowAttribute workFlowAttribute = (WorkFlowAttribute)attributes[0];
-                    if ((int)workFlowAttribute.systemForm == type)
+                    int inum = delegates[i].Method.GetHashCode();
+                    object[] attributes = delegates[i].Method.GetCustomAttributes(typeof(WorkFlowAttribute), true);
+                    if (attributes != null && attributes.Count() > 0)
                     {
-                        activelst.Remove(inum);
-                        delegates[i].DynamicInvoke(endFlowEventArgs);
+                        WorkFlowAttribute workFlowAttribute = (WorkFlowAttribute)attributes[0];
+                        if ((int)workFlowAttribute.systemForm == type)
+                        {
+                            activelst.Remove(inum);
+                            delegates[i].DynamicInvoke(endFlowEventArgs);
+                        }
                     }
                 }
             }

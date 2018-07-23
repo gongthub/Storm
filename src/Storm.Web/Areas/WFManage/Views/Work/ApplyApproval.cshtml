@@ -77,17 +77,19 @@
                     if (data != null && data != undefined && data.length > 0) {
                         for (var i = 0; i < data.length; i++) {
                             var daTemp = data[i];
-                            var strHtmls = "<tr><td class='dvApproDescTitle'>" + daTemp.NodeName
-                                + "</td><td class='dvApproDescText'><div><div>" + daTemp.Description
-                                + "</div><br /><div class='dvApproDescTextuser'>" + daTemp.ApprovalUserName
-                                + "[" + daTemp.CreatorTime + "]</div></div></td></tr>";
+                            var strHtmls = "<tr><td class='dvApproDescTitle'>" + daTemp.NodeName + "</td>"
+                                + "<td class='dvApproDescText'>"
+                                + "<div><div>审核结果：" + daTemp.ApprovalStatusName + "</div><br />"
+                                + "<div><div>" + daTemp.Description + "</div><br />"
+                                + "<div class='dvApproDescTextuser'>" + daTemp.ApprovalUserName
+                                + "[" + daTemp.CreatorTime + "]</div></div>"
+                                + "</td></tr>";
                             $("#dvApproDescContenttbs").append(strHtmls);
                         }
                     }
                 }
             });
         }
-
     }
     function reviewerConfig() {
         $.modalOpen({

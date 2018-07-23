@@ -257,7 +257,7 @@ namespace Storm.SqlServerRepository
                                  new SqlParameter("@ApplyDeptName","%" + keyword+ "%"),
                                  new SqlParameter("@ApprovalUserName","%" + keyword+ "%"),
                                  new SqlParameter("@ApprovalDeptName","%" + keyword+ "%"),
-                                 new SqlParameter("@approvalUser","%" + approvalUserId+ "%")
+                                 new SqlParameter("@approvalUser",approvalUserId)
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }
@@ -266,7 +266,7 @@ namespace Storm.SqlServerRepository
 
                         DbParameter[] parameter =
                             {
-                                 new SqlParameter("@approvalUser","%" + approvalUserId+ "%")
+                                 new SqlParameter("@approvalUser",approvalUserId)
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }

@@ -252,7 +252,7 @@ namespace Storm.MySqlRepository
                                  new MySqlParameter("@ApplyDeptName","%" + keyword+ "%"),
                                  new MySqlParameter("@ApprovalUserName","%" + keyword+ "%"),
                                  new MySqlParameter("@ApprovalDeptName","%" + keyword+ "%"),
-                                 new MySqlParameter("@approvalUser","%" + approvalUserId+ "%")
+                                 new MySqlParameter("@approvalUser", approvalUserId)
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }
@@ -261,7 +261,7 @@ namespace Storm.MySqlRepository
 
                         DbParameter[] parameter =
                             {
-                                 new MySqlParameter("@approvalUser","%" + approvalUserId+ "%")
+                                 new MySqlParameter("@approvalUser", approvalUserId)
                             };
                         models = db.FindList<MyApprovalWorkEntity>(strSql.ToString(), parameter);
                     }
