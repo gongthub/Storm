@@ -13,11 +13,6 @@ namespace Storm.Application.Infrastructure
         private WorkApp workApp = new WorkApp();
         private FlowApp flowApp = new FlowApp();
 
-        public void RegisteredEndActive(EndFlowDelegate action)
-        {
-            WorkFlowApp.EndFlowEvent += action;
-        }
-
         public bool Start(SystemForm systemForm, string key)
         {
             bool bResult = false;

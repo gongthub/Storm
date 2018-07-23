@@ -18,6 +18,8 @@ namespace Storm.Web
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //注册系统表单流程审核结束函数
+            WorkFlowActices.InitRegistered();
         }
 
         protected void Application_BeginRequest()
