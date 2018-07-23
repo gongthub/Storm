@@ -107,11 +107,10 @@ namespace Storm.Application.WFManage
             });
             return models;
         }
-        public List<ApprovalCcsEntity> GetWorkCcList(string keyword = "")
+        public List<MyApprovalCcsEntity> GetWorkCcList(string keyword = "")
         {
-            List<ApprovalCcsEntity> models = service.GetWorkCcList(keyword);
-            models = models?.OrderByDescending(m => m.IsViewed).OrderByDescending(m => m.CreatorTime).ToList();
-            models?.ForEach(delegate (ApprovalCcsEntity model)
+            List<MyApprovalCcsEntity> models = service.GetWorkCcList(keyword);
+            models?.ForEach(delegate (MyApprovalCcsEntity model)
             {
                 string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(WorkStatus), model.WorkStatus);
                 model.WorkStatusName = desc;
@@ -437,6 +436,10 @@ namespace Storm.Application.WFManage
         {
             int systemForm = service.GetSystemFormTypeByworkId(workId);
             return systemForm;
+        }
+        public void IsViewed(string keyValue)
+        {
+            service.IsViewed(keyValue);
         }
     }
 }

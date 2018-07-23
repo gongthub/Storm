@@ -208,5 +208,14 @@ namespace Storm.Web.Areas.WFManage.Controllers
             var data = workApp.GetWorkCcList(keyword);
             return Content(data.ToJson());
         }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [HandlerAuthorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult IsViewed(string keyValue)
+        {
+            workApp.IsViewed(keyValue);
+            return Success("操作成功。");
+        }
     }
 }

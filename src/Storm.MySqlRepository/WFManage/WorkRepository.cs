@@ -274,7 +274,7 @@ namespace Storm.MySqlRepository
                 throw ex;
             }
         }
-        public List<ApprovalCcsEntity> GetWorkCcList(string keyword = "")
+        public List<MyApprovalCcsEntity> GetWorkCcList(string keyword = "")
         {
             try
             {
@@ -288,7 +288,7 @@ namespace Storm.MySqlRepository
                 {
                     throw new Exception("当前用户信息异常！");
                 }
-                List<ApprovalCcsEntity> models = new List<ApprovalCcsEntity>();
+                List<MyApprovalCcsEntity> models = new List<MyApprovalCcsEntity>();
                 using (var db = new RepositoryBase())
                 {
                     string strSql = @"SELECT
@@ -323,7 +323,7 @@ namespace Storm.MySqlRepository
 			                                                wf_approvalccs A
 		                                                LEFT JOIN wf_works B ON A.WorkId = B.Id
 		                                                LEFT JOIN sys_user C ON A.ApprovalUserId = C.Id
-		                                                LEFT JOIN sys_user D ON A.CcUserId = C.Id
+		                                                LEFT JOIN sys_user D ON A.CcUserId = D.Id
 		                                                LEFT JOIN sys_user E ON B.ApplyUserId = E.Id
 		                                                LEFT JOIN sys_organize F ON E.DepartmentId = F.Id
 		                                                LEFT JOIN sys_organize G ON C.DepartmentId = G.Id
@@ -336,7 +336,9 @@ namespace Storm.MySqlRepository
 			                                                B.DeleteMark IS NULL
 			                                                OR B.DeleteMark != 1
 		                                                )
-	                                                ) A CcUserId =@ccUserId";
+	                                                ) A
+                                                WHERE  A.CcUserId =@ccUserId 
+                                                ORDER BY A.IsViewed,A.CreatorTime desc";
 
                     if (!string.IsNullOrEmpty(keyword))
                     {
@@ -350,7 +352,7 @@ namespace Storm.MySqlRepository
                                  new MySqlParameter("@ApprovalDeptName","%" + keyword+ "%"),
                                  new MySqlParameter("@ccUserId",approvalUserId)
                             };
-                        models = db.FindList<ApprovalCcsEntity>(strSql.ToString(), parameter);
+                        models = db.FindList<MyApprovalCcsEntity>(strSql.ToString(), parameter);
                     }
                     else
                     {
@@ -359,10 +361,9 @@ namespace Storm.MySqlRepository
                             {
                                  new MySqlParameter("@ccUserId",approvalUserId)
                             };
-                        models = db.FindList<ApprovalCcsEntity>(strSql.ToString(), parameter);
+                        models = db.FindList<MyApprovalCcsEntity>(strSql.ToString(), parameter);
                     }
                 }
-                models = models.OrderByDescending(m => m.CreatorTime).ToList();
                 return models;
             }
             catch (Exception ex)
@@ -433,6 +434,27 @@ namespace Storm.MySqlRepository
                 string strType = db.FindEntity<string>(strSql.ToString(), parameter);
                 int.TryParse(strType, out type);
                 return type;
+            }
+        }
+        public void IsViewed(string keyValue)
+        {
+            try
+            {
+                using (var db = new RepositoryBase().BeginTrans())
+                {
+                    ApprovalCcsEntity approvalCcsEntity = db.FindEntity<ApprovalCcsEntity>(m => m.Id == keyValue);
+                    if (approvalCcsEntity != null && !string.IsNullOrWhiteSpace(approvalCcsEntity.Id))
+                    {
+                        approvalCcsEntity.Modify(approvalCcsEntity.Id);
+                        approvalCcsEntity.IsViewed = true;
+                        db.Update(approvalCcsEntity);
+                        db.Commit();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }

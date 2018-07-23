@@ -201,5 +201,25 @@ namespace Storm.Web.Areas.WFManage.Controllers
             var data = flowApp.GetNode(flowId, markName);
             return Content(data.ToJson());
         }
+
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult CcOrg()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAuthorize]
+        public virtual ActionResult CcPeople()
+        {
+            return View();
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public ActionResult GetCcFormJson(string flowId, string markName)
+        {
+            var data = flowApp.GetNode(flowId, markName);
+            return Content(data.ToJson());
+        }
     }
 }

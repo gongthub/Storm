@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Storm.Domain.Entity.WFManage
 {
-    public class ApprovalCcsEntity : IEntity<ApprovalCcsEntity>, ICreationAudited, IDeleteAudited, IModificationAudited
+    public class MyApprovalCcsEntity
     {
         public string Id { get; set; }
         public string WorkId { get; set; }
@@ -20,5 +24,17 @@ namespace Storm.Domain.Entity.WFManage
         public string LastModifyUserId { get; set; }
         public DateTime? DeleteTime { get; set; }
         public string DeleteUserId { get; set; }
+        public string WorkName { get; set; }
+        public int WorkStatus { get; set; }
+        [NotMapped]
+        public string WorkStatusName { get; set; }
+        public string ApplyUserName { get; set; }
+        public string ApplyDeptName { get; set; }
+        public DateTime? ApplyTime { get; set; }
+        public string ApprovalUserName { get; set; }
+        public string ApprovalDeptName { get; set; }
+        [NotMapped]
+        public string ApprovalStatusName { get; set; }
+        public string CcUserName { get; set; }
     }
 }

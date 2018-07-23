@@ -35,12 +35,27 @@ namespace Storm.Application.WFManage
         public List<ApprovalProcessEntity> GetApproProcessList(string workId)
         {
             List<ApprovalProcessEntity> models = new List<ApprovalProcessEntity>();
-            models = approservice.IQueryable(m => m.WorkId == workId && m.DeleteMark != true
-                && m.IsEnd != true && m.IsStart != true).OrderByDescending(m => m.CreatorTime).ToList();
+            models = approservice.IQueryable(m => m.WorkId == workId && m.DeleteMark != true).OrderByDescending(m => m.CreatorTime).ToList();
             models?.ForEach(delegate (ApprovalProcessEntity model)
             {
                 string desc = Code.EnumHelp.enumHelp.GetDescription(typeof(ApprovalStatus), model.ApprovalStatus);
                 model.ApprovalStatusName = desc;
+                if (model.Description == null)
+                {
+                    model.Description = string.Empty;
+                }
+                if (model.IsStart)
+                {
+                    model.NodeName = "申请开始";
+                }
+                if (model.IsEnd)
+                {
+                    model.NodeName = "申请结束";
+                }
+                if (model.IsSkip)
+                {
+                    model.Description = "<span style='color:red;'>跳过节点</span>";
+                }
             });
             return models;
         }

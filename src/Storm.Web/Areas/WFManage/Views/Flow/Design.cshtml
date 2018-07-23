@@ -370,9 +370,9 @@
         var markName = $("#hdNodeMarkName").val();
         if (ccType == 1) {
             $.modalOpen({
-                id: "ReviewerOrg",
+                id: "CcOrg",
                 title: "配置岗位",
-                url: "/WFManage/Flow/ReviewerOrg?keyValue=" + keyValue + "&markName=" + markName,
+                url: "/WFManage/Flow/CcOrg?keyValue=" + keyValue + "&markName=" + markName,
                 width: "600px",
                 height: "500px",
                 callBack: function (iframeId) {
@@ -387,7 +387,7 @@
             $.modalOpen({
                 id: "CcPeople",
                 title: "配置指定人",
-                url: "/WFManage/Flow/ReviewerPeople?keyValue=" + keyValue + "&markName=" + markName,
+                url: "/WFManage/Flow/CcPeople?keyValue=" + keyValue + "&markName=" + markName,
                 width: "600px",
                 height: "500px",
                 callBack: function (iframeId) {

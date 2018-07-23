@@ -63,7 +63,7 @@ namespace Storm.SqlServerRepository
                             workEntity.FlowStatus = (int)WorkStatus.Success;
                             AddEndApproProcess(workId, nextNode, db);
                         }
-                        AddCc(workId, nextNode.Id, userId, db);
+                        AddCcSuccess(workId, nextNode.Id, userId, db);
                         db.Update(workEntity);
                         db.Commit();
                     }
@@ -124,7 +124,7 @@ namespace Storm.SqlServerRepository
                                         workEntity.CurrentUsers = string.Join(",", strUsersNew.ToArray());
                                         AddApproProcess(workId, desc, ApprovalStatus.Pass, currentNode, db);
 
-                                        AddCc(workId, workEntity.CurrentNodeId, applyUserId, db);
+                                        AddCcSuccess(workId, workEntity.CurrentNodeId, applyUserId, db);
                                     }
                                 }
                             }
@@ -178,7 +178,7 @@ namespace Storm.SqlServerRepository
                 workEntity.FlowStatus = (int)WorkStatus.Success;
                 AddEndApproProcess(workId, nextNode, db);
             }
-            AddCc(workId, nextNode.Id, workEntity.CurrentUsers, db);
+            AddCcSuccess(workId, nextNode.Id, workEntity.CurrentUsers, db);
         }
         private void ApplyFail(string workId, string desc)
         {
@@ -237,7 +237,7 @@ namespace Storm.SqlServerRepository
                                 throw new Exception("当前节点驳回配置异常,请联系管理员！");
                             }
                         }
-                        AddCc(workId, lastNode.Id, applyUserId, db);
+                        AddCcFail(workId, lastNode.Id, applyUserId, db);
                         db.Update(workEntity);
                         db.Commit();
                     }
@@ -797,9 +797,9 @@ namespace Storm.SqlServerRepository
             }
             return bResult;
         }
-        private void AddCc(string workId, string nodeId, string currUserId, IRepositoryBase db)
+        private void AddCcSuccess(string workId, string nodeId, string currUserId, IRepositoryBase db)
         {
-            FlowNodeEntity node = db.FindEntity<FlowNodeEntity>(nodeId);
+            FlowNodeEntity node = db.FindEntity<FlowNodeEntity>(m => m.Id == nodeId);
             if (node != null && !string.IsNullOrWhiteSpace(node.Id))
             {
                 string ccUserIds = GetCurrentCcUserIds(node, currUserId);
@@ -814,6 +814,36 @@ namespace Storm.SqlServerRepository
                         appproccEntity.CcUserId = ccUserId;
                         appproccEntity.NodeId = nodeId;
                         appproccEntity.ApprovalUserId = currUserId;
+                        appproccEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
+                        appproccEntity.IsViewed = false;
+                        var LoginInfo = OperatorProvider.Provider.GetCurrent();
+                        if (LoginInfo != null)
+                        {
+                            appproccEntity.CreatorUserId = LoginInfo.UserId;
+                        }
+                        db.Insert(appproccEntity);
+                    });
+                }
+            }
+        }
+        private void AddCcFail (string workId, string nodeId, string currUserId, IRepositoryBase db)
+        {
+            FlowNodeEntity node = db.FindEntity<FlowNodeEntity>(m => m.Id == nodeId);
+            if (node != null && !string.IsNullOrWhiteSpace(node.Id))
+            {
+                string ccUserIds = GetCurrentCcUserIds(node, currUserId);
+                if (ccUserIds != null && !string.IsNullOrWhiteSpace(ccUserIds))
+                {
+                    List<string> ccUserIdslst = ccUserIds.Split(',').ToList();
+                    ccUserIdslst.ForEach(delegate (string ccUserId)
+                    {
+                        ApprovalCcsEntity appproccEntity = new ApprovalCcsEntity();
+                        appproccEntity.Create();
+                        appproccEntity.WorkId = workId;
+                        appproccEntity.CcUserId = ccUserId;
+                        appproccEntity.NodeId = nodeId;
+                        appproccEntity.ApprovalUserId = currUserId;
+                        appproccEntity.ApprovalStatus = (int)ApprovalStatus.Pass;
                         appproccEntity.IsViewed = false;
                         var LoginInfo = OperatorProvider.Provider.GetCurrent();
                         if (LoginInfo != null)
