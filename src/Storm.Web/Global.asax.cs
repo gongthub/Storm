@@ -2,6 +2,7 @@
 using Storm.Application.WFManage;
 using Storm.Domain.Entity.WFManage;
 using System;
+using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using static Storm.Application.Infrastructure.WorkFlowCommon;
@@ -24,7 +25,7 @@ namespace Storm.Web
 
         protected void Application_BeginRequest()
         {
-           
+
         }
     }
 }

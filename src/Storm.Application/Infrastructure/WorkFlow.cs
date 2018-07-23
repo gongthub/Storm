@@ -12,7 +12,6 @@ namespace Storm.Application.Infrastructure
     {
         private WorkApp workApp = new WorkApp();
         private FlowApp flowApp = new FlowApp();
-
         public bool Start(SystemForm systemForm, string key)
         {
             bool bResult = false;
@@ -28,7 +27,6 @@ namespace Storm.Application.Infrastructure
             }
             return bResult;
         }
-
         public bool Start(SystemForm systemForm, string key, Dictionary<string, string> prarms)
         {
             bool bResult = false;

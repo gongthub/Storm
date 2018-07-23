@@ -23,5 +23,10 @@ namespace Storm.Web.Areas.WFManage.Controllers
             workFlow.Start(SystemForm.Test, Guid.NewGuid().ToString());
             return Success("操作成功。");
         }
+        [WorkFlow(systemForm = SystemForm.Test)]
+        public static void EndTestFlow(EndFlowEventArgs eventArgs)
+        {
+
+        }
     }
 }
